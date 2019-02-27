@@ -1,0 +1,14 @@
+$borderRadius: 3px;
+
+.productitem {
+  width: 20px;
+  height: 20px;
+  border-radius: $borderRadius;
+  position: absolute;
+
+  &:hover {
+
+  }
+
+
+}

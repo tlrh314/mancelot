@@ -1,0 +1,40 @@
+/*
+ | ITCSS STRUCTURE: naming convention _<layer>.<partial>.scss
+ */
+
+/*
+ | SETTINGS: base font size, colour palettes
+ */
+@import 'settings/_settings.font';
+
+/*
+ | TOOLS: mixins and functions
+ */
+@import 'tools/_tools.boxsizing';
+
+/*
+ | GENERIC: CSS resets, normalize
+ */
+
+/*
+ | ELEMENTS: Base styling for unclassed HTML elements (h1, anchor, etc.)
+ */
+
+/*
+ | OBJECTS: NON cosmetic objects
+ */
+
+/*
+ | COMPONENTS
+ */
+@import 'components/_components.productitem';
+@import 'components/_components.app';
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ | TRUMPS: utility and helper classes, hacks and overrides
+ */

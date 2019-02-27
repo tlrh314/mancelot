@@ -1,0 +1,115 @@
+/*
+ | ITCSS STRUCTURE: naming convention _<layer>.<partial>.scss
+ */
+/*
+ | SETTINGS: base font size, colour palettes
+ */
+body {
+  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+/*
+ | TOOLS: mixins and functions
+ */
+/*
+ | GENERIC: CSS resets, normalize
+ */
+/*
+ | ELEMENTS: Base styling for unclassed HTML elements (h1, anchor, etc.)
+ */
+/*
+ | OBJECTS: NON cosmetic objects
+ */
+/*
+ | COMPONENTS
+ */
+.student {
+  transition: 0.1s all ease-in-out;
+  background: #9da0a4;
+  width: 300px;
+  min-height: 10px;
+  margin-bottom: 5px;
+  color: black;
+  padding: 5px;
+  position: relative;
+  cursor: pointer; }
+  .student__name {
+    display: inline;
+    margin-right: 5px; }
+  .student__age {
+    display: inline;
+    background: black;
+    padding: 5px;
+    color: white; }
+  .student__delete {
+    position: absolute;
+    padding: 5px;
+    display: inline;
+    top: 0px;
+    right: 0px;
+    cursor: pointer;
+    background: red; }
+  .student:hover {
+    opacity: 0.8;
+    transform: scale(1.1); }
+
+.studentDetail {
+  position: fixed;
+  height: 100%;
+  background: #333333;
+  width: 350px;
+  top: 0px;
+  right: -400px;
+  color: white;
+  padding: 5px;
+  transition: all .3s ease-in-out; }
+  .studentDetail--visible {
+    right: 0px; }
+
+.dropdown {
+  border: 1px solid #8bb63d;
+  width: 150px;
+  border-radius: 3px;
+  position: relative; }
+  .dropdown:hover {
+    background: #d4e7f6; }
+  .dropdown__header {
+    padding: 5px; }
+  .dropdown__options {
+    position: absolute;
+    top: 32px;
+    width: 150px;
+    z-index: 10000; }
+  .dropdown__option {
+    padding: 5px;
+    background: #8bb63d; }
+    .dropdown__option:hover {
+      background: #9bc944; }
+
+.button {
+  position: fixed;
+  background: #0198df;
+  color: white;
+  padding: 10px;
+  z-index: 11000; }
+
+.agenda {
+  width: 800px;
+  height: 600px;
+  border: 1px solid black; }
+
+.day {
+  display: inline-block;
+  width: 100px;
+  height: 600px;
+  border: 1px solid red; }
+
+.meeting {
+  height: 50px;
+  border: 1px dashed blue;
+  position: absolute; }
+
+/*
+ | TRUMPS: utility and helper classes, hacks and overrides
+ */
+
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzdHlsZXMuY3NzIiwic291cmNlUm9vdCI6IiJ9*/
