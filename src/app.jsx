@@ -48,7 +48,7 @@ class App extends React.Component {
 
         return (
             <Productitem
-                key={i}
+                key={item.id}
                 x={x * tileSpace + y % 2 * tileSpace / 2}
                 y={y * tileSpace}
                 color={colors[ item.color ]}
