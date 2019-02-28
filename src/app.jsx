@@ -29,7 +29,6 @@ class App extends React.Component {
     constructor(props) {
         super(props);
 
-        this.columnCount = 35;
         this.tileWidth = 20;
         this.tileMargin = 5;
 
@@ -37,6 +36,7 @@ class App extends React.Component {
             visibleColors : []
         };
     }
+
 
     renderItem = (item, i) => {
         const { columnCount, tileWidth, tileMargin } = this;
@@ -68,6 +68,8 @@ class App extends React.Component {
         const { visibleColors } = this.state;
         const filteredProducts = products.filter(
             product => visibleColors.includes(product.color));
+
+        this.columnCount = Math.ceil(Math.sqrt(filteredProducts.length));
 
         return (
             <div className="app">
