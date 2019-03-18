@@ -4,7 +4,8 @@ FROM nginx:mainline-alpine
 RUN rm /etc/nginx/conf.d/default.conf \
     && apk add --no-cache curl
 
-COPY ["./mattermost", "./mattermost-ssl", "/etc/nginx/sites-available/"]
+COPY ["./sites-available/mancelot.nl.conf", "/etc/nginx/sites-available/"]
+COPY ./www/index.html /var/www/html
 COPY ./security.conf /etc/nginx/conf.d/
 
 # Add and setup entrypoint
@@ -16,4 +17,3 @@ HEALTHCHECK CMD curl --fail http://localhost:80 || exit 1
 ENTRYPOINT ["/entrypoint.sh"]
 
 VOLUME ["/var/run", "/etc/nginx/conf.d/", "/var/cache/nginx/"]
-
