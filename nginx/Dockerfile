@@ -5,7 +5,8 @@ RUN rm /etc/nginx/conf.d/default.conf \
     && apk add --no-cache curl
 
 COPY ["./sites-available/mancelot.nl.conf", "/etc/nginx/sites-available/"]
-COPY ./www/index.html /var/www/html
+RUN mkdir -p /var/www/mancelot.nl
+COPY ./www/index.html /var/www/mancelot.nl
 COPY ./security.conf /etc/nginx/conf.d/
 
 # Add and setup entrypoint
