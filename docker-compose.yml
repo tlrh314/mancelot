@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./volumes/postgres/var/lib/postgresql/data:/var/lib/postgresql/data
-      - ~/etc/localtime:/etc/localtime:ro
+      - ${ETC_LOCALTIME}:/etc/localtime:ro
     environment:
       - POSTGRES_USER=mmuser
       - POSTGRES_PASSWORD=mmuser_password
@@ -33,7 +33,7 @@ services:
       - ./volumes/mattermost/logs:/mattermost/logs:rw
       - ./volumes/mattermost/plugins:/mattermost/plugins:rw
       - ./volumes/mattermost/client-plugins:/mattermost/client/plugins:rw
-      - ~/etc/localtime:/etc/localtime:ro
+      - ${ETC_LOCALTIME}:/etc/localtime:ro
     environment:
       # set same as db credentials and dbname
       - MM_USERNAME=mmuser
@@ -51,7 +51,7 @@ services:
     volumes:
       # This directory must have cert files if you want to enable SSL
       - ./volumes/web/cert:/cert:ro
-      - ~/etc/localtime:/etc/localtime:ro
+      - ${ETC_LOCALTIME}:/etc/localtime:ro
     # Uncomment for SSL
     # environment:
     #  - MATTERMOST_ENABLE_SSL=true
