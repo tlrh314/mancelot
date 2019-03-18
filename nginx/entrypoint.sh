@@ -15,6 +15,9 @@ fi
 # ln -s /etc/nginx/sites-available/mattermost$ssl /etc/nginx/conf.d/mattermost.conf
 ln -s /etc/nginx/sites-available/mancelot.nl.conf /etc/nginx/conf.d
 
+echo $(cat /var/www/mancelot.nl/index.html)
+echo $(cat /etc/nginx/conf.d/mancelot.nl.conf)
+
 # Setup app host and port on configuration file
 # sed -i "s/{%MATTERMOST_HOST%}/${MATTERMOST_HOST}/g" /etc/nginx/conf.d/mattermost.conf
 # sed -i "s/{%MATTERMOST_PORT%}/${MATTERMOST_PORT_NUMBER}/g" /etc/nginx/conf.d/mattermost.conf

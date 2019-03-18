@@ -4,8 +4,10 @@ FROM nginx:mainline-alpine
 RUN rm /etc/nginx/conf.d/default.conf \
     && apk add --no-cache curl
 
-COPY ["./sites-available/mancelot.nl.conf", "/etc/nginx/sites-available/"]
+RUN mkdir -p /var/www/certbot
 RUN mkdir -p /var/www/mancelot.nl
+
+COPY ["./sites-available/mancelot.nl.conf", "/etc/nginx/sites-available/"]
 COPY ./www/index.html /var/www/mancelot.nl
 COPY ./security.conf /etc/nginx/conf.d/
 
@@ -13,7 +15,7 @@ COPY ./security.conf /etc/nginx/conf.d/
 COPY entrypoint.sh /
 
 #Healthcheck to make sure container is ready
-HEALTHCHECK CMD curl --fail http://localhost:80 || exit 1
+# HEALTHCHECK CMD curl --fail http://localhost:80 || exit 1
 
 ENTRYPOINT ["/entrypoint.sh"]
 

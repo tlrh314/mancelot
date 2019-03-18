@@ -1,46 +1,46 @@
 version: '3'
 
 services:
-  postgres:
-    build: postgres
-    read_only: true
-    restart: unless-stopped
-    volumes:
-      - ./volumes/postgres/var/lib/postgresql/data:/var/lib/postgresql/data
-      - ${ETC_LOCALTIME}:/etc/localtime:ro
-    environment:
-      - POSTGRES_USER=mmuser
-      - POSTGRES_PASSWORD=mmuser_password
-      - POSTGRES_DB=mattermost
-    # uncomment the following to enable backup
-    #  - AWS_ACCESS_KEY_ID=XXXX
-    #  - AWS_SECRET_ACCESS_KEY=XXXX
-    #  - WALE_S3_PREFIX=s3://BUCKET_NAME/PATH
-    #  - AWS_REGION=us-east-1
-
-  mattermost:
-    build:
-      context: mattermost
-      # uncomment following lines for team edition or change UID/GID
-      args:
-          - edition=team
-      #   - PUID=1000
-      #   - PGID=1000
-    restart: unless-stopped
-    volumes:
-      - ./volumes/mattermost/config:/mattermost/config:rw
-      - ./volumes/mattermost/data:/mattermost/data:rw
-      - ./volumes/mattermost/logs:/mattermost/logs:rw
-      - ./volumes/mattermost/plugins:/mattermost/plugins:rw
-      - ./volumes/mattermost/client-plugins:/mattermost/client/plugins:rw
-      - ${ETC_LOCALTIME}:/etc/localtime:ro
-    environment:
-      # set same as db credentials and dbname
-      - MM_USERNAME=mmuser
-      - MM_PASSWORD=mmuser_password
-      - MM_DBNAME=mattermost
-      # in case your config is not in default location
-      #- MM_CONFIG=/mattermost/config/config.json
+#   postgres:
+#     build: postgres
+#     read_only: true
+#     restart: unless-stopped
+#     volumes:
+#       - ./volumes/postgres/var/lib/postgresql/data:/var/lib/postgresql/data
+#       - ${ETC_LOCALTIME}:/etc/localtime:ro
+#     environment:
+#       - POSTGRES_USER=mmuser
+#       - POSTGRES_PASSWORD=mmuser_password
+#       - POSTGRES_DB=mattermost
+#     # uncomment the following to enable backup
+#     #  - AWS_ACCESS_KEY_ID=XXXX
+#     #  - AWS_SECRET_ACCESS_KEY=XXXX
+#     #  - WALE_S3_PREFIX=s3://BUCKET_NAME/PATH
+#     #  - AWS_REGION=us-east-1
+# 
+#   mattermost:
+#     build:
+#       context: mattermost
+#       # uncomment following lines for team edition or change UID/GID
+#       args:
+#           - edition=team
+#       #   - PUID=1000
+#       #   - PGID=1000
+#     restart: unless-stopped
+#     volumes:
+#       - ./volumes/mattermost/config:/mattermost/config:rw
+#       - ./volumes/mattermost/data:/mattermost/data:rw
+#       - ./volumes/mattermost/logs:/mattermost/logs:rw
+#       - ./volumes/mattermost/plugins:/mattermost/plugins:rw
+#       - ./volumes/mattermost/client-plugins:/mattermost/client/plugins:rw
+#       - ${ETC_LOCALTIME}:/etc/localtime:ro
+#     environment:
+#       # set same as db credentials and dbname
+#       - MM_USERNAME=mmuser
+#       - MM_PASSWORD=mmuser_password
+#       - MM_DBNAME=mattermost
+#       # in case your config is not in default location
+#       #- MM_CONFIG=/mattermost/config/config.json
   nginx:
     build: nginx
     ports:
@@ -49,9 +49,7 @@ services:
     read_only: true
     restart: unless-stopped
     volumes:
-      - ./volumes/nginx/www:/var/www
       - ./volumes/certbot/conf:/etc/letsencrypt
-      - ./volumes/certbot/www:/var/www/certbot
       - ${ETC_LOCALTIME}:/etc/localtime:ro
     # Uncomment for SSL
     # environment:
@@ -61,6 +59,5 @@ services:
     restart: unless-stopped
     volumes:
       - ./volumes/certbot/conf:/etc/letsencrypt
-      - ./volumes/certbot/www:/var/www/certbot
     # - ${ETC_LOCALTIME}:/etc/localtime:ro
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
