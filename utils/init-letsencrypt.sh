@@ -3,7 +3,7 @@
 set -e
 
 DATA_PATH="./data/certbot"
-EMAIL="info@mancelot.nl" 
+EMAIL="info@mancelot.nl"
 RSA_KEY_SIZE=4096
 
 # Select appropriate EMAIL arg
@@ -12,7 +12,7 @@ case "$EMAIL" in
   *) EMAIL_ARG="--email $EMAIL" ;;
 esac
 
-# First we obtain options-ssl-nginx.conf and ssl-dhparams.pem from certbot repo
+# Obtain options-ssl-nginx.conf and ssl-dhparams.pem from certbot repo
 if [ ! -e "${DATA_PATH}/conf/options-ssl-nginx.conf" ] || [ ! -e "${DATA_PATH}/conf/ssl-dhparams.pem" ]; then
   echo "### Downloading recommended TLS parameters ..."
   mkdir -p "${DATA_PATH}/conf"
@@ -21,7 +21,15 @@ if [ ! -e "${DATA_PATH}/conf/options-ssl-nginx.conf" ] || [ ! -e "${DATA_PATH}/c
   echo
 fi
 
-# Then we declare each of our domains
+# Make sure our container is at the latest version
+docker-compose build
+
+# Make sure nginx is running
+echo "### Starting nginx ..."
+docker-compose up --force-recreate -d nginx
+echo
+
+# Declare each domains and generate Let's Encrypt certificate
 declare -a DOMAINS=(
     "mancelot.be"
     "mancelot.com"
@@ -72,9 +80,8 @@ do
       rm -Rf /etc/letsencrypt/archive/$DOMAIN && \
       rm -Rf /etc/letsencrypt/renewal/$DOMAIN.conf" certbot
     echo
-    
+
     echo "### Requesting Let's Encrypt certificate for $DOMAIN_ARGS ..."
-       
     docker-compose run --rm --entrypoint "\
       certbot certonly --webroot -w /var/www/certbot \
         $EMAIL_ARG \
@@ -85,9 +92,6 @@ do
     echo
 done
 
-echo "### Starting nginx ..."
-docker-compose up --force-recreate -d nginx
-echo
-
+# And finally we reload our nginx container
 echo "### Reloading nginx ..."
 docker-compose exec nginx nginx -s reload
