@@ -1,22 +1,8 @@
-FROM nginx:mainline-alpine
+FROM nginx:1.15-alpine
 
-# Remove default configuration and add our custom Nginx configuration files
-RUN rm /etc/nginx/conf.d/default.conf \
-    && apk add --no-cache curl
+# Remove the default configuration files
+RUN rm /etc/nginx/conf.d/*
 
-RUN mkdir -p /var/www/certbot
-RUN mkdir -p /var/www/mancelot.nl
-
-COPY ["./sites-available/mancelot.nl.conf", "/etc/nginx/sites-available/"]
-COPY ./www/index.html /var/www/mancelot.nl
-COPY ./security.conf /etc/nginx/conf.d/
-
-# Add and setup entrypoint
-COPY entrypoint.sh /
-
-#Healthcheck to make sure container is ready
-# HEALTHCHECK CMD curl --fail http://localhost:80 || exit 1
-
-ENTRYPOINT ["/entrypoint.sh"]
-
-VOLUME ["/var/run", "/etc/nginx/conf.d/", "/var/cache/nginx/"]
+# Insert our own configuration files
+COPY conf/*.conf /etc/nginx/conf.d/
+COPY apps/*.conf /etc/nginx/apps/
