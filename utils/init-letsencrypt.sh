@@ -95,6 +95,7 @@ declare -a DOMAINS=(
     "mancelot.eu"
     "mancelot.nl"
         "mm.mancelot.nl"
+        "pw.mancelot.nl"
 )
 
 for DOMAIN in "${DOMAINS[@]}"
