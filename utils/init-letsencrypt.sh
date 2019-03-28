@@ -69,7 +69,7 @@ do
         DOMAIN_ARGS="-d ${DOMAIN}"
     else
         DOMAIN_ARGS="-d ${DOMAIN} -d www.${DOMAIN}"
-        if [[ $DOMAIN =~ "projectcece" ]]; then
+        if [[ $DOMAIN =~ "mancelot.nl" ]]; then
             DOMAIN_ARGS="${DOMAIN_ARGS} -d staging.${DOMAIN}"
         fi
     fi
