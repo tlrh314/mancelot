@@ -2,15 +2,72 @@
 
 set -e
 
+# TODO: implement these functions as arguments
 DATA_PATH="./data/certbot"
 EMAIL="info@mancelot.nl"
 RSA_KEY_SIZE=4096
-
-# Select appropriate EMAIL arg
+PRODUCTION=false
 case "$EMAIL" in
   "") EMAIL_ARG="--register-unsafely-without-email" ;;
   *) EMAIL_ARG="--email $EMAIL" ;;
 esac
+
+_usage() {
+cat <<EOF
+Usage: `basename $0` <options>
+
+Build initial Docker container(s) w/ self-signed certs for development.
+  For production: use -p (or --prod) to replace self-signed w/ Let's Encrypt certs
+
+Options:
+  -h   --help           display this help and exit
+  -p   --prod           remove the self-signed SSL certificate; do call certbot
+
+Examples:
+  `basename $0` 
+  `basename $0` --prod
+EOF
+}
+parse_options() {
+    # https://stackoverflow.com/questions/192249
+    # It is possible to use multiple arguments for a long option.
+    # Specifiy here how many are expected.
+    declare -A longoptspec
+    longoptspec=( )  # e.g. [use]=1 
+
+    optspec="hp-:"
+    while getopts "$optspec" opt; do
+    while true; do
+        case "${opt}" in
+            -) # OPTARG is long-option or long-option=value.
+                # Single argument:   --key=value.
+                if [[ "${OPTARG}" =~ .*=.* ]]
+                then
+                    opt=${OPTARG/=*/}
+                    OPTARG=${OPTARG#*=}
+                    ((OPTIND--))
+                # Multiple arguments: --key value1 value2.
+                else
+                    opt="$OPTARG"
+                    OPTARG=(${@:OPTIND:$((longoptspec[$opt]))})
+                fi
+                ((OPTIND+=longoptspec[$opt]))
+                # opt/OPTARG set, thus, we can process them as if getopts would've given us long options
+                continue
+                ;;
+            h|help)
+                _usage
+                exit 0
+                ;;
+            p|prod)
+                PRODUCTION=true
+                ;;
+        esac
+    break; done
+    done
+}
+parse_options $@
+
 
 # Obtain options-ssl-nginx.conf and ssl-dhparams.pem from certbot repo
 if [ ! -e "${DATA_PATH}/conf/options-ssl-nginx.conf" ] || [ ! -e "${DATA_PATH}/conf/ssl-dhparams.pem" ]; then
@@ -42,7 +99,7 @@ declare -a DOMAINS=(
 
 for DOMAIN in "${DOMAINS[@]}"
 do
-    echo "### Creating dummy certificate for $DOMAIN ..."
+    echo "### Creating self-signed certificate for $DOMAIN ..."
     LE_PATH="/etc/letsencrypt/live/$DOMAIN"
     mkdir -p "${DATA_PATH}/conf/live/$DOMAIN"  # Inside the container
     docker-compose run --rm --entrypoint "\
@@ -74,7 +131,15 @@ do
         fi
     fi
 
-    echo "### Deleting dummy certificate for $DOMAIN ..."
+    if [ "$PRODUCTION" = false ]; then
+        echo "PRODUCTION is false. We shall leave self-signed certs as-is."
+        continue
+    else
+        echo "PRODUCTION is true. Call certbot to replace self-signed certs w/ Let's Encrypt certs."
+    fi
+
+
+    echo "### Deleting self-signed certificate for $DOMAIN ..."
     docker-compose run --rm --entrypoint "\
       rm -Rf /etc/letsencrypt/live/$DOMAIN && \
       rm -Rf /etc/letsencrypt/archive/$DOMAIN && \
