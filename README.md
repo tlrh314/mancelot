@@ -27,3 +27,12 @@
 # Deployment
 - `docker network create my_network || true`
 - `docker-compose up --build -d`
+
+
+## Deployment of Mattermost
+### Add the remote repository using Git subtree
+- `git remote add -f mattermost https://github.com/mattermost/mattermost-docker`
+- `git subtree add --prefix mattermost mattermost master --squash`
+### Pull in remote updates
+- `git fetch mattermost master`
+- `git subtree pull --prefix mattermost mattermost master --squash`
