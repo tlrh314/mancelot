@@ -1,0 +1,43 @@
+before_script:
+  - docker info
+  - docker login -u gitlab-ci-token -p "$CI_BUILD_TOKEN" registry.gitlab.com
+
+variables:
+  CONTAINER_TEST_IMAGE: registry.gitlab.com/psono/psono-postgres:$CI_BUILD_REF_NAME
+  CONTAINER_RELEASE_IMAGE: registry.gitlab.com/psono/psono-postgres:latest
+
+stages:
+  - build
+  - release
+  - deploy
+
+job-build-container:
+  stage: build
+  image: docker:git
+  services:
+  - docker:dind
+  script:
+  - docker build -t $CONTAINER_TEST_IMAGE-9.6 9.6/
+  - docker push $CONTAINER_TEST_IMAGE-9.6
+
+job-release-image:
+  stage: release
+  image: docker:git
+  services:
+  - docker:dind
+  script:
+    - docker pull $CONTAINER_TEST_IMAGE-9.6
+    - docker tag $CONTAINER_TEST_IMAGE-9.6 $CONTAINER_RELEASE_IMAGE
+    - docker push $CONTAINER_RELEASE_IMAGE
+  only:
+    - master
+
+job-deploy:
+  stage: deploy
+  image: docker:git
+  services:
+  - docker:dind
+  script:
+    - sh ./var/deploy.sh
+  only:
+    - master
