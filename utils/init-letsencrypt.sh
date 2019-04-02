@@ -100,6 +100,24 @@ declare -a DOMAINS=(
 
 for DOMAIN in "${DOMAINS[@]}"
 do
+    echo "### Checking content of Let's Encrypt live folder for $DOMAIN ..."
+
+    folder="${DATA_PATH}/conf/live/$DOMAIN"
+    if [ -f "${folder}/privkey.pem" ]; then
+        # This means that at least our self-signed certificate is there
+        echo "  Success: privkey.pem exists. Could be self-signed or Let's Encrypt."
+        if [ "$PRODUCTION" = false ]; then
+        echo -e "  This is production. We're done here.\n"
+            continue
+        fi
+    fi
+
+    if [ -f "${folder}/cert.pem" ]; then
+        # This means that we already have our Let's Encrypt certificates
+        echo -e "Success: cert.pem exists. We can continue.\n"
+        continue
+    fi
+
     echo "### Creating self-signed certificate for $DOMAIN ..."
     LE_PATH="/etc/letsencrypt/live/$DOMAIN"
     mkdir -p "${DATA_PATH}/conf/live/$DOMAIN"  # Inside the container
