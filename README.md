@@ -36,3 +36,15 @@
 ### Pull in remote updates
 - `git fetch mattermost master`
 - `git subtree pull --prefix mattermost mattermost master --squash`
+
+## Deployment of Psono Password Manager (self-hosted open-source LastPass alternative)
+### Add the remote repositories using Git subtree
+- `git remote add -f psono-postgres https://gitlab.com/psono/psono-postgres.git`
+- `git subtree add --prefix psono/psono-postgres psono-postgres b2c7bab976a661337c423b6c22df74bf523acd49 --squash`
+
+- `git remote add -f psono-server https://gitlab.com/psono/psono-server.git`
+- `git subtree add --prefix psono/psono-server psono-server v1.9.2 --squash`
+
+- `git remote add -f psono-client https://gitlab.com/psono/psono-client.git`
+- `git subtree add --prefix psono/psono-client psono-client v1.11.0 --squash`
+### Pull in remote updates
