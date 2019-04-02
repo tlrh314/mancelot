@@ -29,7 +29,7 @@
 - `docker-compose up --build -d`
 
 
-## Deployment of Mattermost
+## Deployment of Mattermost Team Communication (self-hosted open-source Slack alternative)
 ### Add the remote repository using Git subtree
 - `git remote add -f mattermost https://github.com/mattermost/mattermost-docker`
 - `git subtree add --prefix mattermost mattermost master --squash`
