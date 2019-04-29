@@ -39,3 +39,8 @@ services:
       - MM_PASSWORD=$MANCELOT_MATTERMOST_POSTGRES_PASSWORD
       - MM_DBNAME=mattermost
     container_name: mancelot-mattermost-app
+
+networks:
+  default:
+    external:
+      name: mancelot
