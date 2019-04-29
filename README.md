@@ -1,17 +1,31 @@
-# Mancelot Dockerised Setup
+# Mancelot
 
-# Dependencies
+| What            |  Why               | Where            | World                                               |
+|-----------------|--------------------|------------------|-----------------------------------------------------|
+| nginx           | Webserver          |  `nginx`         | [mancelot.nl](https://www.mancelot.nl/)             |
+| Django          | Web Framework      |  `backend`       | [mancelot.nl/admin](https://www.mancelot.nl/admin/) |
+| Mattermost      | Team Communication |  `mattermost`    | [mm.mancelot.nl](https://mm.mancelot.nl/)           |
+| Psono           | Password Manager   |  `psono`         | [psono.mancelot.nl](https://psono.mancelot.nl/)     |
+
+
+## Infrastructure
+### Deployment
+- `docker network create mancelot || true`
+- `docker-compose up --build -d`
+
+### Dependencies
 - Docker version 18.09.3, build 774a1f4
 - docker-compose version 1.23.2, build 1110ad01
 
-## Installation on macOS
-### HomeBrew installation
+
+### Installation of Docker
+#### Development (TLRH) on macOS --> using HomeBrew
 - Install Docker: `brew cask install docker`
 - Install docker-compose and docker-machine: `brew install docker-compose docker-machine`
 - Start the Docker application, e.g. via SpotLight
 - Check that Docker is running (in the command line): `docker ps`
 
-## Installation on Debian 9.8
+#### Production ([TransIP](https://www.transip.nl/cp/), [BladeVPS X1](https://www.transip.nl/vps/)) on Debian 9.8
 - Install the [prerequisites](https://docs.docker.com/install/linux/docker-ce/debian/#prerequisites): `sudo apt-get remove docker docker-engine docker.io containerd runc`
 - `sudo apt-get install apt-transport-https ca-certificates curl gnupg2 software-properties-common`
 - Add Docker's official GPG key
@@ -24,12 +38,8 @@
   - `sudo chmod +x /usr/local/bin/docker-compose`
 
 
-# Deployment
-- `docker network create my_network || true`
-- `docker-compose up --build -d`
 
-
-## Deployment of Mattermost Team Communication (self-hosted open-source Slack alternative)
+## Mattermost
 ### Add the remote repository using Git subtree
 - `git remote add -f mattermost https://github.com/mattermost/mattermost-docker`
 - `git subtree add --prefix mattermost mattermost master --squash`
@@ -37,13 +47,12 @@
 - `git fetch mattermost master`
 - `git subtree pull --prefix mattermost mattermost master --squash`
 
-## Deployment of Psono Password Manager (self-hosted open-source LastPass alternative)
-### Add the remote repositories using Git subtree
-#### Server: psono-server
+
+## Psono (tbd)
+### Server: psono-server
 - `git remote add -f psono-server https://gitlab.com/psono/psono-server.git`
 - `git subtree add --prefix psono/psono-server psono-server v1.9.2 --squash`
 
-#### Client: psono-client
+### Client: psono-client
 - `git remote add -f psono-client https://gitlab.com/psono/psono-client.git`
 - `git subtree add --prefix psono/psono-client psono-client v1.11.0 --squash`
-### Pull in remote updates
