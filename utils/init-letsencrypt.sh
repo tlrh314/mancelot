@@ -94,6 +94,7 @@ declare -a DOMAINS=(
     "mancelot.de"
     "mancelot.eu"
     "mancelot.nl"
+        "api.mancelot.nl"
         "mm.mancelot.nl"
         "pw.mancelot.nl"
 )

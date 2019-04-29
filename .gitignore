@@ -170,5 +170,4 @@ dmypy.json
 *.pid
 
 
-volumes
 data
