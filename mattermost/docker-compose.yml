@@ -4,11 +4,12 @@ services:
 
   db:
     build: db
+    image: mattermost-db:v5.9.0
     read_only: true
     restart: unless-stopped
     volumes:
       - ${MANCELOT_DATA_PATH}mattermost/postgresql:/var/lib/postgresql/data
-      - /etc/localtime:/etc/localtime:ro
+    # - /etc/localtime:/etc/localtime:ro
     environment:
       - POSTGRES_USER=mmuser
       - POSTGRES_PASSWORD=$MANCELOT_MATTERMOST_POSTGRES_PASSWORD
@@ -22,6 +23,7 @@ services:
         - edition=team
         - PUID=1000
         - PGID=1000
+    image: mattermost-app:v5.9.0
     restart: unless-stopped
     volumes:
       - ${MANCELOT_DATA_PATH}mattermost/config:/mattermost/config:rw
@@ -29,7 +31,9 @@ services:
       - ${MANCELOT_DATA_PATH}mattermost/logs:/mattermost/logs:rw
       - ${MANCELOT_DATA_PATH}mattermost/plugins:/mattermost/plugins:rw
       - ${MANCELOT_DATA_PATH}mattermost/client-plugins:/mattermost/client/plugins:rw
-      - /etc/localtime:/etc/localtime:ro
+    # - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "8065:8000"
     environment:
       - MM_USERNAME=mmuser
       - MM_PASSWORD=$MANCELOT_MATTERMOST_POSTGRES_PASSWORD
