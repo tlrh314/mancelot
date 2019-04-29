@@ -1,15 +1,14 @@
-version: '3'
+version: '3.7'
 
 services:
 
   nginx:
     build: nginx
+    container_name: mancelot-nginx
     restart: unless-stopped
     volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    networks:
-      - my_network
+      - ${MANCELOT_DATA_PATH-./data/}certbot/conf:/etc/letsencrypt
+      - ${MANCELOT_DATA_PATH-./data/}certbot/www:/var/www/certbot
     ports:
       - "80:80"
       - "443:443"
@@ -17,14 +16,14 @@ services:
 
   certbot:
     image: certbot/certbot
+    container_name: mancelot-certbot
     restart: unless-stopped
     volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    networks:
-      - my_network
+      - ${MANCELOT_DATA_PATH-./data/}certbot/conf:/etc/letsencrypt
+      - ${MANCELOT_DATA_PATH-./data/}certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 networks:
-    my_network:
-      external: true
+  default:
+    external:
+      name: mancelot
