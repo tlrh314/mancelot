@@ -1,0 +1,14 @@
+<script src="https://browser.sentry-cdn.com/5.0.6/bundle.min.js" crossorigin="anonymous"></script>
+
+{% if sentry_event_id %}
+<script>
+  Sentry.init({ dsn: '{{ sentry_dsn }}' });
+  Sentry.showReportDialog({ eventId: '{{ sentry_event_id }}' })
+</script>
+{% endif %}
+
+Oeps, het lijkt er op dat er iets is misgegaan. <br>
+<br>
+We hebben hier automatisch een melding van gemaakt, dus onze developers zullen spoedig kijken wat er mis is. <br>
+<br>
+Je kunt nu het best even terug naar de vorige pagina gaan.
