@@ -10,3 +10,8 @@ help: ## This help.
 # Build container for Django
 django:
 	docker build -f backend/Dockerfile -t mancelot backend
+
+# Restart the backend
+django-restart:
+	git pull
+	docker build -f backend/Dockerfile -t mancelot backend
