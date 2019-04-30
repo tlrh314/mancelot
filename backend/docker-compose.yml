@@ -7,7 +7,7 @@ x-defaults: &defaults
   volumes:
     - .:/mancelot
     - ./settings/.env:/mancelot/settings/.env:ro
-    - ${MANCELOT_DATA_PATH-../data/}log:/mancelot/log:rw
+    - ${MANCELOT_DATA_PATH-../data/}django/log:/mancelot/log:rw
     - ${MANCELOT_DATA_PATH-../data/}django/media:/mancelot/media:rw
     - ${MANCELOT_DATA_PATH-../data/}django/static:/mancelot/static:rw
   restart: unless-stopped
