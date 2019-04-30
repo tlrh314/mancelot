@@ -2,10 +2,11 @@
 
 | What            |  Why               | Where            | World                                               |
 |-----------------|--------------------|------------------|-----------------------------------------------------|
-| nginx           | Webserver          |  `nginx`         | [mancelot.nl](https://www.mancelot.nl/)             |
-| Django          | Web Framework      |  `backend`       | [mancelot.nl/admin](https://www.mancelot.nl/admin/) |
-| Mattermost      | Team Communication |  `mattermost`    | [mm.mancelot.nl](https://mm.mancelot.nl/)           |
-| Psono           | Password Manager   |  `psono`         | [psono.mancelot.nl](https://psono.mancelot.nl/)     |
+| [nginx](https://nginx.org/en/docs/)           | Webserver          |  `nginx`         | [mancelot.nl](https://www.mancelot.nl/)             |
+| [Django](https://docs.djangoproject.com/en/2.2/)          | Web Framework      |  `backend`       | [mancelot.nl/admin](https://www.mancelot.nl/admin/) |
+| [Django REST](https://www.django-rest-framework.org)          | Django REST Framework      |  `backend`       | [mancelot.nl/api/v1](https://www.mancelot.nl/api/v1) |
+| [Mattermost](https://docs.mattermost.com)      | Team Communication |  `mattermost`    | [mm.mancelot.nl](https://mm.mancelot.nl/)           |
+| [Psono](https://doc.psono.com)           | Password Manager   |  `psono`         | [psono.mancelot.nl](https://psono.mancelot.nl/)     |
 
 
 ## Infrastructure
