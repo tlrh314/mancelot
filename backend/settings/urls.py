@@ -13,8 +13,8 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView
 )
 
-# handler404 = "about.views.handler404"
-# handler500 = "about.views.handler500"
+# handler404 = "catalogue.views.handler404"
+handler500 = "catalogue.views.handler500"
 
 
 router = routers.DefaultRouter()
@@ -35,4 +35,6 @@ urlpatterns = [
     path("api/v1/", include(router.urls)),
 
     path("", TemplateView.as_view(template_name="index.html"), name="index"),
+    path("accounts/", include("accounts.urls")),
+    path("privacy/", TemplateView.as_view(template_name="privacy_policy.html"), name="privacy_policy"),
 ]

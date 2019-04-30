@@ -1,0 +1,66 @@
+{% load static %}
+{% load staticfiles %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta name="Referrer" content="origin">
+    <meta name="robots" content="index, follow"/> 
+
+    <meta name="author" content="Timo Halbesma"/>
+    <meta name="copyright" content="Timo Halbesma" />
+
+    <link rel="apple-touch-icon" href="{% static 'img/favicon.png' %}">
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />
+    <link rel="icon" type="image/vnd.microsoft.icon" href="{% static 'img/favicon.png' %}" />
+    <link rel="icon" type="image/gif/png" href="{% static 'img/favicon.png' %}">
+
+    {# Meta tags for auto-retrieved data when shared on social #}
+    <title>{% block page_title %} Mancelot {% endblock page_title %}</title>
+    <link rel="image_src" href="{% block meta_image %} {{ page_image }} {% endblock meta_image %}"/>
+    <meta name="description" content="{% block meta_description %}{{ page_description }}{% endblock meta_description %}"/>
+    <meta name="keywords" content="{% block meta_keywords %} {{ page_keywords }} {% endblock meta_keywords %}"/>
+    <meta property="og:image" content="{% block meta_og_image %}{{ og_image }}{% endblock meta_og_image %}"/>
+    <meta property="og:title" content="{% block meta_og_title %}{{ og_title }}{% endblock meta_og_title %}"/>
+    <meta name="twitter:card" content="{% block meta_twitter_card %}{{ twitter_card }}{% endblock meta_twitter_card %}"/>
+    <meta name="twitter:site" content="{% block meta_twitter_site %}{{ twitter_site }}{% endblock meta_twitter_site %}"/>
+    <meta name="twitter:title" content="{% block meta_twitter_title %}{{ twitter_title }}{% endblock meta_twitter_title %}"/>
+    <meta name="twitter:description" content="{% block meta_twitter_description %}{{ twitter_description }}{% endblock meta_twitter_description %}"/>
+    <meta name="twitter:image" content="{% block meta_twitter_image %}{{ twitter_image }}{% endblock meta_twitter_image %}"/>
+
+{% block stylesheets %}
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-139275191-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-139275191-1');
+</script>
+{% endblock stylesheets %}
+
+{% block topscripts %}
+    {# Mandatory cookie consent pop-up #}
+    <script type="text/javascript">
+        window.cookieconsent_options = {
+            "message": "We use temporary cookies to improve functionality of "+
+                "the website. By using this website you accept our Privacy Policy.", 
+            "dismiss":"Accept!", "learnMore": "Learn More", 
+            "link": "{% url 'privacy_policy' %}", "theme": "dark-bottom"
+        };
+    </script>
+{% endblock topscripts %}
+</head>
+
+</body>
+    {% block content %}
+    {% endblock content %}
+
+    {% block bottomscripts %}
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.10/cookieconsent.min.js"></script>
+    {% endblock bottomscripts %}
+</body>
+</html>

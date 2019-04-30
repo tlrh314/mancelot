@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+{% if request.user.is_authenticated %}
+    Welcome, {{ request.user }}
+{% else %}
+    You don't have permissions to view this page.
+{% endif %}
+{% endblock content %}
