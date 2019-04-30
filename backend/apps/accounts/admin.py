@@ -2,6 +2,10 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import PasswordResetForm
+
 
 from accounts.models import UserModel
 
