@@ -15,3 +15,5 @@ django:
 django-restart:
 	git pull
 	docker build -f backend/Dockerfile -t mancelot backend
+	docker-compose -f backend/docker-compose.yml restart web
+	docker exec mancelot-web bash -c "python manage.py collectstatic --noinput"
