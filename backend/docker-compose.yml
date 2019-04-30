@@ -1,0 +1,83 @@
+version: "3.7"
+
+x-defaults: &defaults
+  environment:
+    DJANGO_SETTINGS_MODULE: settings
+    DJANGO_ENV_FILE: .env
+  volumes:
+    - .:/mancelot
+    - ./settings/.env:/mancelot/settings/.env:ro
+    - ${HOST_PATH_MANCELOT-../data/}log:/mancelot/log:rw
+    - ${HOST_PATH_MANCELOT-../data/}django/media:/mancelot/media:rw
+    - ${HOST_PATH_MANCELOT-../data/}django/static:/mancelot/static:rw
+  restart: unless-stopped
+
+services:
+
+  mariadb:
+    image: mariadb:10.4
+    restart: unless-stopped
+    container_name: mancelot-mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD_MANCELOT}
+    volumes:
+      - ${HOST_PATH_MANCELOT-../data/}mariadb:/var/lib/mysql
+
+  # Memcached for Django
+  memcached:
+    image: memcached
+    container_name: mancelot-memcached
+    restart: "no"
+
+  # Redis as broker for Celery
+  redis:
+    image: redis:alpine
+    container_name: mancelot-redis
+    command: "redis-server"
+    ports:
+       - "6379:6379"
+
+  web:
+    <<: *defaults
+    image: mancelot
+    ports:
+      - "8000:8000"
+    restart: "no"
+    container_name: mancelot-web
+    command: "python manage.py runserver 0.0.0.0:8000"
+
+  # Celery is a Distributed Task Queue
+  celery:
+    <<: *defaults
+    image: mancelot
+    container_name: mancelot-celery
+    depends_on:
+      - "redis"
+      - "celery-beat"
+    entrypoint: "celery -E -A settings worker -c 8 -l info"
+ 
+  # Celery beat is a scheduler; It kicks off tasks at regular intervals, that
+  # are then executed by available worker nodes in the cluster.
+  celery-beat:
+    <<: *defaults
+    image: mancelot
+    container_name: mancelot-celery-beat
+    entrypoint: "celery -A settings beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    healthcheck:
+      disable: true
+ 
+  # Flower to monitor Celery
+  celery-flower:
+    <<: *defaults
+    image: mancelot
+    container_name: mancelot-celery-flower
+    entrypoint: "flower -A settings --port=5555"
+    ports:
+       - "5555:5555"
+    healthcheck:
+      disable: true
+
+networks:
+  default:
+    external:
+      name: mancelot
