@@ -7,9 +7,9 @@ x-defaults: &defaults
   volumes:
     - .:/mancelot
     - ./settings/.env:/mancelot/settings/.env:ro
-    - ${HOST_PATH_MANCELOT-../data/}log:/mancelot/log:rw
-    - ${HOST_PATH_MANCELOT-../data/}django/media:/mancelot/media:rw
-    - ${HOST_PATH_MANCELOT-../data/}django/static:/mancelot/static:rw
+    - ${MANCELOT_DATA_PATH-../data/}log:/mancelot/log:rw
+    - ${MANCELOT_DATA_PATH-../data/}django/media:/mancelot/media:rw
+    - ${MANCELOT_DATA_PATH-../data/}django/static:/mancelot/static:rw
   restart: unless-stopped
 
 services:
@@ -19,9 +19,9 @@ services:
     restart: unless-stopped
     container_name: mancelot-mariadb
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD_MANCELOT}
+      MYSQL_ROOT_PASSWORD: ${MANCELOT_MYSQL_ROOT_PASSWORD}
     volumes:
-      - ${HOST_PATH_MANCELOT-../data/}mariadb:/var/lib/mysql
+      - ${MANCELOT_DATA_PATH-../data/}django/mariadb:/var/lib/mysql
 
   # Memcached for Django
   memcached:
