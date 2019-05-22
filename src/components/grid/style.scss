@@ -1,0 +1,17 @@
+* {box-sizing: border-box;}
+
+.grid {
+  border-radius: 5px;
+  background-color: #dedede;
+  display: grid;
+  grid-gap: 30px;
+  text-align: center;
+  margin-top: 20%;
+  height: 70%;
+
+  div {
+    background-color: #172b37;
+    padding: 1em;
+    color: white;
+  }
+}
