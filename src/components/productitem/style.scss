@@ -1,0 +1,15 @@
+$borderRadius: 3px;
+
+.productItem {
+  width: 20px;
+  height: 20px;
+  border-radius: $borderRadius;
+  position: absolute;
+  transition: all ease-in-out 0.5s;
+
+  &:hover {
+
+  }
+
+
+}

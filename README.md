@@ -7,6 +7,12 @@ In de toekomst kunnen we dit nog koppelen met een state container om de state ge
 Mocht preact om 1 of andere reden toch te beperkend zijn dan kunnen we switchen naar React. Beide libraries hanteren dezelfde API.
 Preact komt al wel met een simpele router functionaliteit.
 
+# Global packages
+
+* node-sass (npm install -g node-sass)
+
+# Installatie
+
 * clone deze repository naar je computer
 
 * voer `npm install` uit in de hoofdfolder

@@ -1,32 +1,37 @@
 import { h, Component } from 'preact';
-import { Router } from 'preact-router';
-
-import Header from './header';
-
-// Code-splitting is automated for routes
-import Home from '../routes/home';
-import Profile from '../routes/profile';
+import Grid from './grid';
+import products from "../data/products.json";
+import FilteredExplorer from "./filteredexplorer";
 
 export default class App extends Component {
-	
-	/** Gets fired when the route changes.
-	 *	@param {Object} event		"change" event from [preact-router](http://git.io/preact-router)
-	 *	@param {string} event.url	The newly routed URL
-	 */
-	handleRoute = e => {
-		this.currentUrl = e.url;
-	};
 
-	render() {
-		return (
-			<div id="app">
-				<Header />
-				<Router onChange={this.handleRoute}>
-					<Home path="/" />
-					<Profile path="/profile/" user="me" />
-					<Profile path="/profile/:user" />
-				</Router>
-			</div>
-		);
-	}
+    state = {
+        showDetail : false,
+        currentRoute : ''
+    };
+
+    routes = {};
+
+    handleRoute = e => {
+        const currentRoute = e.url;
+        const showDetail = currentRoute !== '/';
+        const newState = { showDetail, currentRoute };
+        if ( showDetail ){
+            newState.currentPage = this.routes[ currentRoute ];
+        }
+        this.setState(newState);
+    };
+
+    render() {
+        return (
+            <div id="app">
+                {/*<FilteredExplorer />*/}
+                <Grid
+                    columnCount={3}
+                    elementCount={9}
+                    onClick={i => console.log(i)}
+                />
+            </div>
+        );
+    }
 }
