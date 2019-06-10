@@ -5,15 +5,15 @@ import { createArray } from "../../utils/collection/array.utils";
 export default class Grid extends Component {
 
     static defaultProps = {
-        columnCount : 3,
-        elementCount : 3,
+        columnCount : 4,
+        elementCount : 4,
         onClick : () => {
         }
     };
 
     // todo: Element Class doorgeven als prop
     renderElement = (element, i) => (
-        <div onClick={() => this.props.onClick(i)}>{i + 1}</div>
+        <div class={"color"+(i + 1)} onClick={() => this.props.onClick(i)}>{i + 1}</div>
     );
 
     render() {

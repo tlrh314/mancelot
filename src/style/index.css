@@ -1,10 +1,29 @@
+@font-face {
+  font-family: 'tertre';
+  src: url('../assets/fonts/tertre-xbol.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+h1, h2 {
+	text-align: center;
+	margin: 0px auto;
+}
+h1 {
+	color:#1e5476;
+	font-size:22px;
+	padding-top: 20px;
+}
+h2 {
+	font-size:15px;
+}
+
 html, body {
 	height: 100%;
 	width: 100%;
 	padding: 0;
 	margin: 0;
 	background: #FAFAFA;
-	font-family: 'Helvetica Neue', arial, sans-serif;
+	font-family: 'tertre', arial, sans-serif;
 	font-weight: 400;
 	color: #444;
 	-webkit-font-smoothing: antialiased;
@@ -18,3 +37,118 @@ html, body {
 #app {
 	height: 100%;
 }
+
+/* HOME */
+.header_home {
+	/*position: absolute;	top:0;*/
+	margin:0 auto;
+	background-image: url('../assets/Mancelot-logo.png');
+	background-position: center top;
+	background-repeat: no-repeat;
+	background-size: auto 112px;
+	height: 112px;
+	width: 100%;
+}
+.category_man {
+	background-image: url('../assets/Man_full.png');
+	background-position: center top;
+	background-repeat: no-repeat;
+	background-size: auto 400px;
+	width: 100%;
+	height: 400px; /*calc( 100% - 200px);*/
+	margin-top: 40px;
+}
+.footer{
+	width: 100%;
+	position: absolute;	bottom:0;
+}
+.btn_settings {
+	background-color:transparent;
+	background-image: url('../assets/icon_settings.svg');
+	background-size: auto 25px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	width: 50px;
+	height: 50px;
+	margin-bottom: 2px;
+	float: right;
+}
+.btn_info {
+	background-image: url('../assets/icon_info.svg');
+	background-size: auto 28px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	width: 50px;
+	height: 50px;
+	float: left;
+}
+.poweredby {
+	font-family: Arial;
+	font-size: 13px;
+	color: #aaa;
+	text-align: center;
+	padding: 20px;
+}
+
+/* VERVOLGPAGE  */
+
+.btn_back_container{
+	background-color:#172b37;
+	background-image: url('../assets/back_line_h.png');
+	background-position: right top;
+	background-repeat: no-repeat;
+	background-size: 17px auto;
+	width: 40px;
+	position: absolute;	top:0; left:0;
+}
+.btn_back{
+	border: none;
+	background-color:transparent;
+	background-image: url('../assets/icon_back.svg');
+	background-position: 5px center;
+	background-repeat: no-repeat;
+	background-size: 24px auto;
+	color:#fff;
+	font-family: 'tertre', arial, sans-serif;
+	font-size: 21px;
+	text-align: center;
+	padding: 15px;
+	width: 100%;
+	height: 58px;
+}
+.footer_bar{
+	background-color:#172b37;
+	background-image: url('../assets/back_line_h.png');
+	background-position: right top;
+	background-repeat: no-repeat;
+	background-size: 17px auto;
+	width: 100%;
+	position: absolute;	bottom:0;
+}
+.btn_full{
+	border: none;
+	background-color:transparent;
+	background-image: url('../assets/icon_next.svg');
+	background-position: calc(100% - 20px) center;
+	background-repeat: no-repeat;
+	background-size: 24px auto;
+	color:#fff;
+	font-family: 'tertre', arial, sans-serif;
+	font-size: 21px;
+	text-align: center;
+	padding: 20px;
+	width: 100%;
+}
+
+.color1{ background-image: url('../assets/tshirt-colors/white.png');  }
+.color2{ background-image: url('../assets/tshirt-colors/grey.png');  }
+.color3{ background-image: url('../assets/tshirt-colors/black.png');  }
+.color4{ background-image: url('../assets/tshirt-colors/blue.png');  }
+.color5{ background-image: url('../assets/tshirt-colors/indigo.png');  }
+.color6{ background-image: url('../assets/tshirt-colors/purple.png');  }
+.color7{ background-image: url('../assets/tshirt-colors/beige.png');  }
+.color8{ background-image: url('../assets/tshirt-colors/yellow.png');  }
+.color9{ background-image: url('../assets/tshirt-colors/brown.png');  }
+.color10{ background-image: url('../assets/tshirt-colors/green.png');  }
+.color11{ background-image: url('../assets/tshirt-colors/orange.png');  }
+.color12{ background-image: url('../assets/tshirt-colors/red.png');  }

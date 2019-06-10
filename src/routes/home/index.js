@@ -3,8 +3,14 @@ import style from './style';
 
 const Home = () => (
 	<div class={style.home}>
-		<h1>Home</h1>
-		<p>This is the Home component.</p>
+		<div class="header_home"></div>
+		<h1>Waar ben je naar op zoek?</h1>
+		<div class="category_man"></div>
+		<div class="footer">
+			<div class="btn_settings"></div>
+			<div class="btn_info"></div>
+			<div class="poweredby">Powered by Project Cece</div>
+		</div>
 	</div>
 );
 

@@ -2,16 +2,17 @@
 
 .grid {
   border-radius: 5px;
-  background-color: #dedede;
   display: grid;
   grid-gap: 30px;
   text-align: center;
-  margin-top: 20%;
-  height: 70%;
+  margin: 5% 20px 10%;
+  height: calc(100% - 200px);
 
   div {
-    background-color: #172b37;
-    padding: 1em;
+    padding: 2em;
     color: white;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 65% auto;
   }
 }

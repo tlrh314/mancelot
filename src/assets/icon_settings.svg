@@ -1,10 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60" height="60" viewBox="0 0 60 60">
-  <defs>
-    <style>
-      .cls-1 {
-        opacity: 0.3;
-      }
-    </style>
-  </defs>
-  <image id="icon_settings" class="cls-1" x="4" y="4" width="52" height="52" xlink:href="data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAAyCAYAAAATIfj2AAAEGUlEQVRogdWajUsUQRjGnz3z7vJKLzzNorRAKcOEQoKgv7+iICgFq4vSkvK70jzuTG7jxWdqvZnZnZndu+oHos7svjPvzOz7tTuEcCIAVwDMA7gH4DyArUBpiwCWANQBxACOtCsciQLvuw5gDkCtp/0VgHXt6nRmqFASUagJ4FPqnQZCd2jJoIxwGUAXwL7WY2YWwIKhpwzgIoAPWk8GoQo1AFzQWk+ZYP8PAG2t9xQ5WvcBTGs9f5BF+ay1ZnAuvdvKT1sHGQfwCMABgF0ALbaPUNlR7Q6drDGMhCpU0VrMjDpO3oTrGGcoaS3ZiCEZC5ykDzKGt9EKUWgidPU8kTEmfG/yVahEvzMo5n3n6Gvl7tI0D4oKf5wdtqtCEZW5ofX0nzqV2ilKoRod6VWtZ7BKjdM3pZrzpBWp0Du3eG7l7ykqEmI8+oFEIeJsNwEc8v8a/V2nVyEJQW7+IxP3RUKkFSQca5lBYlF0uYrbydXjKRBHO8ndL2rnZe5vARwrhaYLEh4z2m5a4jhp+84ousqIfSZH1K8oUYd3yigsFuAsjwE8B7AG4ETr1TnhDu7TFeTJzcAFWitxdWyRsyuizBMGor7s8t7jnHMQHSK1KluMgsvaZdnE3JmvOSbT4VG8Fnj8JCF8KkdaKSQCN6hUVbs8nXUes7y0eOzrnnK+AXisUpSkIRCH9czyMNvo0gAURZMyXWlzzr+dba9l6yh77sim5wJk0aZMV1YSLsGokPDFo+qyrbXkx1XmEed6BpNCPhM90Fry4yrTOEebQq471NFa8uMq0zhHm0L/LTaFRrQWM/1IxV1lmuqCVoUaWouZ0IpOGq4yJ7UWi0KX8grNiavMGmvrmQr5FEGmAiKLNKqU6cpC7xHtVWiWqa4rJaYARTFnmFMasgAPAAyra5Ih+4ylcJ7FGFOAVsZ1WTQ4vm9wWuXRkzl0kvnQLe1SNyLmMzs5/NIoVzq0NF1mgtdU23tdu8Rf4EMP65ikwXtDUpck8rYjVjtULyDJG2I+U2H4kpW1VmmAFnLsTJL3cuyUoA1P62IjYjFyesBFEkk5PiKxMpuMjYzeN4AS63mDKk6uqxQ+aVHUe9NDJkwVWrBBvGlwxavQaCLi65P5PoU5PuwBeGmLshUupaMj1tFC8v2ikJrFC5fKkGstLGZlqPoXlJLnY1lrteBrZVb6lKXaOPCscXgrJA/hqtbaP1Y9q0BBfiBPiOODjOH0kitJiEIxq5z9RsaIfccIDTlcdyjPhxdBpyBUoWGt5Sx7PP+2erdYyjsZuVfWGEZCX2HcTomOV+kA0yqqbfq2LuzfIohTH9jHSyd8B9ur1DKjXlf2ebR6PxVQn5d5u4hQhWQg8d7yWwyLPBuy4m8CZMnDLw5bnitx3q/pe/wND4BfrlDO1mCoT4MAAAAASUVORK5CYII="/>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.0.4, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 60 60" style="enable-background:new 0 0 60 60;" xml:space="preserve">
+<style type="text/css">
+	.st0{enable-background:new    ;}
+	.st1{fill:#B2B2B2;}
+</style>
+<g class="st0">
+	<path class="st1" d="M51.5,30.6c0-3.3,2-5.9,5.1-7.7c-0.6-1.9-1.3-3.6-2.2-5.3c-3.4,0.9-6.2-0.4-8.6-2.8s-3.1-5.1-2.2-8.6
+		C42,5.3,40.2,4.6,38.4,4c-1.8,3.1-5,5.1-8.4,5.1c-3.3,0-6.6-2-8.4-5.1c-1.9,0.6-3.6,1.3-5.3,2.2c0.9,3.4,0.2,6.2-2.2,8.6
+		c-2.3,2.3-5.1,3.7-8.6,2.8C4.7,19.3,4,21,3.4,22.9c3.1,1.8,5.1,4.4,5.1,7.7s-2,6.6-5.1,8.4c0.6,1.9,1.3,3.6,2.2,5.3
+		c3.4-0.9,6.2-0.2,8.6,2.2c2.3,2.3,3.1,5.1,2.2,8.6c1.7,0.9,3.4,1.6,5.3,2.2c1.8-3.1,5-5.1,8.4-5.1c3.3,0,6.6,2,8.4,5.1
+		c1.9-0.6,3.6-1.3,5.3-2.2c-0.9-3.4-0.2-6.2,2.2-8.6c2.3-2.3,5.1-3.7,8.6-2.8c0.9-1.7,1.6-3.4,2.2-5.3
+		C53.5,36.6,51.5,33.9,51.5,30.6z M30,42.2c-6.4,0-11.6-5.2-11.6-11.6c0-6.4,5.2-11.6,11.6-11.6c6.4,0,11.6,5.2,11.6,11.6
+		C41.6,37,36.4,42.2,30,42.2z"/>
+</g>
 </svg>
