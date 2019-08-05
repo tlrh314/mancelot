@@ -1,4 +1,4 @@
-FROM nginx:1.15-alpine
+FROM nginx:1.17-alpine
 
 # Remove the default configuration files
 RUN rm /etc/nginx/conf.d/*
