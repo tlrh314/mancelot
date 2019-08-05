@@ -27,11 +27,7 @@ CACHES = {
     "default": env.cache()
 }
 
-ALLOWED_HOSTS = [
-    "localhost",
-    env("ALLOWED_HOST1"),
-    env("ALLOWED_HOST2")
-]
+ALLOWED_HOSTS = ["*"]
 
 
 INSTALLED_APPS = [
@@ -149,12 +145,11 @@ vars().update(EMAIL_CONFIG)
 
 
 ### Celery Task Scheduler
-CELERY_BROKER_URL = env.cache("CELERY_REDIS")
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_RESULT_BACKEND = "django-db"
-# CELERY_RESULT_BACKEND = env.cache("CELERY_REDIS")
 CELERY_CACHE_BACKEND = "django-cache"
 
 
