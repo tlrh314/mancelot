@@ -34,8 +34,6 @@ services:
     image: redis:alpine
     container_name: mancelot-redis
     command: "redis-server"
-    ports:
-       - "6379:6379"
 
   django:
     <<: *defaults
@@ -72,8 +70,6 @@ services:
     image: mancelot
     container_name: mancelot-celery-flower
     entrypoint: "flower -A settings --port=5555"
-    ports:
-       - "5555:5555"
     healthcheck:
       disable: true
 
