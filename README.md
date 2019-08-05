@@ -15,8 +15,8 @@
 - `docker-compose up --build -d`
 
 ### Dependencies
-- Docker version 18.09.3, build 774a1f4
-- docker-compose version 1.23.2, build 1110ad01
+- Docker version 19.03.1, build 74b1e89
+- docker-compose version 1.24.1, build 4667896b
 
 
 ### Installation of Docker
