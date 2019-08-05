@@ -1,4 +1,4 @@
-FROM python:3.6-alpine
+FROM python:3.7-slim-buster
 ENV PYTHONUNBUFFERED 1
 
 LABEL maintainer="Timo Halbesma <timo@mancelot.nl>"
@@ -6,43 +6,32 @@ LABEL maintainer="Timo Halbesma <timo@mancelot.nl>"
 # Install Alpine system packages
 WORKDIR /mancelot
 RUN set -ex \
-    && apk upgrade --no-cache \
-    \
-    # virtual package w/ build dependencies
-    && apk add --no-cache --virtual .build-deps \
-        build-base \
-        libffi-dev \
-        linux-headers \
-    \
+    && apt-get update \
+\
     # Install Runtime dependencies ...
-    && apk add --no-cache \
-        # ... for a proper shell
-        bash \
+    && apt-get install -y --no-install-recommends \
+\
+        # ... a compiler
+        build-essential gcc \
+        # ... for a proper editor
+        vim \
         # ... for the healthcheck
         curl \
+        # ... for internal routing of uWSGI
+        libpcre3 libpcre3-dev \
         # ... for communication with the database
-        mariadb-client mariadb-dev \
-        # ... for Pillow
-        jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev \
-    \
+        mariadb-client libmariadb-dev-compat \
+\
     # Create mancelot user to run uWSGI as non-root
-    && addgroup -g 1000 -S mancelot \
-    && adduser -u 1000 -S mancelot -G mancelot \
+    && groupadd -g 1000 mancelot \
+    && useradd -r -u 1000 -g mancelot mancelot -s /bin/bash -d /mancelot \
     && chown -R mancelot:mancelot /mancelot
 
 # Install python packages for Django
 COPY requirements.txt /mancelot/requirements.txt
 RUN set -ex && \
-    pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r /mancelot/requirements.txt
-
-# We're done installing, so remove the .build-deps virtual package
-RUN set -ex && \
-    apk del .build-deps && \
-    rm -rf /root/.cache/ && \
-    rm -rf /tmp/*
-
-HEALTHCHECK --interval=5m --timeout=5s \
-    CMD curl --fail http://localhost:8000 || exit 1
+    pip install --upgrade pip \
+    && pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r /mancelot/requirements.txt
 
 USER mancelot
