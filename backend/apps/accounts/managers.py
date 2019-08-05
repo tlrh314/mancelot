@@ -2,12 +2,12 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.base_user import BaseUserManager
 
 
-class AccountManager(BaseUserManager):
+class UserModelManager(BaseUserManager):
     use_in_migrations = True
 
     def _create_user(self, email, password, **extra_fields):
         """
-        Creates and saves a User with the given email, first_name, last_name, and password.
+        Creates and saves a User with the given email, full_name, and password.
         """
         if not email:
             raise ValueError(_("The given email must be set"))

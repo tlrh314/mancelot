@@ -5,7 +5,9 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.encoding import python_2_unicode_compatible
 
-from accounts.managers import AccountManager
+from django_countries.fields import CountryField
+
+from accounts.managers import UserModelManager
 
 
 @python_2_unicode_compatible
@@ -13,6 +15,11 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField("Email Address", max_length=254, unique=True)
     first_name = models.CharField("First Name", max_length=42)
     last_name = models.CharField("Last Name", max_length=42)
+    full_name = models.CharField("Full Name", max_length=42, null=True)
+    address = models.CharField("Address", max_length=128, null=True, blank=True)
+    zip_code = models.CharField("Zip Code", max_length=10, null=True, blank=True)
+    city = models.CharField("City", max_length=42, null=True, blank=True)
+    country = CountryField("Country", default="NL", blank=True, null=True)
 
     is_active = models.BooleanField("Active", default=False,
         help_text="Designates whether this user should be treated as "
@@ -27,28 +34,17 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     date_created = models.DateTimeField("Date Created", auto_now_add=True)
     date_updated = models.DateTimeField("Date Last Changed", auto_now=True)
 
-    objects = AccountManager()
+    objects = UserModelManager()
 
     USERNAME_FIELD = "email"  # email login rather than arbitrary username
-    REQUIRED_FIELDS = ["first_name", "last_name"]
+    REQUIRED_FIELDS = ["full_name"]
 
     class Meta:
         verbose_name = "User"
         verbose_name_plural = "Users"
 
     def __str__(self):
-        name = self.get_full_name()
-        if len(name) < 2:
-            return self.email
-        else:
-            return name
-
-    def get_full_name(self):
-        full_name = "{0} {1}".format(self.first_name, self.last_name)
-        return full_name.strip()
-
-    def get_short_name(self):
-        return self.first_name
+        return "{0} ({1})".format(self.full_name, self.email)
 
     def email_user(self, subject, message, from_email=settings.DEFAULT_FROM_EMAIL, **kwargs):
         """ Sends an email to this User. Caution, from_email must contain domain

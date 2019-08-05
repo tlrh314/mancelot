@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     "django_celery_beat",
     "django_celery_results",
+    "django_countries",
     "django_extensions",
     "django_filters",
     "rest_framework",
@@ -159,7 +160,7 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+        "rest_framework.permissions.DjangoModelPermissions"
     ],
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
