@@ -8,18 +8,20 @@ WORKDIR /mancelot
 RUN set -ex \
     && apt-get update \
 \
-    # Install Runtime dependencies ...
+    # Install Build/Runtime dependencies ...
     && apt-get install -y --no-install-recommends \
 \
-        # ... a compiler
+        # ... a compiler (build)
         build-essential gcc \
-        # ... for a proper editor
+        # ... for a proper editor (runtime)
         vim \
-        # ... for the healthcheck
+        # ... for the healthcheck (runtime)
         curl \
-        # ... for internal routing of uWSGI
+        # ... for monitoring (runtime)
+        htop \
+        # ... for internal routing of uWSGI (runtime)
         libpcre3 libpcre3-dev \
-        # ... for communication with the database
+        # ... for communication with the database (runtime)
         mariadb-client libmariadb-dev-compat \
 \
     # Create mancelot user to run uWSGI as non-root
@@ -35,3 +37,5 @@ RUN set -ex && \
     && pip install --no-cache-dir -r /mancelot/requirements.txt
 
 USER mancelot
+
+ENTRYPOINT ["/mancelot/entrypoint.sh"]
