@@ -179,3 +179,10 @@ tags
 
 ### Mancelot
 .env
+
+
+### Auto-generated items in $HOME
+.ipython/profile_default
+.bash_history
+.cache
+.viminfo
