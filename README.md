@@ -19,27 +19,6 @@
 - docker-compose version 1.24.1, build 4667896b
 
 
-### Installation of Docker
-#### Development (TLRH) on macOS --> using HomeBrew
-- Install Docker: `brew cask install docker`
-- Install docker-compose and docker-machine: `brew install docker-compose docker-machine`
-- Start the Docker application, e.g. via SpotLight
-- Check that Docker is running (in the command line): `docker ps`
-
-#### Production ([TransIP](https://www.transip.nl/cp/), [BladeVPS X1](https://www.transip.nl/vps/)) on Debian 9.8
-- Install the [prerequisites](https://docs.docker.com/install/linux/docker-ce/debian/#prerequisites): `sudo apt-get remove docker docker-engine docker.io containerd runc`
-- `sudo apt-get install apt-transport-https ca-certificates curl gnupg2 software-properties-common`
-- Add Docker's official GPG key
-- Add Docker's stable repo to aptitude `sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"`
-- Install docker: `sudo apt-get update; $ sudo apt-get install docker-ce docker-ce-cli containerd.io`
-- Test: `sudo docker run hello-world`
-- Boot on startup: `sudo systemctl enable docker`
-- [Install docker-compose](https://github.com/docker/compose/releases) - NB not via aptitude b/c Debian 9.8 has two year old package
-  - `sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose`
-  - `sudo chmod +x /usr/local/bin/docker-compose`
-
-
-
 ## Mattermost
 ### Add the remote repository using Git subtree
 - `git remote add -f mattermost https://github.com/mattermost/mattermost-docker`
