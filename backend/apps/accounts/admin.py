@@ -5,6 +5,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import PasswordResetForm
+from django.utils.translation import ugettext_lazy as _
 
 
 from accounts.models import UserModel
@@ -13,25 +14,26 @@ from accounts.models import UserModel
 @admin.register(UserModel)
 class UserModelAdmin(UserAdmin):
     list_display = (
-        "email", "first_name", "last_name", "is_active", "date_created",
+        "email", "full_name", "is_active", "date_created",
     )
     list_filter = ("is_active", "is_staff", "is_superuser",)
-    search_fields = ("email", "first_name", "last_name")
+    search_fields = ("email", "full_name")
     ordering = ("-date_created",)
     readonly_fields = ("last_login", "date_created", "last_updated_by",)
     actions = ("send_password_reset",)
 
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        ("Personal info", {"fields": ("first_name", "last_name",)}),
-        ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser",
+        (_("Persoonlijke informatie"), {"fields": ("full_name", "address", "zip_code")}),
+        (_("Rechten"), {"fields": ("is_active", "is_staff", "is_superuser",
             "groups", "user_permissions")}),
-        ("Meta", {"fields": ("last_login", "date_created", "last_updated_by")}),
+        (_("Content interactie"), {"fields": ("favorites",)}),
+        (_("Meta"), {"fields": ("last_login", "date_created", "last_updated_by")}),
     )
     add_fieldsets = (
         (None, {
             "classes": ("wide",),
-            "fields": ("email", "first_name", "last_name", "password1", "password2")}
+            "fields": ("email", "full_name", "password1", "password2")}
         ),
     )
 
@@ -43,7 +45,7 @@ class UserModelAdmin(UserAdmin):
                 form.is_valid()
 
                 form.save(email_template_name="accounts/password_forced_reset_email.html",
-                          extra_email_context={ "full_name": user.get_full_name() })
+                          extra_email_context={ "full_name": user.full_name })
                 self.message_user(request, "Succesfully sent password reset email.")
             except ValidationError:
                 self.message_user(request, "User does not have a valid email address", level="error")
