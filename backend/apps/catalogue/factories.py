@@ -121,7 +121,7 @@ class BrandFactory(factory.DjangoModelFactory):
     # for j in range(faker.random_int(min=1, max=all_labels_random.count()-1)):
     #     brand.labels.add(all_labels_random[j])
     # for j in range(faker.random_int(min=0, max=int(all_certificates_random.count()/4))):
-    #     brand.certificate.add(all_certificates_random[j])
+    #     brand.certificates.add(all_certificates_random[j])
 
 
 class SizeFactory(factory.DjangoModelFactory):

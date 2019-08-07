@@ -223,7 +223,7 @@ class Brand(models.Model):
 
     # Sustainability information, gleaned from Cece API
     labels = models.ManyToManyField(CeceLabel, blank=True, related_name="brands")
-    certificate = models.ManyToManyField(Certificate, blank=True, related_name="brands")
+    certificates = models.ManyToManyField(Certificate, blank=True, related_name="brands")
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
