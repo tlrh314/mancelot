@@ -73,7 +73,7 @@ class Category(models.Model):
     SECTIONS = (
        (0, _("Mannen")),
        (1, _("Vrouwen")),
-       (1, _("Kinderen")),
+       (2, _("Kinderen")),
     )
 
     name = models.CharField(_("naam"), max_length=200)
