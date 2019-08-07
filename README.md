@@ -18,21 +18,22 @@
 - Docker version 19.03.1, build 74b1e89
 - docker-compose version 1.24.1, build 4667896b
 
+## Frontend
+### Add the remote repository using Git subtree
+- `git remote add -f frontend git@github.com:lorentzs/mancelot.git`
+- `git subtree add --prefix frontend frontend master`
+### Pull in remote updates
+- `git fetch frontend master`
+- `git subtree pull --prefix frontend frontend master`
+
 
 ## Mattermost
-### Add the remote repository using Git subtree
-- `git remote add -f mattermost https://github.com/mattermost/mattermost-docker`
-- `git subtree add --prefix mattermost mattermost master --squash`
-### Pull in remote updates
-- `git fetch mattermost master`
-- `git subtree pull --prefix mattermost mattermost master --squash`
+- Fetched from: `https://github.com/mattermost/mattermost-docker`
 
 
 ## Psono (tbd)
 ### Server: psono-server
-- `git remote add -f psono-server https://gitlab.com/psono/psono-server.git`
-- `git subtree add --prefix psono/psono-server psono-server v1.9.2 --squash`
+- Fetched from: `psono-server https://gitlab.com/psono/psono-server.git`
 
 ### Client: psono-client
-- `git remote add -f psono-client https://gitlab.com/psono/psono-client.git`
-- `git subtree add --prefix psono/psono-client psono-client v1.11.0 --squash`
+- Fetched from: `https://gitlab.com/psono/psono-client.git`
