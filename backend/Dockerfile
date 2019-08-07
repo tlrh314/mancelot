@@ -19,6 +19,8 @@ RUN set -ex \
         curl \
         # ... for monitoring (runtime)
         htop \
+        # ... for Django translations (runtime)
+        gettext \
         # ... for internal routing of uWSGI (runtime)
         libpcre3 libpcre3-dev \
         # ... for communication with the database (runtime)
