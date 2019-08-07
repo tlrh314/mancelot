@@ -14,7 +14,7 @@ from accounts.managers import AccountManager
 @python_2_unicode_compatible
 class UserModel(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_("Email Address"), max_length=254, unique=True)
-    full_name = models.CharField(_("Voornaam Achternaam"), max_length=42, null=True)
+    full_name = models.CharField(_("Volledige naam"), max_length=150, null=True)
     address = models.CharField(_("Straatnaam huisnummer"), max_length=128, null=True, blank=True)
     zip_code = models.CharField(_("Postcode"), max_length=10, null=True, blank=True)
     city = models.CharField(_("Stad"), max_length=42, null=True, blank=True)
