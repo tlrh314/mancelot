@@ -14,21 +14,27 @@ from accounts.models import UserModel
 @admin.register(UserModel)
 class UserModelAdmin(UserAdmin):
     list_display = (
-        "email", "full_name", "is_active", "date_created",
+        "email", "full_name", "is_active", "is_staff", "is_superuser", "date_created", "last_login",
     )
     list_filter = ("is_active", "is_staff", "is_superuser",)
     search_fields = ("email", "full_name")
     ordering = ("-date_created",)
     readonly_fields = ("last_login", "date_created", "last_updated_by",)
+    filter_horizontal = ("groups", "user_permissions", "favorites",)
     actions = ("send_password_reset",)
 
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        (_("Persoonlijke informatie"), {"fields": ("full_name", "address", "zip_code")}),
+        (_("Persoonlijke informatie"), {"fields": (
+            "full_name", "address", "zip_code", "city", "country",)
+        }),
         (_("Rechten"), {"fields": ("is_active", "is_staff", "is_superuser",
             "groups", "user_permissions")}),
         (_("Content interactie"), {"fields": ("favorites",)}),
-        (_("Meta"), {"fields": ("last_login", "date_created", "last_updated_by")}),
+        (_("Meta"), {
+            "classes": ("collapse",),
+            "fields": ("last_login", "date_created", "last_updated_by")
+        }),
     )
     add_fieldsets = (
         (None, {
