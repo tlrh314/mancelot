@@ -1,0 +1,190 @@
+@font-face {
+  font-family: 'tertre';
+  src: url('../assets/fonts/tertre-xbol.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+h1, h2 {
+	text-align: center;
+	margin: 0px auto;
+}
+h1 {
+	color:#1e5476;
+	font-size:22px;
+	padding-top: 20px;
+}
+h2 {
+	font-size:15px;
+}
+
+
+html, body {
+	height: 100%;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	background: #FAFAFA;
+	font-family: 'tertre', arial, sans-serif;
+	font-weight: 400;
+	color: #444;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+#app {
+	height: 100%;
+}
+
+/* HOME */
+.header_home {
+	/*position: absolute;	top:0;*/
+	margin:0 auto;
+	background-image: url('../assets/Mancelot-logo.png');
+	background-position: center top;
+	background-repeat: no-repeat;
+	background-size: auto 112px;
+	height: 112px;
+	width: 100%;
+}
+.home_category_container {
+	background-image: url('../assets/Man_full.png');
+	background-position: center top;
+	background-repeat: no-repeat;
+	background-size:contain;
+	width: 100%;
+	height: calc(100vh - 267px);
+	/*max-height: 500px*/
+	margin-top: 40px;
+	position: relative;
+}
+@media (min-height: 768px) {
+	h1 {
+		padding-top: 40px;
+	}
+	.home_category_container {
+		margin-top: 60px;
+		height: calc(100vh - 347px);
+	}
+}
+.category_label {
+	font-size: 17px;
+	color:#172b37;
+	opacity:0.5;
+	text-align: center;
+	position: absolute;
+}
+.category_label .small {
+  display: block;
+	font-size: 15px;
+}
+.category_label .line{
+	display: block;
+	position: absolute;
+	border:1px dashed #999;
+	top:11px;
+	height: 2px;
+}
+.category_label.shirt { right:calc(50% + 10vh);	top:18%; width: 100px; } .category_label.shirt .line{right: -10vw;	width: 15vw;}
+.category_label.jack  { left:calc(50% + 11vh);  top:28%; width: 90px; }  .category_label.jack  .line{left: -6vw;	width: 9vw;}
+.category_label.short { right:calc(50% + 10vh);	top:54%; width: 100px; } .category_label.short .line{right: -10vw;	width: 10vw;}
+.category_label.long  { left:calc(50% + 10vh);  top:63%; width: 90px; }  .category_label.long  .line{left: -12vw;	width: 10vw;}
+.category_label.sock  { right:calc(50% + 10vh);	top:94%; width: 100px; } .category_label.sock  .line{right: -2.5vw;	width: 7.5vw;}
+.category_label.shoe  { left:calc(50% + 12vh);  top:94%; width: 90px; }  .category_label.shoe  .line{left: -5vw;	width: 6vw;}
+
+.footer{
+	width: 100%;
+	position: absolute;	bottom:0;
+}
+.btn_settings {
+	background-color:transparent;
+	background-image: url('../assets/icon_settings.svg');
+	background-size: auto 25px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	width: 50px;
+	height: 50px;
+	float: right;
+}
+.btn_info {
+	background-image: url('../assets/icon_info.svg');
+	background-size: auto 28px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	width: 50px;
+	height: 50px;
+	float: left;
+}
+.poweredby {
+	font-family: Arial;
+	font-size: 13px;
+	color: #aaa;
+	text-align: center;
+	padding: 20px;
+}
+
+/* VERVOLGPAGE  */
+
+.btn_back_container{
+	background-color:#172b37;
+	background-image: url('../assets/back_line_h.png');
+	background-position: right top;
+	background-repeat: no-repeat;
+	background-size: 17px auto;
+	width: 40px;
+	position: absolute;	top:0; left:0;
+}
+.btn_back{
+	border: none;
+	background-color:transparent;
+	background-image: url('../assets/icon_back.svg');
+	background-position: 5px center;
+	background-repeat: no-repeat;
+	background-size: 24px auto;
+	color:#fff;
+	font-family: 'tertre', arial, sans-serif;
+	font-size: 21px;
+	text-align: center;
+	padding: 15px;
+	width: 100%;
+	height: 58px;
+}
+.footer_bar{
+	background-color:#172b37;
+	background-image: url('../assets/back_line_h.png');
+	background-position: right top;
+	background-repeat: no-repeat;
+	background-size: 17px auto;
+	width: 100%;
+	position: absolute;	bottom:0;
+}
+.btn_full{
+	border: none;
+	background-color:transparent;
+	background-image: url('../assets/icon_next.svg');
+	background-position: calc(100% - 20px) center;
+	background-repeat: no-repeat;
+	background-size: 24px auto;
+	color:#fff;
+	font-family: 'tertre', arial, sans-serif;
+	font-size: 21px;
+	text-align: center;
+	padding: 20px;
+	width: 100%;
+}
+
+.color1{ background-image: url('../assets/tshirt-colors/white.png');  }
+.color2{ background-image: url('../assets/tshirt-colors/grey.png');  }
+.color3{ background-image: url('../assets/tshirt-colors/black.png');  }
+.color4{ background-image: url('../assets/tshirt-colors/blue.png');  }
+.color5{ background-image: url('../assets/tshirt-colors/indigo.png');  }
+.color6{ background-image: url('../assets/tshirt-colors/purple.png');  }
+.color7{ background-image: url('../assets/tshirt-colors/beige.png');  }
+.color8{ background-image: url('../assets/tshirt-colors/yellow.png');  }
+.color9{ background-image: url('../assets/tshirt-colors/brown.png');  }
+.color10{ background-image: url('../assets/tshirt-colors/green.png');  }
+.color11{ background-image: url('../assets/tshirt-colors/orange.png');  }
+.color12{ background-image: url('../assets/tshirt-colors/red.png');  }

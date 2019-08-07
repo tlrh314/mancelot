@@ -1,0 +1,18 @@
+* {box-sizing: border-box;}
+
+.grid {
+  border-radius: 5px;
+  display: grid;
+  grid-gap: 30px;
+  text-align: center;
+  margin: 5% 20px 10%;
+  height: calc(100% - 200px);
+
+  div {
+    padding: 2em;
+    color: white;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 65% auto;
+  }
+}
