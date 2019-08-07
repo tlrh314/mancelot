@@ -142,17 +142,17 @@ class ProductFactory(factory.DjangoModelFactory):
     class Meta:
         model = Product
 
-    @classmethod
-    def _generate(cls, strategy, params):
-        raise NotImplementedError
+    # @classmethod
+    # def _generate(cls, strategy, params):
+    #     raise NotImplementedError
 
-    @classmethod
-    def _get_or_create(cls, model_class, *args, **kwargs):
-        raise NotImplementedError
+    # @classmethod
+    # def _get_or_create(cls, model_class, *args, **kwargs):
+    #     raise NotImplementedError
 
-    @classmethod
-    def _create(cls, model_class, *args, **kwargs):
-        raise NotImplementedError
+    # @classmethod
+    # def _create(cls, model_class, *args, **kwargs):
+    #     raise NotImplementedError
 
     name = factory.LazyAttribute(lambda _: faker.name())
     info = factory.LazyAttribute(lambda _:
@@ -185,8 +185,8 @@ class ProductFactory(factory.DjangoModelFactory):
     #         product.subcategory.add(valid_subcats[j])
 
     # TODO: add the m2m's below
-    # brand
-    # store
+    brand = Brand.objects.order_by("?").first() if Brand.objects.count() is not 0 else factory.SubFactory(BrandFactory)
+    store = Store.objects.order_by("?").first() if Store.objects.count() is not 0 else factory.SubFactory(StoreFactory)
     # material
     # size
     color = factory.LazyAttribute(lambda _:
