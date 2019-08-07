@@ -169,12 +169,12 @@ class Command(BaseCommand):
             # clean up any existing logfile by opening it and writing empty file
             pass
 
-        logger = logging.getLogger("console"); logger.level = logging.DEBUG
+        logger = logging.getLogger("console")
         if is_task: logger.handlers = []  # do not log to console
         logger.addHandler(logging.FileHandler(filename=logfilename))  # always log to file
 
         start_time = timezone.localtime(timezone.now())
-        logger.info("manage {0}: begonnen".format(CMD_NAME))
+        logger.info("manage {0}: begonnen, is_task={1}".format(CMD_NAME, is_task))
         logger.info("Begintijd: {0}\n".format(timezone.localtime(
             start_time).strftime("%d/%m/%YT%H:%M:%S")))
 

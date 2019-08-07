@@ -300,7 +300,8 @@ LOGGING = {
             "style": "{",
         },
         "console": {
-            "format": "{message}"
+            "format": "{message}",
+            "style": "{",
         },
     },
     "filters": {
@@ -309,11 +310,6 @@ LOGGING = {
         },
     },
     "handlers": {
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "formatter": "console",
-        },
         "file": {
             "level": "INFO",
             "class": "logging.FileHandler",
@@ -322,7 +318,12 @@ LOGGING = {
         "mail_admins": {
             "level": "ERROR",
             "class": "django.utils.log.AdminEmailHandler",
-        }
+        },
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "console",
+        },
     },
     "loggers": {
         "django.request": {
@@ -338,7 +339,7 @@ LOGGING = {
         "console": {
             "handlers": ["console"],
             "level": "DEBUG",
-            "propagate": True,
+            "propagate": False,
         },
     }
 }
