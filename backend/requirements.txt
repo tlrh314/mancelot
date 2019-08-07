@@ -13,11 +13,16 @@ django-tinymce4-lite==1.7.5
 djangorestframework==3.10.2
 djangorestframework-datatables
 djangorestframework_simplejwt==4.3.0
+factory-boy==2.12.0
+faker==2.0.0
 flower==0.9.3
 ipython==7.7.0
+jsonfield==2.0.2
 Pillow==6.1.0
 mysqlclient==1.4.1
 python-memcached===1.59
+pyyaml==5.1.2
 redis==3.3.5
+uritemplate==3.0.0
 uwsgi==2.0.18
 sentry-sdk==0.10.2

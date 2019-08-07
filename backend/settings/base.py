@@ -158,6 +158,7 @@ CELERY_CACHE_BACKEND = "django-cache"
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.DjangoModelPermissions"
@@ -215,6 +216,7 @@ sentry_sdk.init(
 # DIRECTORY = ""
 FILEBROWSER_DIRECTORY = ""
 FILEBROWSER_DEFAULT_PERMISSIONS = 0o644
+FILEBROWSER_OVERWRITE_EXISTING = True
 FILEBROWSER_EXTENSIONS = {
     "Image": [".jpg", ".jpeg",".gif",".png",".tif",".tiff"],
     "Document": [".pdf", ".doc",".rtf",".txt",".xls",".csv"],
