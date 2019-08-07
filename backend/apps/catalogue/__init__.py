@@ -1,1 +1,1 @@
-from django.contrib import admin
+default_app_config = "catalogue.apps.CatalogueConfig"

@@ -1,5 +1,13 @@
 from django.apps import AppConfig
+from django.db.models.signals import post_save
+from django.utils.translation import ugettext_lazy as _
 
 
-class AccountsConfig(AppConfig):
-    name = 'catalogue'
+class CatalogueConfig(AppConfig):
+    name = "catalogue"
+    verbose_name = _("Catalogus")
+
+    def ready(self):
+        pass
+        # from catalogue.signals import my_signal
+        # post_save.connect(my_signal, sender=self)
