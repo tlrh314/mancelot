@@ -10,3 +10,4 @@ alias gcc='gcc -ansi -std=c99 -Wall -pedantic'
 alias g++='\gcc -lstdc++ -Wall'
 alias javac='javac -Xlint'
 alias make='make -j8'
+alias refresh="touch uwsgi/*.ini"
