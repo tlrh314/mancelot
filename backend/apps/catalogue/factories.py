@@ -42,7 +42,7 @@ class CeceLabelFactory(factory.DjangoModelFactory):
     info = factory.LazyAttribute(lambda _: faker.text())
 
 
-class CertificateFactor(factory.DjangoModelFactory):
+class CertificateFactory(factory.DjangoModelFactory):
     class Meta:
         model = Certificate
 
