@@ -11,3 +11,4 @@ alias g++='\gcc -lstdc++ -Wall'
 alias javac='javac -Xlint'
 alias make='make -j8'
 alias refresh="touch uwsgi/*.ini"
+alias manage="python manage.py"
