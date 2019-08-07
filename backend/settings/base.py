@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     "django_celery_beat",
     "django_celery_results",
     "django_countries",
-    "django_extensions",
     "django_filters",
     "rest_framework",
     "rest_framework_datatables",
@@ -67,6 +66,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.common.BrokenLinkEmailsMiddleware",
     # "django.middleware.cache.FetchFromCacheMiddleware",
 ]
 
@@ -111,6 +111,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Cookie settings
+CSRF_COOKIE_HTTPONLY = False  # to allow the front-end to retrieve CSRF token from the Cookie
+CSRF_COOKIE_SAMESITE = "Strict"  # TODO: exactly what will the front-end be doing?
+CSRF_COOKIE_SECURE = True
+
+# Security headers
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -133,6 +142,8 @@ STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+PREPEND_WWW = True
+APPEND_SLASH = True
 
 AUTH_USER_MODEL = "accounts.UserModel"
 LOGIN_URL = "admin:login"
@@ -144,6 +155,11 @@ DEFAULT_FROM_EMAIL = "info@mancelot.nl"
 EMAIL_CONFIG = env.email_url("EMAIL_URL")
 vars().update(EMAIL_CONFIG)
 
+# List of who will receive code error notifications. Not used b/c Sentry
+ADMINS = []  # use tuples, i.e. ("Full name", "email@example.com")
+# List of who will receive broken link emails
+MANAGERS = []
+
 
 ### Celery Task Scheduler
 CELERY_BROKER_URL = env("CELERY_BROKER_URL")
@@ -152,6 +168,7 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_CACHE_BACKEND = "django-cache"
+CELERY_TIMEZONE = TIME_ZONE
 
 
 ### Django REST Framework for API endpoints
@@ -267,3 +284,67 @@ TINYMCE_MINIMAL_CONFIG = {
     "toolbar1": "undo redo | bold italic | bullist numlist outdent indent | link code",
     "toolbar2": ""
 }
+
+
+import logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+        "console": {
+            "format": "{message}"
+        },
+    },
+    "filters": {
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "console",
+        },
+        "file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": "/mancelot/log/request.log",
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "class": "django.utils.log.AdminEmailHandler",
+        }
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": ["file"],
+            "level": "WARNING",
+            "propagate": True,
+        },
+        "file": {
+            "handlers": ["file"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+        "console": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    }
+}
+
+
+if DEBUG:
+    INSTALLED_APPS += [
+        "django_extensions"
+    ]
