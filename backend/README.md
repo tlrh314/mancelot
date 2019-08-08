@@ -24,7 +24,7 @@
 
 - Run the built-in Django development server: `docker run --rm -it -v "$(pwd)":/mancelot -p 8000:1337 --name runserver mancelot bash -c "python manage.py runserver 0.0.0.0:1337"`
 - In a new terminal, one can attach to the `runserver` container in an interactive session: `docker exec -it runserver bash`
-- Website runs on http://localhost:8000 (NB, must accept self-signed certificate)
+- Website runs on http://localhost:8000 
 - Or to run with nginx + uwsgi
   - in the parent folder: `docker-compose up --build -d nginx`
   - in this folder: `docker-compose up -d django` (or omit `django` to start all services, e.g. to develop tasks)
@@ -35,3 +35,12 @@
 - TODO: `python manage.py loaddata fixtures/filename.json` 
 - For example: `python manage.py shell -c "from catalogue.factories import *; ProductFactory.create_batch(100)"`
 
+
+## Django comands
+- Create translations dictionaries: `python manage.py makemessages --locale en --locale nl`
+  - when used, please **update the translation dictionaries** in `locale/*/*/*.po`, then add/commit/push to repository
+- Compile translations dictionaries; `python manage.py compilemessages` (also lives in `entrypoint.sh`)
+- Create migrations: `python manage.py makemigrations` 
+  - when used, please add/commit/push to repository
+- Run migrations: `python manage.py migrate` (also lives in `entrypoint.sh`)
+- Collect static: `python manage.py collectstatic --noinput` (also lives in `entrypoint.sh`)
