@@ -3,6 +3,18 @@ SEPARATELY LICENSED COMPONENTS AND LIBRARIES
     The following components/libraries are distributed in this package,
     and subject to their respective licenses.
 
-    Name:  
-    Link:  
-    License: 
+    Name: frontend 
+    Link: https://github.com/lorentzs/mancelot
+    License: Proprietary
+
+    Name: mattermost-docker 
+    Link: https://github.com/mattermost/mattermost-docker
+    License: Apache-2.0
+
+    Name: psono-server
+    Link: https://gitlab.com/psono/psono-server
+    License: Apache-2.0
+
+    Name: psono-client
+    Link: https://gitlab.com/psono/psono-client
+    License: Apache-2.0
