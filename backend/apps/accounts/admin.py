@@ -25,12 +25,12 @@ class UserModelAdmin(UserAdmin):
 
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        (_("Persoonlijke informatie"), {"fields": (
+        (_("Personal information"), {"fields": (
             "full_name", "address", "zip_code", "city", "country",)
         }),
-        (_("Rechten"), {"fields": ("is_active", "is_staff", "is_superuser",
+        (_("Permissions"), {"fields": ("is_active", "is_staff", "is_superuser",
             "groups", "user_permissions")}),
-        (_("Content interactie"), {"fields": ("favorites",)}),
+        (_("Content interaction"), {"fields": ("favorites",)}),
         (_("Meta"), {
             "classes": ("collapse",),
             "fields": ("last_login", "date_created", "last_updated_by")
@@ -52,10 +52,10 @@ class UserModelAdmin(UserAdmin):
 
                 form.save(email_template_name="accounts/password_forced_reset_email.html",
                           extra_email_context={ "full_name": user.full_name })
-                self.message_user(request, "Succesfully sent password reset email.")
+                self.message_user(request, _("Succesfully sent password reset email."))
             except ValidationError:
-                self.message_user(request, "User does not have a valid email address", level="error")
-    send_password_reset.short_description = "Send password reset link"
+                self.message_user(request, _("User does not have a valid email address"), level="error")
+    send_password_reset.short_description = _("Send password reset link")
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user

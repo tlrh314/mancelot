@@ -128,7 +128,7 @@ class StoreAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {"fields": ("name", "info", "url", "logo", "payment_options")}),
-        (_("Contactgegevens (administratief)"), {"fields": ("address", "zip_code", "city", "country")}),
+        (_("Address (administrative)"), {"fields": ("address", "zip_code", "city", "country")}),
         (_("Meta"), {
             "classes": ("collapse",),
             "fields": ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by")
@@ -155,7 +155,7 @@ class BrandAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {"fields": ("name", "info", "url", "logo")}),
-        (_("Duurzaamheidscriteria"), {"fields": ("labels", "certificates")}),
+        (_("Sustainability criteria"), {"fields": ("labels", "certificates")}),
         (_("Meta"), {
             "classes": ("collapse",),
             "fields": ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by")
@@ -210,12 +210,12 @@ class MaterialAdmin(admin.ModelAdmin):
 
 # TODO: check once ProductFactory has support for from_price
 class ProductIsOnSaleFilter(admin.SimpleListFilter):
-    title = _("Uitverkoop")
+    title = _("Sale")
     parameter_name = "sale"
 
     def lookups(self, request, model_admin):
-        return ((False, _("Regulier")),
-                (True, _("Uitverkoop")))
+        return ((False, _("Regular")),
+                (True, _("Sale")))
 
     def queryset(self, request, queryset):
         if self.value() == "True":

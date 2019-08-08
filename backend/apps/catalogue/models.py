@@ -11,14 +11,14 @@ from django_countries.fields import CountryField
 
 
 class CeceLabel(models.Model):
-    name = models.CharField(_("naam"), max_length=200)
+    name = models.CharField(_("name"), max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
-    date_created = models.DateTimeField(_("Datum Aangemaakt"), auto_now_add=True)
-    date_updated = models.DateTimeField(_("Datum Laatst Gewijzigd"), auto_now=True)
+    date_created = models.DateTimeField(_("date created"), auto_now_add=True)
+    date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, blank=True, null=True,
         related_name="has_changed_cecelabel")
@@ -40,22 +40,22 @@ class CeceLabel(models.Model):
 
 
 class Certificate(models.Model):
-    name = models.CharField(_("naam"), max_length=200)
+    name = models.CharField(_("name"), max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
     #  url = models.URLField(_("url"))  # TODO: add url of certificate instance website?
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
-    date_created = models.DateTimeField(_("Datum Aangemaakt"), auto_now_add=True)
-    date_updated = models.DateTimeField(_("Datum Laatst Gewijzigd"), auto_now=True)
+    date_created = models.DateTimeField(_("date created"), auto_now_add=True)
+    date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, blank=True, null=True,
         related_name="has_changed_certificate")
 
     class Meta:
-        verbose_name = _("Certificaat")
-        verbose_name_plural = _("Certificaten")
+        verbose_name = _("Certificate")
+        verbose_name_plural = _("Certificates")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -71,12 +71,12 @@ class Certificate(models.Model):
 
 class Category(models.Model):
     SECTIONS = (
-       (0, _("Mannen")),
-       (1, _("Vrouwen")),
-       (2, _("Kinderen")),
+       (0, _("Men")),
+       (1, _("Women")),
+       (2, _("Kids")),
     )
 
-    name = models.CharField(_("naam"), max_length=200)
+    name = models.CharField(_("name"), max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     section = models.PositiveSmallIntegerField(
         "sectie", choices=SECTIONS, default=0
@@ -84,15 +84,15 @@ class Category(models.Model):
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
-    date_created = models.DateTimeField(_("Datum Aangemaakt"), auto_now_add=True)
-    date_updated = models.DateTimeField(_("Datum Laatst Gewijzigd"), auto_now=True)
+    date_created = models.DateTimeField(_("date created"), auto_now_add=True)
+    date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, blank=True, null=True,
         related_name="has_changed_category")
 
     class Meta:
-        verbose_name = _("Categorie")
-        verbose_name_plural = _("Categorieën")
+        verbose_name = _("Category")
+        verbose_name_plural = _("Categories")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -107,7 +107,7 @@ class Category(models.Model):
 
 
 class Subcategory(models.Model):
-    name = models.CharField(_("naam"), max_length=200)
+    name = models.CharField(_("name"), max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     category = models.ForeignKey(Category,
         on_delete=models.CASCADE,
@@ -116,15 +116,15 @@ class Subcategory(models.Model):
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
-    date_created = models.DateTimeField(_("Datum Aangemaakt"), auto_now_add=True)
-    date_updated = models.DateTimeField(_("Datum Laatst Gewijzigd"), auto_now=True)
+    date_created = models.DateTimeField(_("date created"), auto_now_add=True)
+    date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, null=True, blank=True,
         related_name="has_changed_subcategory")
 
     class Meta:
-        verbose_name = _("Subcategorie")
-        verbose_name_plural = _("Subcategorie")
+        verbose_name = _("Subcategory")
+        verbose_name_plural = _("Subcategories")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -139,7 +139,7 @@ class Subcategory(models.Model):
 
 
 class PaymentOption(models.Model):
-    name = models.CharField(_("naam"), max_length=200)
+    name = models.CharField(_("name"), max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     logo = FileBrowseField(_("logo"), default="/static/img/test/test_logo.png",
         max_length=200, directory="{0}/img/logos/payment".format(settings.STATIC_ROOT),
@@ -148,15 +148,15 @@ class PaymentOption(models.Model):
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
-    date_created = models.DateTimeField(_("Datum Aangemaakt"), auto_now_add=True)
-    date_updated = models.DateTimeField(_("Datum Laatst Gewijzigd"), auto_now=True)
+    date_created = models.DateTimeField(_("date created"), auto_now_add=True)
+    date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, null=True, blank=True,
         related_name="has_changed_paymentoption")
 
     class Meta:
-        verbose_name = _("Betaalmethode")
-        verbose_name_plural = _("Betaalmethodes")
+        verbose_name = _("PaymentOption")
+        verbose_name_plural = _("PaymentOptions")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -171,7 +171,7 @@ class PaymentOption(models.Model):
 
 
 class Store(models.Model):
-    name = models.CharField(_("naam"), max_length=200)
+    name = models.CharField(_("name"), max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
     url = models.URLField(_("url"))
@@ -182,22 +182,22 @@ class Store(models.Model):
     payment_options = models.ManyToManyField(PaymentOption, related_name="stores")
 
     # Administrative address, e.g. headquarters
-    address = models.CharField(_("Straatnaam huisnummer"), max_length=128, null=True, blank=True)
-    zip_code = models.CharField(_("Postcode"), max_length=10, null=True, blank=True)
-    city = models.CharField(_("Stad"), max_length=42, null=True, blank=True)
-    country = CountryField(_("Land"), default="NL", null=True, blank=True)
+    address = models.CharField(_("address"), max_length=128, null=True, blank=True)
+    zip_code = models.CharField(_("zip code"), max_length=10, null=True, blank=True)
+    city = models.CharField(_("city"), max_length=42, null=True, blank=True)
+    country = CountryField(_("country"), default="NL", null=True, blank=True)
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
-    date_created = models.DateTimeField(_("Datum Aangemaakt"), auto_now_add=True)
-    date_updated = models.DateTimeField(_("Datum Laatst Gewijzigd"), auto_now=True)
+    date_created = models.DateTimeField(_("date created"), auto_now_add=True)
+    date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, null=True, blank=True,
         related_name="has_changed_store")
 
     class Meta:
-        verbose_name = _("Winkel")
-        verbose_name_plural = _("Winkels")
+        verbose_name = _("Store")
+        verbose_name_plural = _("Stores")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -212,7 +212,7 @@ class Store(models.Model):
 
 
 class Brand(models.Model):
-    name = models.CharField(_("naam"), max_length=200)
+    name = models.CharField(_("name"), max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
     url = models.URLField(_("url"), null=True, blank=True)
@@ -227,15 +227,15 @@ class Brand(models.Model):
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
-    date_created = models.DateTimeField(_("Datum Aangemaakt"), auto_now_add=True)
-    date_updated = models.DateTimeField(_("Datum Laatst Gewijzigd"), auto_now=True)
+    date_created = models.DateTimeField(_("date created"), auto_now_add=True)
+    date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, null=True, blank=True,
         related_name="has_changed_brand")
 
     class Meta:
-        verbose_name = _("Merk")
-        verbose_name_plural = _("Merken")
+        verbose_name = _("Brand")
+        verbose_name_plural = _("Brand")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -250,20 +250,20 @@ class Brand(models.Model):
 
 
 class Size(models.Model):
-    name = models.CharField(_("naam"), max_length=200)
+    name = models.CharField(_("name"), max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
-    date_created = models.DateTimeField(_("Datum Aangemaakt"), auto_now_add=True)
-    date_updated = models.DateTimeField(_("Datum Laatst Gewijzigd"), auto_now=True)
+    date_created = models.DateTimeField(_("date created"), auto_now_add=True)
+    date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, null=True, blank=True,
         related_name="has_changed_size")
 
     class Meta:
-        verbose_name = _("Maat")
-        verbose_name_plural = _("Maten")
+        verbose_name = _("Size")
+        verbose_name_plural = _("Sizes")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -274,21 +274,21 @@ class Size(models.Model):
 
 
 class Material(models.Model):
-    name = models.CharField(_("naam"), max_length=200)
+    name = models.CharField(_("name"), max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
-    date_created = models.DateTimeField(_("Datum Aangemaakt"), auto_now_add=True)
-    date_updated = models.DateTimeField(_("Datum Laatst Gewijzigd"), auto_now=True)
+    date_created = models.DateTimeField(_("date created"), auto_now_add=True)
+    date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, null=True, blank=True,
         related_name="has_changed_material")
 
     class Meta:
-        verbose_name = _("Materiaal")
-        verbose_name_plural = _("Materialen")
+        verbose_name = _("Material")
+        verbose_name_plural = _("Material")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -299,7 +299,7 @@ class Material(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(_("naam"), max_length=200)
+    name = models.CharField(_("name"), max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
     extra_info = HTMLField(_("extra info"), null=True, blank=True)
@@ -307,14 +307,14 @@ class Product(models.Model):
 
     cece_id = models.CharField(_("cece product id"), null=True, blank=True, max_length=100)
 
-    price = models.DecimalField(_("prijs"), max_digits=6, decimal_places=2)
-    from_price = models.DecimalField(_("originele prijs"), max_digits=6,
+    price = models.DecimalField(_("price"), max_digits=6, decimal_places=2)
+    from_price = models.DecimalField(_("from price"), max_digits=6,
         decimal_places=2, null=True, blank=True,
-        help_text=_("Product is in de aanbieding als er een originele is.")
+        help_text=_("Product on sale if 'from price' is given.")
     )
 
-    main_image = models.URLField(_("hoofdafbeelding"), max_length=450)
-    extra_images = JSONField(_("extra afbeeldingen"), blank=True)
+    main_image = models.URLField(_("main image"), max_length=450)
+    extra_images = JSONField(_("extra images"), blank=True)
 
     brand = models.ForeignKey(Brand,
         related_name="products",
@@ -340,19 +340,19 @@ class Product(models.Model):
         related_name="products",
         blank=True
     )
-    color = models.CharField(_("kleur"), null=True, blank=True, max_length=200)
+    color = models.CharField(_("color"), null=True, blank=True, max_length=200)
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
-    date_created = models.DateTimeField(_("Datum Aangemaakt"), auto_now_add=True)
-    date_updated = models.DateTimeField(_("Datum Laatst Gewijzigd"), auto_now=True)
+    date_created = models.DateTimeField(_("date created"), auto_now_add=True)
+    date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, blank=True, null=True,
         related_name="has_changed_product")
 
     class Meta:
         verbose_name = _("Product")
-        verbose_name_plural = _("Producten")
+        verbose_name_plural = _("Products")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
