@@ -25,3 +25,4 @@ set -o noclobber
 set -o vi
 
 export EDITOR=vim
+export IPYTHONDIR=/mancelot/.ipython
