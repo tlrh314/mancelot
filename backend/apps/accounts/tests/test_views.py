@@ -1,3 +1,4 @@
+import sys; sys.exit(0)
 from django.test import TestCase
 from django.template.loader import render_to_string
 
