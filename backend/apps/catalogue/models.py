@@ -142,7 +142,7 @@ class PaymentOption(models.Model):
     name = models.CharField(_("naam"), max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     logo = FileBrowseField(_("logo"), default="/static/img/test/test_logo.png",
-        max_length=200, directory="img/logos/payment",
+        max_length=200, directory="{0}/img/logos/payment".format(settings.STATIC_ROOT),
         extensions=[".jpg", ".jpeg", ".gif", ".png"],
     )
 
@@ -176,7 +176,7 @@ class Store(models.Model):
     info = HTMLField(_("info"), null=True, blank=True)
     url = models.URLField(_("url"))
     logo =  FileBrowseField(_("logo"), default="/static/img/test/test_logo.png",
-        max_length=200, directory="img/logos/stores",
+        max_length=200, directory="{0}img/logos/stores".format(settings.STATIC_ROOT),
         extensions=[".jpg", ".jpeg", ".gif", ".png"],
     )
     payment_options = models.ManyToManyField(PaymentOption, related_name="stores")
@@ -217,7 +217,7 @@ class Brand(models.Model):
     info = HTMLField(_("info"), null=True, blank=True)
     url = models.URLField(_("url"), null=True, blank=True)
     logo =  FileBrowseField(_("logo"), default="/static/img/test/test_logo.png",
-        max_length=200, directory="img/logos/brands",
+        max_length=200, directory="{0}/img/logos/brands".format(settings.STATIC_ROOT),
         extensions=[".jpg", ".jpeg", ".gif", ".png"],
     )
 
