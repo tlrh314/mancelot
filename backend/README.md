@@ -24,14 +24,14 @@
 
 - Run the built-in Django development server: `docker run --rm -it -v "$(pwd)":/mancelot -p 8000:1337 --name runserver mancelot bash -c "python manage.py runserver 0.0.0.0:1337"`
 - In a new terminal, one can attach to the `runserver` container in an interactive session: `docker exec -it runserver bash`
-- To run with nginx + uwsgi
+- Website runs on http://localhost:8000 (NB, must accept self-signed certificate)
+- Or to run with nginx + uwsgi
   - in the parent folder: `docker-compose up --build -d nginx`
   - in this folder: `docker-compose up -d django` (or omit `django` to start all services, e.g. to develop tasks)
 - In a new terminal, one can attach to the `django` container in an interactive session: `docker exec -it mancelot-django bash`
+- Website runs on https://localhost (NB, must accept self-signed certificate)
 
 ### Add the initial data to the database
 - TODO: `python manage.py loaddata fixtures/filename.json` 
 - For example: `python manage.py shell -c "from catalogue.factories import *; ProductFactory.create_batch(100)"`
 
-### Run the development server at http://localhost:8000
-- `python manage.py runserver` (and leave running)
