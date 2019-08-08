@@ -233,17 +233,17 @@ class ProductAdmin(admin.ModelAdmin):
         "brand", "store"
     )
     list_filter = (
-        ("category", RelatedDropdownFilter),
+        ("categories", RelatedDropdownFilter),
         ("brand", RelatedDropdownFilter),
         ("store", RelatedDropdownFilter),
-        ("material", RelatedDropdownFilter),
-        ("size", RelatedDropdownFilter),
+        ("materials", RelatedDropdownFilter),
+        ("sizes", RelatedDropdownFilter),
         ProductIsOnSaleFilter,
     )
     search_fields = ("name", "info", "extra_info",)
     ordering = ("name",)
     readonly_fields = ("slug", "date_created", "date_updated", "last_updated_by",)
-    filter_horizontal = ("category", "subcategory", "material", "size")
+    filter_horizontal = ("categories", "subcategories", "materials", "sizes")
     form = FixTinyMCEHasTooWideUIForm
 
     fieldsets = (
@@ -251,8 +251,8 @@ class ProductAdmin(admin.ModelAdmin):
             "name", "cece_id", "url", "price", "from_price",
             "main_image", "extra_images",
             "info", "extra_info",
-            "brand", "store", "category",
-            "color", "size", "material",
+            "brand", "store", "categories",
+            "color", "sizes", "materials",
             )
         }),
         (_("Meta"), {
@@ -262,15 +262,15 @@ class ProductAdmin(admin.ModelAdmin):
     )
 
     def section(self, obj):
-        if obj.category.count() > 0:
-            return obj.category.first().section
+        if obj.categories.count() > 0:
+            return obj.categories.first().section
         else:
             return "ERROR"
     section.short_description = _("Section1")
 
     def first_category(self, obj):
-        if obj.category.count() > 0:
-            return obj.category.first()
+        if obj.categories.count() > 0:
+            return obj.categories.first()
         else:
             return "ERROR"
     first_category.short_description = _("Category1")

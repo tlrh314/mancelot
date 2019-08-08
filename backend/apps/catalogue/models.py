@@ -325,18 +325,18 @@ class Product(models.Model):
         on_delete=models.CASCADE
     )
     # TODO: handle deletion of the last Category from Product (delete Product?)
-    category = models.ManyToManyField(Category,
+    categories = models.ManyToManyField(Category,
         related_name="products",
     )
-    subcategory = models.ManyToManyField(Subcategory,
+    subcategories = models.ManyToManyField(Subcategory,
         related_name="products",
         blank=True,
     )
-    material = models.ManyToManyField(Material,
+    materials = models.ManyToManyField(Material,
         related_name="products",
         blank=True
     )
-    size = models.ManyToManyField(Size,
+    sizes = models.ManyToManyField(Size,
         related_name="products",
         blank=True
     )
