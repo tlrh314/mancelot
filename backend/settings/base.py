@@ -125,8 +125,9 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = "nl"
+LANGUAGE_CODE = "en"
 LANGUAGES = [
+    ("en", _("English")),
     ("nl", _("Nederlands")),
 ]
 

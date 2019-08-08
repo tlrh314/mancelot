@@ -1,0 +1,338 @@
+# Mancelot
+# Copyright (C) 2019, Timo Halbesma
+# This file is distributed under the same license as the mancelot/backend package.
+# Timo Halbesma <timo@mancelot.nl>, 2019
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Mancelot\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-08 22:20+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Timo Halbesma <timo@mancelot.nl>\n"
+"Language-Team: Nederlands <info@mancelot.nl>\n"
+"Language: Nederlands \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: apps/accounts/admin.py:28
+msgid "Personal information"
+msgstr ""
+
+#: apps/accounts/admin.py:31
+msgid "Permissions"
+msgstr ""
+
+#: apps/accounts/admin.py:33
+msgid "Content interaction"
+msgstr ""
+
+#: apps/accounts/admin.py:34 apps/catalogue/admin.py:37
+#: apps/catalogue/admin.py:58 apps/catalogue/admin.py:86
+#: apps/catalogue/admin.py:106 apps/catalogue/admin.py:132
+#: apps/catalogue/admin.py:159 apps/catalogue/admin.py:179
+#: apps/catalogue/admin.py:200 apps/catalogue/admin.py:258
+msgid "Meta"
+msgstr ""
+
+#: apps/accounts/admin.py:55
+msgid "Succesfully sent password reset email."
+msgstr ""
+
+#: apps/accounts/admin.py:57
+msgid "User does not have a valid email address"
+msgstr ""
+
+#: apps/accounts/admin.py:58
+msgid "Send password reset link"
+msgstr ""
+
+#: apps/accounts/managers.py:13
+msgid "The given email must be set"
+msgstr ""
+
+#: apps/accounts/managers.py:31
+msgid "Superuser must have is_superuser=True."
+msgstr ""
+
+#: apps/accounts/models.py:16
+msgid "email"
+msgstr ""
+
+#: apps/accounts/models.py:17
+msgid "full name"
+msgstr ""
+
+#: apps/accounts/models.py:18
+msgid "First and last name"
+msgstr ""
+
+#: apps/accounts/models.py:19 apps/catalogue/models.py:185
+msgid "address"
+msgstr ""
+
+#: apps/accounts/models.py:20
+msgid "Streetname and housenumber"
+msgstr ""
+
+#: apps/accounts/models.py:21 apps/catalogue/models.py:186
+msgid "zip code"
+msgstr ""
+
+#: apps/accounts/models.py:22 apps/catalogue/models.py:187
+msgid "city"
+msgstr ""
+
+#: apps/accounts/models.py:23 apps/catalogue/models.py:188
+msgid "country"
+msgstr ""
+
+#: apps/accounts/models.py:26
+msgid "favorites"
+msgstr ""
+
+#: apps/accounts/models.py:30
+msgid "active"
+msgstr ""
+
+#: apps/accounts/models.py:31
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+msgstr ""
+
+#: apps/accounts/models.py:33
+msgid "staff"
+msgstr ""
+
+#: apps/accounts/models.py:34
+msgid "Designates whether the user can log into this admin site."
+msgstr ""
+
+#: apps/accounts/models.py:35
+msgid "superuser"
+msgstr ""
+
+#: apps/accounts/models.py:38 apps/catalogue/models.py:20
+#: apps/catalogue/models.py:50 apps/catalogue/models.py:87
+#: apps/catalogue/models.py:119 apps/catalogue/models.py:151
+#: apps/catalogue/models.py:192 apps/catalogue/models.py:230
+#: apps/catalogue/models.py:258 apps/catalogue/models.py:283
+#: apps/catalogue/models.py:347
+msgid "date created"
+msgstr ""
+
+#: apps/accounts/models.py:39
+msgid "date Laatst Gewijzigd"
+msgstr ""
+
+#: apps/accounts/models.py:50
+msgid "User"
+msgstr ""
+
+#: apps/accounts/models.py:51
+msgid "Users"
+msgstr ""
+
+#: apps/catalogue/admin.py:131
+msgid "Address (administrative)"
+msgstr ""
+
+#: apps/catalogue/admin.py:158
+msgid "Sustainability criteria"
+msgstr ""
+
+#: apps/catalogue/admin.py:213 apps/catalogue/admin.py:218
+msgid "Sale"
+msgstr ""
+
+#: apps/catalogue/admin.py:217
+msgid "Regular"
+msgstr ""
+
+#: apps/catalogue/admin.py:269
+msgid "Section1"
+msgstr ""
+
+#: apps/catalogue/admin.py:276
+msgid "Category1"
+msgstr ""
+
+#: apps/catalogue/apps.py:8
+msgid "Catalogus"
+msgstr ""
+
+#: apps/catalogue/models.py:14 apps/catalogue/models.py:43
+#: apps/catalogue/models.py:79 apps/catalogue/models.py:110
+#: apps/catalogue/models.py:142 apps/catalogue/models.py:174
+#: apps/catalogue/models.py:215 apps/catalogue/models.py:253
+#: apps/catalogue/models.py:277 apps/catalogue/models.py:302
+msgid "name"
+msgstr ""
+
+#: apps/catalogue/models.py:15 apps/catalogue/models.py:44
+#: apps/catalogue/models.py:80 apps/catalogue/models.py:111
+#: apps/catalogue/models.py:143 apps/catalogue/models.py:175
+#: apps/catalogue/models.py:216 apps/catalogue/models.py:254
+#: apps/catalogue/models.py:278 apps/catalogue/models.py:303
+msgid "slug"
+msgstr ""
+
+#: apps/catalogue/models.py:16 apps/catalogue/models.py:45
+#: apps/catalogue/models.py:176 apps/catalogue/models.py:217
+#: apps/catalogue/models.py:279 apps/catalogue/models.py:304
+msgid "info"
+msgstr ""
+
+#: apps/catalogue/models.py:19 apps/catalogue/models.py:49
+#: apps/catalogue/models.py:86 apps/catalogue/models.py:118
+#: apps/catalogue/models.py:150 apps/catalogue/models.py:191
+#: apps/catalogue/models.py:229 apps/catalogue/models.py:257
+#: apps/catalogue/models.py:282 apps/catalogue/models.py:346
+msgid "cece_api_url"
+msgstr ""
+
+#: apps/catalogue/models.py:21 apps/catalogue/models.py:51
+#: apps/catalogue/models.py:88 apps/catalogue/models.py:120
+#: apps/catalogue/models.py:152 apps/catalogue/models.py:193
+#: apps/catalogue/models.py:231 apps/catalogue/models.py:259
+#: apps/catalogue/models.py:284 apps/catalogue/models.py:348
+msgid "date updated"
+msgstr ""
+
+#: apps/catalogue/models.py:27
+msgid "Label"
+msgstr ""
+
+#: apps/catalogue/models.py:28
+msgid "Labels"
+msgstr ""
+
+#: apps/catalogue/models.py:57
+msgid "Certificate"
+msgstr ""
+
+#: apps/catalogue/models.py:58
+msgid "Certificates"
+msgstr ""
+
+#: apps/catalogue/models.py:74
+msgid "Men"
+msgstr ""
+
+#: apps/catalogue/models.py:75
+msgid "Women"
+msgstr ""
+
+#: apps/catalogue/models.py:76
+msgid "Kids"
+msgstr ""
+
+#: apps/catalogue/models.py:94
+msgid "Category"
+msgstr ""
+
+#: apps/catalogue/models.py:95
+msgid "Categories"
+msgstr ""
+
+#: apps/catalogue/models.py:126
+msgid "Subcategory"
+msgstr ""
+
+#: apps/catalogue/models.py:127
+msgid "Subcategories"
+msgstr ""
+
+#: apps/catalogue/models.py:144 apps/catalogue/models.py:178
+#: apps/catalogue/models.py:219
+msgid "logo"
+msgstr ""
+
+#: apps/catalogue/models.py:158
+msgid "PaymentOption"
+msgstr ""
+
+#: apps/catalogue/models.py:159
+msgid "PaymentOptions"
+msgstr ""
+
+#: apps/catalogue/models.py:177 apps/catalogue/models.py:218
+#: apps/catalogue/models.py:306
+msgid "url"
+msgstr ""
+
+#: apps/catalogue/models.py:199
+msgid "Store"
+msgstr ""
+
+#: apps/catalogue/models.py:200
+msgid "Stores"
+msgstr ""
+
+#: apps/catalogue/models.py:237 apps/catalogue/models.py:238
+msgid "Brand"
+msgstr ""
+
+#: apps/catalogue/models.py:265
+msgid "Size"
+msgstr ""
+
+#: apps/catalogue/models.py:266
+msgid "Sizes"
+msgstr ""
+
+#: apps/catalogue/models.py:290 apps/catalogue/models.py:291
+msgid "Material"
+msgstr ""
+
+#: apps/catalogue/models.py:305
+msgid "extra info"
+msgstr ""
+
+#: apps/catalogue/models.py:308
+msgid "cece product id"
+msgstr ""
+
+#: apps/catalogue/models.py:310
+msgid "price"
+msgstr ""
+
+#: apps/catalogue/models.py:311
+msgid "from price"
+msgstr ""
+
+#: apps/catalogue/models.py:313
+msgid "Product on sale if 'from price' is given."
+msgstr ""
+
+#: apps/catalogue/models.py:316
+msgid "main image"
+msgstr ""
+
+#: apps/catalogue/models.py:317
+msgid "extra images"
+msgstr ""
+
+#: apps/catalogue/models.py:343
+msgid "color"
+msgstr ""
+
+#: apps/catalogue/models.py:354
+msgid "Product"
+msgstr ""
+
+#: apps/catalogue/models.py:355
+msgid "Products"
+msgstr ""
+
+#: settings/base.py:130
+msgid "English"
+msgstr ""
+
+#: settings/base.py:131
+msgid "Nederlands"
+msgstr ""

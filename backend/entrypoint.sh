@@ -35,6 +35,7 @@ fi
 # 1. Each container migrates its default database.
 echo -e "\nGenerating migrations, then migrating my default database"
 python manage.py migrate
+python manage.py compilemessages
 python manage.py collectstatic --noinput
 
 exec "$@"
