@@ -34,10 +34,13 @@ c.InteractiveShellApp.exec_lines = [
     'import logging',
     # Remove ipython logger
     'logger = logging.getLogger()',
-    # 'logger.handlers.pop()',
+    'logger.handlers = []',
     # Add the console
     'logger.addHandler(logging.StreamHandler())',
     'logger.level = logging.DEBUG',
+
+    # Import factories
+    'from accounts.factories import *; from catalogue.factories import *',
 ]
 
 ## A list of dotted module names of IPython extensions to load.
