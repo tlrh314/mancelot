@@ -428,7 +428,7 @@ class ProductTest(TestCase):
         logo = "logo"
         main_image = "hoofdafbeelding"
         extra_images = "extra afbeeldingen"
-        # brand, store, category, subcategory, material, size
+        # brand, store, categories, subcategories, materials, sizes
         color = "kleur"
 
     def test_slug_creation_on_save(self):

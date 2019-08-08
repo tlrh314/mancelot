@@ -1,5 +1,7 @@
 import factory
 from faker import Factory
+from django.conf import settings
+from django_countries import countries
 
 from catalogue.models import (
     CeceLabel,
@@ -14,29 +16,23 @@ from catalogue.models import (
     Product
 )
 
-COLORS = [
-    "White",
-    "Navy Blue",
-    "Grey",
-    "Black",
-    "Lilac",
-    "Green",
-    "Other/Multi",
-    "Brown",
-    "Blue",
-    "Beige",
-    "Yellow",
-    "Red",
-    "Pink"
-]
-
 
 faker = Factory.create("nl_NL")
+COLORS = list()
+while len(COLORS) < 60:
+    c = faker.color_name()
+    if c not in COLORS: COLORS.append(c)
+
+SIZES = [ "3XS", "XXS", "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL"] + \
+    ["UK {0}".format(i) for i in range(4, 30, 2)] + \
+    ["FR {0}".format(i) for i in range(32, 58, 2)] + \
+    ["EU {0}".format(i) for i in range(40, 52, 2)]
 
 
 class CeceLabelFactory(factory.DjangoModelFactory):
     class Meta:
         model = CeceLabel
+        django_get_or_create = ("name",)
 
     name = factory.LazyAttribute(lambda _: faker.name())
     info = factory.LazyAttribute(lambda _: faker.text())
@@ -45,6 +41,7 @@ class CeceLabelFactory(factory.DjangoModelFactory):
 class CertificateFactory(factory.DjangoModelFactory):
     class Meta:
         model = Certificate
+        django_get_or_create = ("name",)
 
     name = factory.LazyAttribute(lambda _: faker.name())
     info = factory.LazyAttribute(lambda _: faker.text())
@@ -53,14 +50,36 @@ class CertificateFactory(factory.DjangoModelFactory):
 class CategoryFactory(factory.DjangoModelFactory):
     class Meta:
         model = Category
+        django_get_or_create = ("name",)
 
     name = factory.LazyAttribute(lambda _: faker.name())
     section = 0
+
+    @factory.post_generation
+    def subcategories(self, create, extracted, **kwargs):
+        # ForeignKey relation at Subcategory. Here we use the related_name
+        if not create:
+            return
+
+        if extracted:
+            for subcategory in subcategories:
+                # TODO: what happens when extracted.category != self ?
+                # Presumably the category of the given subcategories will be
+                # updated to the Category instance created in this factory call?
+                self.subcategories.add(extracted)
+            return
+
+        for i in range(faker.random_int(min=0, max=10)):
+            self.subcategories.add(Subcategory.objects.create(
+                name="{0}: Sub {1}".format(self.name, i),
+                category=self)
+            )
 
 
 class SubcategoryFactory(factory.DjangoModelFactory):
     class Meta:
         model = Subcategory
+        django_get_or_create = ("name",)
 
     name = factory.LazyAttribute(lambda _: faker.name())
     category = factory.SubFactory(CategoryFactory)
@@ -69,6 +88,7 @@ class SubcategoryFactory(factory.DjangoModelFactory):
 class PaymentOptionFactory(factory.DjangoModelFactory):
     class Meta:
         model = PaymentOption
+        django_get_or_create = ("name",)
 
     name = factory.LazyAttribute(lambda _: faker.name())
     logo = "/static/img/test/test_logo.png"
@@ -77,82 +97,120 @@ class PaymentOptionFactory(factory.DjangoModelFactory):
 class StoreFactory(factory.DjangoModelFactory):
     class Meta:
         model = Store
+        django_get_or_create = ("name",)
 
-    name = factory.LazyAttribute(lambda _: faker.name())
+    name = factory.LazyAttribute(lambda _: faker.company())
     info = factory.LazyAttribute(lambda _:
         faker.text(max_nb_chars=faker.random_int(min=42, max=1337))
     )
     url = factory.LazyAttribute(lambda _: faker.url())
     logo = "/static/img/test/test_logo.png"
-    payment_options = factory.SubFactory(PaymentOptionFactory)
 
     address = factory.LazyAttribute(lambda _: faker.street_address())
     zip_code = factory.LazyAttribute(lambda _: faker.postcode())
     city = factory.LazyAttribute(lambda _: faker.city())
-    # TODO: CountryField instance
-    # country = factory.LazyAttribute(lambda _: faker.country())
+    country = "NL"  # alternatively, use code below to randomly select
+    # country = factory.LazyAttribute(lambda _:
+    #     list(countries)[faker.random_int(min=0, max=len(countries)-1)][0]  # ('NL', 'Nederland')
+    # )
 
+    # Add zero up to all payment_options (number of payment_options is randomly selected)
     @factory.post_generation
     def payment_options(self, create, extracted, **kwargs):
         if not create:
-            # Simple build, do nothing.
             return
 
         if extracted:
-            # A list of PaymentOption instances were passed in, use them
-            for pm in extracted:
-                self.payment_options.add(pm)
+            for payment_option in extracted:
+                self.payment_option.add(label)
+            return
+
+        # Create CeceLabel instances if there are less than fifteen available
+        if PaymentOption.objects.count() < 15:
+            PaymentOptionFactory.create_batch(15 - PaymentOption.objects.count())
+
+        number_of_payment_options_to_add = faker.random_int(min=0, max=PaymentOption.objects.count()-1)
+        all_payment_options_randomly_ordered = PaymentOption.objects.order_by("?")
+        for j in range(number_of_payment_options_to_add):
+            self.payment_options.add(all_payment_options_randomly_ordered[j])
 
 
 class BrandFactory(factory.DjangoModelFactory):
     class Meta:
         model = Brand
+        django_get_or_create = ("name",)
 
-    name = factory.LazyAttribute(lambda _: faker.name())
+    name = factory.LazyAttribute(lambda _: faker.company())
     info = factory.LazyAttribute(lambda _:
         faker.text(max_nb_chars=faker.random_int(min=42, max=1337))
     )
     url = factory.LazyAttribute(lambda _: faker.url())
     logo = "/static/img/test/test_logo.png"
 
-    # TODO: add labels and certificates
-    # all_labels_random = Label.objects.order_by("?")
-    # all_certificates_random = Certificate.objects.order_by("?")
-    # for j in range(faker.random_int(min=1, max=all_labels_random.count()-1)):
-    #     brand.labels.add(all_labels_random[j])
-    # for j in range(faker.random_int(min=0, max=int(all_certificates_random.count()/4))):
-    #     brand.certificates.add(all_certificates_random[j])
+    # Add zero up to all labels (number of labels is randomly selected)
+    @factory.post_generation
+    def labels(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for label in extracted:
+                self.labels.add(label)
+            return
+
+        # Create CeceLabel instances if there are less than five labels available
+        if CeceLabel.objects.count() < 5:
+            CeceLabelFactory.create_batch(5 - CeceLabel.objects.count())
+
+        number_of_labels_to_add = faker.random_int(min=0, max=CeceLabel.objects.count()-1)
+        all_labels_randomly_ordered = CeceLabel.objects.order_by("?")
+        for j in range(number_of_labels_to_add):
+            self.labels.add(all_labels_randomly_ordered[j])
+
+    # Add zero up to 25% of certificates (number of certificates is randomly selected)
+    @factory.post_generation
+    def certificates(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for certificate in extracted:
+                self.certificates.add(certificate)
+            return
+
+        # Create Certificate instances if there are less than twenty available
+        if Certificate.objects.count() < 20:
+            CertificateFactory.create_batch(20 - Certificate.objects.count())
+
+        number_of_certificates_to_add = faker.random_int(
+            min=0, max=int(0.25*Certificate.objects.count()))
+        all_certificates_randomly_ordered = Certificate.objects.order_by("?")
+        for j in range(number_of_certificates_to_add):
+            self.certificates.add(all_certificates_randomly_ordered[j])
 
 
 class SizeFactory(factory.DjangoModelFactory):
     class Meta:
         model = Size
+        django_get_or_create = ("name",)
 
-    name = factory.LazyAttribute(lambda _: faker.name())
+    name = factory.LazyAttribute(lambda _:
+        SIZES[faker.random_int(min=0, max=len(SIZES)-1)]
+    )
 
 
 class MaterialFactory(factory.DjangoModelFactory):
     class Meta:
         model = Material
+        django_get_or_create = ("name",)
 
-    name = factory.LazyAttribute(lambda _: faker.name())
+    name = factory.LazyAttribute(lambda _: faker.word())
 
 
 class ProductFactory(factory.DjangoModelFactory):
     class Meta:
         model = Product
-
-    # @classmethod
-    # def _generate(cls, strategy, params):
-    #     raise NotImplementedError
-
-    # @classmethod
-    # def _get_or_create(cls, model_class, *args, **kwargs):
-    #     raise NotImplementedError
-
-    # @classmethod
-    # def _create(cls, model_class, *args, **kwargs):
-    #     raise NotImplementedError
+        django_get_or_create = ("name",)
 
     name = factory.LazyAttribute(lambda _: faker.name())
     info = factory.LazyAttribute(lambda _:
@@ -165,31 +223,129 @@ class ProductFactory(factory.DjangoModelFactory):
 
     cece_id = factory.LazyAttribute(lambda _: faker.uuid4()[0:8])
 
-    price = faker.random_int(min=250, max=15000)/100
-    # TODO: some fraction of products on sale
-    # # assume uniform, 10% should be on sale. Sale price 110-200% of regular price
-    # if faker.random_int(min=1, max=100) < 10:
-    #     product.old_price = faker.random_int(min=110, max=200)/100 * product.price
+    price = factory.LazyAttribute(lambda _:
+        faker.random_int(min=250, max=15000)/100
+    )
+    @factory.post_generation
+    def from_price(self, create, extracted, **kwargs):
+        if not create:
+            return
 
-    # TODO: may want images we actually have in static
-    # main_image
-    # extra_images
+        if extracted:
+            self.from_price = extracted
+            return
 
-    # TODO: add valid category
-    # product.save()
-    # product.category.add(Category.objects.order_by("?").first())
-    # TODO: add Subcategory to a fraction of Product instances
-    # valid_subcats = product.category.first().subcategory.order_by("?")
-    # if valid_subcats:
-    #     for j in range(faker.random_int(min=0, max=valid_subcats.count()-1)):
-    #         product.subcategory.add(valid_subcats[j])
+        # assume uniform, 20% should be on sale. Sale price 120-250% of regular price
+        if faker.random_int(min=0, max=100) < 20:
+            self.from_price = faker.random_int(min=120, max=250)/100 * self.price
 
-    # TODO: add the m2m's below
-    brand = Brand.objects.order_by("?").first() if Brand.objects.count() is not 0 else factory.SubFactory(BrandFactory)
-    store = Store.objects.order_by("?").first() if Store.objects.count() is not 0 else factory.SubFactory(StoreFactory)
-    # material
-    # size
+    main_image = factory.LazyAttribute(lambda _:
+        "{0}/img/test/cat{1}.jpg".format(
+            settings.STATIC_ROOT, faker.random_int(min=1, max=30)
+        )
+    )
+    @factory.post_generation
+    def extra_images(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            self.extra_images = extracted
+            return
+
+        self.extra_images = []
+        for i in range(faker.random_int(min=0, max=5)):
+            img = "{0}/img/test/cat{1}.jpg".format(
+                settings.STATIC_ROOT, faker.random_int(min=1, max=30)
+            )
+            if img not in self.extra_images: self.extra_images.append(img)
+
     color = factory.LazyAttribute(lambda _:
         COLORS[faker.random_int(min=0, max=len(COLORS)-1)]
     )
 
+    # Create Brand instances if there are less than fourty brands available
+    if Brand.objects.count() < 40:
+        BrandFactory.create_batch(40 - Brand.objects.count())
+    brand = Brand.objects.order_by("?").first()
+
+    # Create Store instances if there are less than twenty brands available
+    if Store.objects.count() < 20:
+        StoreFactory.create_batch(20 - Store.objects.count())
+    store = Store.objects.order_by("?").first()
+
+    @factory.post_generation
+    def categories(self, create, extracted, **kwargs):  # M2M relation
+        if not create:
+            return
+
+        if extracted:
+            for category in extracted:
+                self.categories.add(category)
+            return
+
+        # Create Category instances if there are less than twenty-five categories available
+        if Category.objects.count() < 25:
+            CategoryFactory.create_batch(25 - Category.objects.count())
+
+        number_of_categories_to_add = faker.random_int(min=0, max=Category.objects.count()-1)
+        all_categories_randomly_ordered = Category.objects.order_by("?")
+        for j in range(number_of_categories_to_add):
+            self.categories.add(all_categories_randomly_ordered[j])
+
+    @factory.post_generation
+    def subcategories(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for category in extracted:
+                self.categories.add(category)
+            return
+
+        # Create Subcategory instances if there are less than twenty-five available
+        if Subcategory.objects.count() < 25:
+            SubcategoryFactory.create_batch(25 - Subcategory.objects.count())
+
+        number_of_categories_to_add = faker.random_int(min=0, max=Subcategory.objects.count()-1)
+        all_categories_randomly_ordered = Subcategory.objects.order_by("?")
+        for j in range(number_of_categories_to_add):
+            self.subcategories.add(all_categories_randomly_ordered[j])
+
+    @factory.post_generation
+    def materials(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for material in extracted:
+                self.materials.add(material)
+            return
+
+        # Create Material instances if there are less than twenty-five available
+        if Material.objects.count() < 25:
+            MaterialFactory.create_batch(25 - Material.objects.count())
+
+        number_of_materials_to_add = faker.random_int(min=0, max=Material.objects.count()-1)
+        all_materials_randomly_ordered = Material.objects.order_by("?")
+        for j in range(number_of_materials_to_add):
+            self.materials.add(all_materials_randomly_ordered[j])
+
+    @factory.post_generation
+    def sizes(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for size in extracted:
+                self.sizes.add(size)
+            return
+
+        # Create Size instances if there are less than twenty-five sizes available
+        if Size.objects.count() < 25:
+            SizeFactory.create_batch(25 - Size.objects.count())
+
+        number_of_sizes_to_add = faker.random_int(min=0, max=Size.objects.count()-1)
+        all_sizes_randomly_ordered = Size.objects.order_by("?")
+        for j in range(number_of_sizes_to_add):
+            self.sizes.add(all_sizes_randomly_ordered[j])
