@@ -22,7 +22,7 @@ handler500 = "catalogue.views.handler500"
 router = routers.DefaultRouter()
 router.register("catalogue/brand", catalogue_api.BrandViewSet)
 router.register("catalogue/store", catalogue_api.StoreViewSet)
-router.register("catalogue/Product", catalogue_api.ProductViewSet)
+router.register("catalogue/product", catalogue_api.ProductViewSet)
 
 
 urlpatterns = [
