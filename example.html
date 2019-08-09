@@ -1,0 +1,85 @@
+<html>
+<head>
+  <meta name="viewport" content="width=device-width">
+    <link type="text/css" href="src/style/index.css" rel="Stylesheet">
+    <link type="text/css" href="src/components/wishlist/style.css" rel="Stylesheet">
+    <link type="text/css" href="src/components/productinfo/style.css" rel="Stylesheet">
+    <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+    <script>
+      function tempJSswitcher(){
+        $('.wishlist_content').toggleClass('small');
+        $('.images').toggleClass('disappear');
+        $('.productinfo_container').toggleClass('disappear');
+      }
+    </script>
+</head>
+  <body>
+    <div class="btn_back_container">
+        <div class="btn_back"></div>
+    </div>
+
+
+    <div class="wishlist_content small">
+      <ul class="wishlist_items" onclick="tempJSswitcher()">
+        <div class="no_items">Swipe shirt hierheen<br /><span>voor toevoegen aan wishlist</span></div><!-- Uitfaden bij slepen van shirt -->
+        <li>
+          <div class="product_image" style="background-image: url('src/assets/example_content/detail-tshirt1.png')"></div>
+          <div class="product_summary">
+            <div class="product_button_min"></div>
+            <div class="product_amountsize">
+              <span class="product_amount">1</span> x <span class="product_size">L</span>
+            </div>
+            <div class="product_button_plus"></div>
+          </div>
+        </li>
+      </ul>
+      <!--not in mvp <div class="total_container">Totaal €<span class="total_amount">1</span></div> -->
+      <div class="when">
+          <h3>Wanneer</h3>
+          Elke 3 maanden ontvang jij 1 of meer kledingstukken.<!-- TODO: DYNAMIC TEXT afhankelijk van abbo  --><br />
+          De volgende keer is in de week van 12 oktober
+          <!-- TODO: DYNAMIC TEXT afhankelijk van startdatum en startinleg.  -->
+      </div>
+      <div class="impact">
+          Jij zorgt voor
+          <div class="betterlives">31</div>
+          betere levens!
+      </div>
+
+    </div>
+
+<!--  component slider? -->
+<style>
+.images img { width: 70%; margin: 20px auto; display: block;}
+
+
+</style>
+    <div class="images">
+        <img src="src/assets/example_content/detail-tshirt1.png"  />
+    </div>
+
+    <div class="productinfo_container">
+      <div class="icons_container">
+        <div class="icon icon_fairtrade"></div>
+        <div class="icon icon_environment"></div>
+        <div class="icon icon_localproduced"></div>
+        <div class="icon icon_vegan"></div>
+        <div class="icon icon_localsupport"></div>
+      </div>
+      <div class="explain_brand">
+        <p>
+          Supermegaflex staat voor positiviteit, duurzaamheid en kwaliteit. Dit doet Supermegaflex door sweaters en t-shirts van hoge kwaliteit te verkopen met teksten die mensen blij maken. De sweaters en shirts van Supermegaflex zijn daarom eerlijk en milieuvriendelijk geproduceerd in Turkije. Ze dragen het GOTS-certificaat, een van de beste duurzame en eerlijke certificeringen die je kunt hebben. Daarnaast zijn de opdrukken Direct To Garment (DTG) geprint, wat betekent dat de verf op waterbasis en biologisch afbreekbaar is, maar ook jarenlang meegaat zonder kleur te verliezen.
+        </p>
+        <p>
+          Supermegaflex heeft een ruime collectie aan sweaters en t-shirt met verschillende teksten en stijlen. Je kunt dus zelf je lievelingstrui of t-shirt kiezen met je eigen favoriete tekst, kleur en stijl. De sweaters en t-shirts zijn geschikt voor zowel mannen als vrouwen. "Tu es formidable", "Just smile!", "Dance like nobody is watching!" zijn een greep uit de positieve kreten.
+        </p>
+        <p>
+          Er is goed onderzoek verricht naar het model van de sweaters en shirts, de kwaliteit van de stof en de bedrukking. Het resultaat: een lievelingstrui of t-shirt waar je een goed gevoel van krijgt, die heerlijk zit én jarenlang mee kan.
+        </p>
+      </div>
+    </div>
+
+
+
+  </body>
+</html>
