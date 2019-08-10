@@ -374,7 +374,3 @@ class ProductFactory(factory.DjangoModelFactory):
         all_colors_randomly_ordered = Color.objects.order_by("?")
         for j in range(number_of_colors_to_add):
             self.colors.add(all_colors_randomly_ordered[j])
-
-    color = factory.LazyAttribute(lambda _:
-        COLORS[faker.random_int(min=0, max=len(COLORS)-1)]
-    )
