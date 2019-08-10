@@ -21,7 +21,9 @@ class CeceLabel(models.Model):
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, blank=True, null=True,
-        related_name="has_changed_cecelabel")
+        related_name="has_changed_cecelabel",
+        verbose_name=_("last updated by"),
+    )
 
     class Meta:
         verbose_name = _("Label")
@@ -51,7 +53,9 @@ class Certificate(models.Model):
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, blank=True, null=True,
-        related_name="has_changed_certificate")
+        related_name="has_changed_certificate",
+        verbose_name=_("last updated by"),
+    )
 
     class Meta:
         verbose_name = _("Certificate")
@@ -88,7 +92,9 @@ class Category(models.Model):
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, blank=True, null=True,
-        related_name="has_changed_category")
+        related_name="has_changed_category",
+        verbose_name=_("last updated by"),
+    )
 
     class Meta:
         verbose_name = _("Category")
@@ -111,7 +117,8 @@ class Subcategory(models.Model):
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     category = models.ForeignKey(Category,
         on_delete=models.CASCADE,
-        related_name="subcategories"
+        related_name="subcategories",
+        verbose_name=_("category"),
     )
 
     # Fields for bookkeeping of database updates
@@ -120,7 +127,9 @@ class Subcategory(models.Model):
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, null=True, blank=True,
-        related_name="has_changed_subcategory")
+        related_name="has_changed_subcategory",
+        verbose_name=_("last updated by"),
+    )
 
     class Meta:
         verbose_name = _("Subcategory")
@@ -152,7 +161,9 @@ class PaymentOption(models.Model):
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, null=True, blank=True,
-        related_name="has_changed_paymentoption")
+        related_name="has_changed_paymentoption",
+        verbose_name=_("last updated by"),
+    )
 
     class Meta:
         verbose_name = _("PaymentOption")
@@ -179,7 +190,10 @@ class Store(models.Model):
         max_length=200, directory="{0}img/logos/stores".format(settings.STATIC_ROOT),
         extensions=[".jpg", ".jpeg", ".gif", ".png"],
     )
-    payment_options = models.ManyToManyField(PaymentOption, related_name="stores")
+    payment_options = models.ManyToManyField(
+        PaymentOption, related_name="stores",
+        verbose_name=_("payment options"),
+    )
 
     # Administrative address, e.g. headquarters
     address = models.CharField(_("address"), max_length=128, null=True, blank=True)
@@ -193,7 +207,9 @@ class Store(models.Model):
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, null=True, blank=True,
-        related_name="has_changed_store")
+        related_name="has_changed_store",
+        verbose_name=_("last updated by"),
+    )
 
     class Meta:
         verbose_name = _("Store")
@@ -222,8 +238,14 @@ class Brand(models.Model):
     )
 
     # Sustainability information, gleaned from Cece API
-    labels = models.ManyToManyField(CeceLabel, blank=True, related_name="brands")
-    certificates = models.ManyToManyField(Certificate, blank=True, related_name="brands")
+    labels = models.ManyToManyField(CeceLabel,
+        blank=True, related_name="brands",
+        verbose_name=_("labels"),
+    )
+    certificates = models.ManyToManyField(Certificate,
+        blank=True, related_name="brands",
+        verbose_name=_("certificates"),
+    )
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(null=True, blank=True)
@@ -231,7 +253,9 @@ class Brand(models.Model):
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, null=True, blank=True,
-        related_name="has_changed_brand")
+        related_name="has_changed_brand",
+        verbose_name=_("last updated by"),
+    )
 
     class Meta:
         verbose_name = _("Brand")
@@ -259,7 +283,9 @@ class Size(models.Model):
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, null=True, blank=True,
-        related_name="has_changed_size")
+        related_name="has_changed_size",
+        verbose_name=_("last updated by"),
+    )
 
     class Meta:
         verbose_name = _("Size")
@@ -283,7 +309,9 @@ class Color(models.Model):
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, null=True, blank=True,
-        related_name="has_changed_color")
+        related_name="has_changed_color",
+        verbose_name=_("last updated by"),
+    )
 
     class Meta:
         verbose_name = _("Color")
@@ -308,7 +336,9 @@ class Material(models.Model):
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, null=True, blank=True,
-        related_name="has_changed_material")
+        related_name="has_changed_material",
+        verbose_name=_("last updated by"),
+    )
 
     class Meta:
         verbose_name = _("Material")
@@ -341,14 +371,14 @@ class Product(models.Model):
     extra_images = JSONField(_("extra images"), blank=True)
 
     brand = models.ForeignKey(Brand,
-        verbose_name=_("brand"),
         related_name="products",
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        verbose_name=_("brand"),
     )
     store = models.ForeignKey(Store,
-        verbose_name=_("store"),
         related_name="products",
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        verbose_name=_("store"),
     )
     # TODO: handle deletion of the last Category from Product (delete Product?)
     categories = models.ManyToManyField(Category,
@@ -382,7 +412,9 @@ class Product(models.Model):
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
         on_delete=models.SET_NULL, blank=True, null=True,
-        related_name="has_changed_product")
+        related_name="has_changed_product",
+        verbose_name=_("last updated by"),
+    )
 
     class Meta:
         verbose_name = _("Product")

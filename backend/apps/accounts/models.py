@@ -39,7 +39,9 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     date_updated = models.DateTimeField(_("date Laatst Gewijzigd"), auto_now=True)
     last_updated_by = models.ForeignKey("self",
         on_delete=models.SET_NULL, null=True, blank=True,
-        related_name="has_changed_accounts")
+        related_name="has_changed_accounts",
+        verbose_name=_("last updated by"),
+    )
 
     objects = AccountManager()
 
