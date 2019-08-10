@@ -24,7 +24,13 @@ class UserModelTest(TestCase):
         self.assertEqual(UserModel._meta.get_field("zip_code").verbose_name, "zip code")
         self.assertEqual(UserModel._meta.get_field("city").verbose_name, "city")
         self.assertEqual(UserModel._meta.get_field("country").verbose_name, "country")
+
         self.assertEqual(UserModel._meta.get_field("favorites").verbose_name, "favorites")
+
+        self.assertEqual(UserModel._meta.get_field("balance").verbose_name, "balance")
+        self.assertEqual(UserModel._meta.get_field("monthly_top_up").verbose_name, "monthly top up")
+        self.assertEqual(UserModel._meta.get_field("payment_preference").verbose_name, "payment preference")
+
         self.assertEqual(UserModel._meta.get_field("is_active").verbose_name, "active")
         self.assertEqual(UserModel._meta.get_field("is_staff").verbose_name, "staff")
         self.assertEqual(UserModel._meta.get_field("is_superuser").verbose_name, "superuser")

@@ -2,9 +2,9 @@ import os
 import time
 
 from django.conf import settings
-from django.utils import timezone
 from celery.utils.log import get_task_logger
 from django.core.management import call_command
+from django.utils.module_loading import import_string
 
 from settings.celery import app
 from catalogue.models import (
@@ -29,3 +29,8 @@ def retrieve_data_from_cece():
         "retrieve_data_from_cece",
         "--running_as_task"
     )
+
+@app.task
+def update_exchange_rates(backend=settings.EXCHANGE_BACKEND, **kwargs):
+    backend = import_string(backend)()
+    backend.update_rates(**kwargs)

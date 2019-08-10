@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     "django_filters",
     "rest_framework",
     "rest_framework_datatables",
+    "djmoney",
+    "djmoney.contrib.exchange",
 
     "accounts",
     "catalogue",
@@ -142,6 +144,13 @@ USE_TZ = True
 LOCALE_PATHS = (
     (os.path.join(BASE_DIR, u"locale/")),
 )
+
+CURRENCIES = ("EUR", "GBP", "USD")
+CURRENCY_CHOICES = [("EUR", "EUR €"),("GBP", "GBP £"), ("USD", "USD $") ]
+OPEN_EXCHANGE_RATES_APP_ID = env("OPEN_EXCHANGE_RATES_APP_ID")
+EXCHANGE_BACKEND = "djmoney.contrib.exchange.backends.OpenExchangeRatesBackend"
+MOLLIE_API_KEY_LIVE = env("MOLLIE_API_KEY_LIVE")
+MOLLIE_API_KEY_LIVE = env("MOLLIE_API_KEY_LIVE")
 
 
 # Static files (CSS, JavaScript, Images)

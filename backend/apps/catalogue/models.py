@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from jsonfield import JSONField
 from tinymce.models import HTMLField
+from djmoney.models.fields import MoneyField
 from filebrowser.fields import FileBrowseField
 from django_countries.fields import CountryField
 
@@ -361,9 +362,9 @@ class Product(models.Model):
 
     cece_id = models.CharField(_("cece product id"), null=True, blank=True, max_length=100)
 
-    price = models.DecimalField(_("price"), max_digits=6, decimal_places=2)
-    from_price = models.DecimalField(_("from price"), max_digits=6,
-        decimal_places=2, null=True, blank=True,
+    price = MoneyField(_("price"), max_digits=19, decimal_places=4, default_currency="EUR")
+    from_price = MoneyField(_("from price"), max_digits=19, default_currency="EUR",
+        decimal_places=4, null=True, blank=True,
         help_text=_("Product on sale if 'from price' is given.")
     )
 

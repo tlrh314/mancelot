@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.encoding import python_2_unicode_compatible
 
+from djmoney.models.fields import MoneyField
 from django_countries.fields import CountryField
 
 from accounts.managers import AccountManager
@@ -22,9 +23,26 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     city = models.CharField(_("city"), max_length=42, null=True, blank=True)
     country = CountryField(_("country"), default="NL", null=True, blank=True)
 
-    # Support
+    # Support for UserModel interactions with items in our catalogue
     favorites = models.ManyToManyField("catalogue.Product", verbose_name=_("favorites"),
         related_name="saved_by_users", blank=True)
+
+    # Support for monthly subscriptions
+    PAYMENT_OPTIONS = (
+       (0, _("Bank Transfer")),
+       (1, _("Ideal")),
+       (2, _("Paypal")),
+    )
+    balance = MoneyField(_("balance"), null=True, blank=True,
+        max_digits=19, decimal_places=4, default_currency="EUR",
+    )
+    monthly_top_up = MoneyField(_("monthly top up"), null=True, blank=True,
+        max_digits=19, decimal_places=4, default_currency="EUR",
+    )
+    payment_preference = models.PositiveSmallIntegerField(
+        _("payment preference"), null=True, blank=True,
+        choices=PAYMENT_OPTIONS, default=None,
+    )
 
     # Django permission fields
     is_active = models.BooleanField(_("active"), default=False,
