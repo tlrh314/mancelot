@@ -16,7 +16,7 @@ class CeceLabel(models.Model):
     info = HTMLField(_("info"), null=True, blank=True)
 
     # Fields for bookkeeping of database updates
-    cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
+    cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
@@ -46,7 +46,7 @@ class Certificate(models.Model):
     #  url = models.URLField(_("url"))  # TODO: add url of certificate instance website?
 
     # Fields for bookkeeping of database updates
-    cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
+    cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
@@ -83,7 +83,7 @@ class Category(models.Model):
     )
 
     # Fields for bookkeeping of database updates
-    cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
+    cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
@@ -115,7 +115,7 @@ class Subcategory(models.Model):
     )
 
     # Fields for bookkeeping of database updates
-    cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
+    cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
@@ -147,7 +147,7 @@ class PaymentOption(models.Model):
     )
 
     # Fields for bookkeeping of database updates
-    cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
+    cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
@@ -188,7 +188,7 @@ class Store(models.Model):
     country = CountryField(_("country"), default="NL", null=True, blank=True)
 
     # Fields for bookkeeping of database updates
-    cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
+    cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
@@ -226,7 +226,7 @@ class Brand(models.Model):
     certificates = models.ManyToManyField(Certificate, blank=True, related_name="brands")
 
     # Fields for bookkeeping of database updates
-    cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
+    cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
@@ -254,7 +254,7 @@ class Size(models.Model):
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
 
     # Fields for bookkeeping of database updates
-    cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
+    cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
@@ -278,7 +278,7 @@ class Color(models.Model):
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
 
     # Fields for bookkeeping of database updates
-    cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
+    cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
@@ -303,7 +303,7 @@ class Material(models.Model):
     info = HTMLField(_("info"), null=True, blank=True)
 
     # Fields for bookkeeping of database updates
-    cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
+    cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
@@ -377,7 +377,7 @@ class Product(models.Model):
     )
 
     # Fields for bookkeeping of database updates
-    cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
+    cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
     last_updated_by = models.ForeignKey("accounts.UserModel",
