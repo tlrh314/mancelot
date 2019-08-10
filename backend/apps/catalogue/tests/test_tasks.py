@@ -1,3 +1,5 @@
+from django.test import TestCase
+
 from catalogue.tasks import retrieve_data_from_cece
 
 

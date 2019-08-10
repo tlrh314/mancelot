@@ -64,9 +64,6 @@ class CategoryFactory(factory.DjangoModelFactory):
 
         if extracted:
             for subcategory in extracted:
-                # TODO: what happens when extracted.category != self ?
-                # Presumably the category of the given subcategories will be
-                # updated to the Category instance created in this factory call?
                 self.subcategories.add(extracted)
             return
 
@@ -280,15 +277,19 @@ class ProductFactory(factory.DjangoModelFactory):
             )
             if img not in self.extra_images: self.extra_images.append(img)
 
-    # Create Brand instances if there are less than fourty brands available
-    if Brand.objects.count() < 40:
-        BrandFactory.create_batch(40 - Brand.objects.count())
-    brand = Brand.objects.order_by("?").first()
+    # # Create Brand instances if there are less than fourty brands available
+    # if Brand.objects.count() < 40:
+    #     BrandFactory.create_batch(40 - Brand.objects.count())
+    # brand = Brand.objects.order_by("?").first()
+    brand = factory.SubFactory(
+        BrandFactory, labels__skip=True, certificates__skip=True
+    )
 
-    # Create Store instances if there are less than twenty brands available
-    if Store.objects.count() < 20:
-        StoreFactory.create_batch(20 - Store.objects.count())
-    store = Store.objects.order_by("?").first()
+    # # Create Store instances if there are less than twenty brands available
+    # if Store.objects.count() < 20:
+    #     StoreFactory.create_batch(20 - Store.objects.count())
+    # store = Store.objects.order_by("?").first()
+    store = factory.SubFactory(StoreFactory, payment_options__skip=True)
 
     @factory.post_generation
     def categories(self, create, extracted, **kwargs):  # M2M relation

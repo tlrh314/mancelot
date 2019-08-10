@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "django_filters",
     "rest_framework",
     "rest_framework_datatables",
+    # "rest_framework_simplejwt.token_blacklist",
     "djmoney",
     "djmoney.contrib.exchange",
 
@@ -218,8 +219,8 @@ REST_FRAMEWORK = {
 ### Django REST Simple JWT
 from datetime import timedelta
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": True,
 
@@ -231,12 +232,12 @@ SIMPLE_JWT = {
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
 
-    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),  # or SlidingToken
     "TOKEN_TYPE_CLAIM": "token_type",
 
     "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
-    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
-    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+    "SLIDING_TOKEN_LIFETIME": timedelta(days=1),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=30),
 }
 
 
@@ -370,6 +371,8 @@ LOGGING = {
 
 
 if DEBUG:
+    PREPEND_WWW = False
+
     INSTALLED_APPS += [
         "django_extensions"
     ]

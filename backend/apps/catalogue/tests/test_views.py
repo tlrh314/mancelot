@@ -5,13 +5,14 @@ from catalogue.models import Brand
 from catalogue.models import Store
 from catalogue.models import Product
 from catalogue.models import Category
-from catalogue.models import SubCategory
+from catalogue.models import Subcategory
 from catalogue.models import Certificate
 
 
 # self.assertIsNotNone(entry.get_absolute_url())
 
 
+# RequestFactory
 # class IndexTests(TestCase):
 #
 #     def setUp(self):
