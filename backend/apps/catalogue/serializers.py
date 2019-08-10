@@ -18,7 +18,7 @@ from catalogue.models import (
 class CeceLabelSerializer(serializers.ModelSerializer):
     class Meta:
         model = CeceLabel
-        fields = ("name", "slug", "info")
+        fields = ("id", "name", "slug", "info")
 
 
 class CertificateSerializer(serializers.ModelSerializer):
@@ -89,8 +89,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "id", "name", "slug", "info", "extra_info", "url", "cece_id",
             "price", "price_currency", "from_price", "from_price_currency",
             "main_image", "extra_images", "brand", "store",
-            "categories", "categories_api", "subcategories", "materials",
+            "categories", "subcategories", "materials",
             "sizes", "colors",
         )
-    def categories_api(self):
-        return serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name="category-list")
+    # return serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name="category-list")
