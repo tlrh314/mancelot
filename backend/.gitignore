@@ -186,3 +186,7 @@ tags
 .bash_history
 .cache
 .viminfo
+
+# Output of graphviz
+*.pdf
+*.dot
