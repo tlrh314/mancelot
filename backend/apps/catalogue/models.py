@@ -235,7 +235,7 @@ class Brand(models.Model):
 
     class Meta:
         verbose_name = _("Brand")
-        verbose_name_plural = _("Brand")
+        verbose_name_plural = _("Brands")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -264,6 +264,30 @@ class Size(models.Model):
     class Meta:
         verbose_name = _("Size")
         verbose_name_plural = _("Sizes")
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+class Color(models.Model):
+    name = models.CharField(_("name"), max_length=200)
+    slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
+
+    # Fields for bookkeeping of database updates
+    cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)
+    date_created = models.DateTimeField(_("date created"), auto_now_add=True)
+    date_updated = models.DateTimeField(_("date updated"), auto_now=True)
+    last_updated_by = models.ForeignKey("accounts.UserModel",
+        on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="has_changed_color")
+
+    class Meta:
+        verbose_name = _("Color")
+        verbose_name_plural = _("Colors")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -317,30 +341,40 @@ class Product(models.Model):
     extra_images = JSONField(_("extra images"), blank=True)
 
     brand = models.ForeignKey(Brand,
+        verbose_name=_("brand"),
         related_name="products",
         on_delete=models.CASCADE
     )
     store = models.ForeignKey(Store,
+        verbose_name=_("store"),
         related_name="products",
         on_delete=models.CASCADE
     )
     # TODO: handle deletion of the last Category from Product (delete Product?)
     categories = models.ManyToManyField(Category,
+        verbose_name=_("categories"),
         related_name="products",
     )
     subcategories = models.ManyToManyField(Subcategory,
+        verbose_name=_("subcategories"),
         related_name="products",
         blank=True,
     )
     materials = models.ManyToManyField(Material,
+        verbose_name=_("materials"),
         related_name="products",
         blank=True
     )
     sizes = models.ManyToManyField(Size,
+        verbose_name=_("sizes"),
         related_name="products",
         blank=True
     )
-    color = models.CharField(_("color"), null=True, blank=True, max_length=200)
+    colors = models.ManyToManyField(Color,
+        verbose_name=_("colors"),
+        related_name="products",
+        blank=True
+    )
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(_("cece_api_url"), null=True, blank=True)

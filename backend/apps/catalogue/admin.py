@@ -14,6 +14,7 @@ from catalogue.models import (
     Store,
     Brand,
     Size,
+    Color,
     Material,
     Product
 )
@@ -238,12 +239,13 @@ class ProductAdmin(admin.ModelAdmin):
         ("store", RelatedDropdownFilter),
         ("materials", RelatedDropdownFilter),
         ("sizes", RelatedDropdownFilter),
+        ("colors", RelatedDropdownFilter),
         ProductIsOnSaleFilter,
     )
     search_fields = ("name", "info", "extra_info",)
     ordering = ("name",)
     readonly_fields = ("slug", "date_created", "date_updated", "last_updated_by",)
-    filter_horizontal = ("categories", "subcategories", "materials", "sizes")
+    filter_horizontal = ("categories", "subcategories", "materials", "sizes", "colors")
     form = FixTinyMCEHasTooWideUIForm
 
     fieldsets = (
@@ -252,7 +254,7 @@ class ProductAdmin(admin.ModelAdmin):
             "main_image", "extra_images",
             "info", "extra_info",
             "brand", "store", "categories",
-            "color", "sizes", "materials",
+            "colors", "sizes", "materials",
             )
         }),
         (_("Meta"), {

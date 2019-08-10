@@ -12,6 +12,7 @@ from catalogue.models import (
     Store,
     Brand,
     Size,
+    Color,
     Material,
     Product
 )
@@ -198,6 +199,15 @@ class SizeFactory(factory.DjangoModelFactory):
         SIZES[faker.random_int(min=0, max=len(SIZES)-1)]
     )
 
+class ColorFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Color
+        django_get_or_create = ("name",)
+
+    name = factory.LazyAttribute(lambda _:
+        COLORS[faker.random_int(min=0, max=len(COLORS)-1)]
+    )
+
 
 class MaterialFactory(factory.DjangoModelFactory):
     class Meta:
@@ -259,10 +269,6 @@ class ProductFactory(factory.DjangoModelFactory):
                 settings.STATIC_ROOT, faker.random_int(min=1, max=30)
             )
             if img not in self.extra_images: self.extra_images.append(img)
-
-    color = factory.LazyAttribute(lambda _:
-        COLORS[faker.random_int(min=0, max=len(COLORS)-1)]
-    )
 
     # Create Brand instances if there are less than fourty brands available
     if Brand.objects.count() < 40:
@@ -349,3 +355,26 @@ class ProductFactory(factory.DjangoModelFactory):
         all_sizes_randomly_ordered = Size.objects.order_by("?")
         for j in range(number_of_sizes_to_add):
             self.sizes.add(all_sizes_randomly_ordered[j])
+
+    @factory.post_generation
+    def colors(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for color in extracted:
+                self.colors.add(color)
+            return
+
+        # Create Color instances if there are less than twenty-five available
+        if Color.objects.count() < 25:
+            ColorFactory.create_batch(25 - Color.objects.count())
+
+        number_of_colors_to_add = faker.random_int(min=0, max=Color.objects.count()-1)
+        all_colors_randomly_ordered = Color.objects.order_by("?")
+        for j in range(number_of_colors_to_add):
+            self.colors.add(all_colors_randomly_ordered[j])
+
+    color = factory.LazyAttribute(lambda _:
+        COLORS[faker.random_int(min=0, max=len(COLORS)-1)]
+    )

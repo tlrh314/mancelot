@@ -3,25 +3,13 @@ from django.test import TestCase
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 
-from catalogue.models import (
-    CeceLabel,
-    Certificate,
-    Category,
-    Subcategory,
-    PaymentOption,
-    Store,
-    Brand,
-    Size,
-    Material,
-    Product
-)
-
 
 faker = Faker()
 
 
 class CeceLabelTest(TestCase):
     def test_verbose_name(self):
+        # TODO: activate("nl"), then run checks for translated field names
         self.assertEqual(str(CeceLabel._meta.verbose_name), "Label")
         self.assertEqual(str(CeceLabel._meta.verbose_name_plural), "Labels")
 
@@ -30,8 +18,9 @@ class CeceLabelTest(TestCase):
         self.assertEqual(str(obj), "{0}".format(obj.name))
 
     def test_field_names(self):
-        obj = CeceLabel()
-        name = "naam"
+        # TODO: activate("nl"), then run checks for translated field names
+        obj = CeceLabelFactory.build()
+        name = "name"
         slug = "slug"
         info = "info"
         cece_api_url = "cece_api_url"
@@ -48,9 +37,10 @@ class CeceLabelTest(TestCase):
 
     def test_slug_creation_on_save(self):
         name = "(*$jdskfasdf yhjkF~di `qo` oasu*OYUGHJKAf"
-        obj = CeceLabel(name=name)
+        obj = CeceLabelFactory(name=name)
         obj.save()
         self.assertEqual(obj.slug, slugify(name))
+        obj.delete()
 
     def test_absolute_url(self):
         return
@@ -62,16 +52,18 @@ class CeceLabelTest(TestCase):
 
 class CertificateTest(TestCase):
     def test_verbose_name(self):
-        self.assertEqual(str(Certificate._meta.verbose_name), "Certificaat")
-        self.assertEqual(str(Certificate._meta.verbose_name_plural), "Certificaten")
+        # TODO: activate("nl"), then run checks for translated field names
+        self.assertEqual(str(Certificate._meta.verbose_name), "Certificate")
+        self.assertEqual(str(Certificate._meta.verbose_name_plural), "Certificates")
 
     def test_string_representation(self):
         obj = Certificate(name="name")
         self.assertEqual(str(obj), "{0}".format(obj.name))
 
     def test_field_names(self):
-        obj = Certificate()
-        name = "naam"
+        # TODO: activate("nl"), then run checks for translated field names
+        obj = CertificateFactory.build()
+        name = "name"
         slug = "slug"
         info = "info"
         cece_api_url = "cece_api_url"
@@ -86,9 +78,10 @@ class CertificateTest(TestCase):
 
     def test_slug_creation_on_save(self):
         name = "(*$jdskfasdf yhjkF~di `qo` oasu*OYUGHJKAf"
-        obj = Certificate(name=name)
+        obj = CertificateFactory(name=name)
         obj.save()
         self.assertEqual(obj.slug, slugify(name))
+        obj.delete()
 
     def test_absolute_url(self):
         return
@@ -100,18 +93,20 @@ class CertificateTest(TestCase):
 
 class CategoryTest(TestCase):
     def test_verbose_name(self):
-        self.assertEqual(str(Category._meta.verbose_name), "Categorie")
-        self.assertEqual(str(Category._meta.verbose_name_plural), "Categorieën")
+        # TODO: activate("nl"), then run checks for translated field names
+        self.assertEqual(str(Category._meta.verbose_name), "Category")
+        self.assertEqual(str(Category._meta.verbose_name_plural), "Categories")
 
     def test_string_representation(self):
         obj = Category(name="name")
         self.assertEqual(str(obj), "{0}".format(obj.name))
 
     def test_field_names(self):
-        obj = Category()
-        name = "naam"
+        # TODO: activate("nl"), then run checks for translated field names
+        obj = CategoryFactory.build()
+        name = "name"
         slug = "slug"
-        section = "sectie"
+        section = "section"
         raise NotImplementedError
 
     def test_required_name_not_given_fails(self):
@@ -123,9 +118,10 @@ class CategoryTest(TestCase):
 
     def test_slug_creation_on_save(self):
         name = "(*$jdskfasdf yhjkF~di `qo` oasu*OYUGHJKAf"
-        obj = Category(name=name)
+        obj = CategoryFactory(name=name)
         obj.save()
         self.assertEqual(obj.slug, slugify(name))
+        obj.delete()
 
     def test_absolute_url(self):
         return
@@ -170,6 +166,7 @@ class CategoryTest(TestCase):
 
 class SubcategoryTest(TestCase):
     def test_verbose_name(self):
+        # TODO: activate("nl"), then run checks for translated field names
         self.assertEqual(str(Subcategory._meta.verbose_name), "Categorie")
         self.assertEqual(str(Subcategory._meta.verbose_name_plural), "Categorieën")
 
@@ -178,8 +175,9 @@ class SubcategoryTest(TestCase):
         self.assertEqual(str(obj), "{0}".format(obj.name))
 
     def test_field_names(self):
+        # TODO: activate("nl"), then run checks for translated field names
         raise NotImplementedError
-        obj = Subcategory()
+        obj = SubcategoryFactory.build()
         name = "naam"
         slug = "slug"
 
@@ -192,10 +190,10 @@ class SubcategoryTest(TestCase):
 
     def test_slug_creation_on_save(self):
         name = "(*$jdskfasdf yhjkF~di `qo` oasu*OYUGHJKAf"
-        category = Category(name="Category")
-        obj = Subcategory(category=category, name=name)
+        category = SubcategoryFactory(name="Category")
         obj.save()
         self.assertEqual(obj.slug, slugify(name))
+        obj.delete()
 
     def test_absolute_url(self):
         return
@@ -207,6 +205,7 @@ class SubcategoryTest(TestCase):
 
 class PaymentOptionTest(TestCase):
     def test_verbose_name(self):
+        # TODO: activate("nl"), then run checks for translated field names
         self.assertEqual(str(PaymentOption._meta.verbose_name), "Betaalmethode")
         self.assertEqual(str(PaymentOption._meta.verbose_name_plural), "Betaalmethodes")
 
@@ -215,9 +214,10 @@ class PaymentOptionTest(TestCase):
         self.assertEqual(str(obj), "{0}".format(obj.name))
 
     def test_field_names(self):
+        # TODO: activate("nl"), then run checks for translated field names
         raise NotImplementedError
-        obj = PaymentOption()
-        name = "naam"
+        obj = PaymentOptionFactory.build()
+        name = "name"
         slug = "slug"
         info = "info"
 
@@ -235,6 +235,7 @@ class PaymentOptionTest(TestCase):
         obj = PaymentOption(name=name)
         obj.save()
         self.assertEqual(obj.slug, slugify(name))
+        obj.delete()
 
     def test_absolute_url(self):
         pass
@@ -252,17 +253,19 @@ class StoreTest(TestCase):
         pass
 
     def test_verbose_name(self):
-        self.assertEqual(str(Store._meta.verbose_name), "Winkel")
-        self.assertEqual(str(Store._meta.verbose_name_plural), "Winkels")
+        # TODO: activate("nl"), then run checks for translated field names
+        self.assertEqual(str(Store._meta.verbose_name), "Store")
+        self.assertEqual(str(Store._meta.verbose_name_plural), "Stores")
 
     def test_string_representation(self):
         obj = Store(name="name")
         self.assertEqual(str(obj), "{0}".format(obj.name))
 
     def test_field_names(self):
+        # TODO: activate("nl"), then run checks for translated field names
         raise NotImplementedError
-        obj = Store()
-        name = "naam"
+        obj = StoreFactory.build()
+        name = "name"
         slug = "slug"
         info = "info"
         url = "url"
@@ -278,11 +281,11 @@ class StoreTest(TestCase):
             obj.save()
 
     def test_slug_creation_on_save(self):
-        raise NotImplementedError
         name = "(*$jdskfasdf yhjkF~di `qo` oasu*OYUGHJKAf"
-        obj = Store(name=name)  # factory
+        obj = StoreFactory(name=name)
         obj.save()
         self.assertEqual(obj.slug, slugify(name))
+        obj.delete()
 
     def test_absolute_url(self):
         return
@@ -303,17 +306,19 @@ class BrandTest(TestCase):
         pass
 
     def test_verbose_name(self):
-        self.assertEqual(str(Brand._meta.verbose_name), "Merk")
-        self.assertEqual(str(Brand._meta.verbose_name_plural), "Merken")
+        # TODO: activate("nl"), then run checks for translated field names
+        self.assertEqual(str(Brand._meta.verbose_name), "Brand")
+        self.assertEqual(str(Brand._meta.verbose_name_plural), "Brands")
 
     def test_string_representation(self):
         obj = Brand(name="name")
         self.assertEqual(str(obj), "{0}".format(obj.name))
 
     def test_field_names(self):
+        # TODO: activate("nl"), then run checks for translated field names
         raise NotImplementedError
-        obj = Brand()
-        name = "naam"
+        obj = BrandFactory.build()
+        name = "name"
         slug = "slug"
         info = "info"
         url = "url"
@@ -329,9 +334,10 @@ class BrandTest(TestCase):
 
     def test_slug_creation_on_save(self):
         name = "(*$jdskfasdf yhjkF~di `qo` oasu*OYUGHJKAf"
-        obj = Brand(name=name)
+        obj = BrandFactory(name=name)
         obj.save()
         self.assertEqual(obj.slug, slugify(name))
+        obj.delete()
 
     def test_absolute_url(self):
         return
@@ -349,17 +355,19 @@ class BrandTest(TestCase):
 
 class SizeTest(TestCase):
     def test_verbose_name(self):
-        self.assertEqual(str(Size._meta.verbose_name), "Maat")
-        self.assertEqual(str(Size._meta.verbose_name_plural), "Maten")
+        # TODO: activate("nl"), then run checks for translated field names
+        self.assertEqual(str(Size._meta.verbose_name), "Size")
+        self.assertEqual(str(Size._meta.verbose_name_plural), "Sizes")
 
     def test_string_representation(self):
         obj = Size(name="name")
         self.assertEqual(str(obj), "{0}".format(obj.name))
 
     def test_field_names(self):
+        # TODO: activate("nl"), then run checks for translated field names
         raise NotImplementedError
-        obj = Size()
-        name = "naam"
+        obj = SizeFactory.build()
+        name = "name"
         slug = "slug"
 
     def test_required_name_not_given_fails(self):
@@ -367,9 +375,42 @@ class SizeTest(TestCase):
 
     def test_slug_creation_on_save(self):
         name = "(*$jdskfasdf yhjkF~di `qo` oasu*OYUGHJKAf"
-        obj = Size(name=name)
+        obj = SizeFactory(name=name)
         obj.save()
         self.assertEqual(obj.slug, slugify(name))
+        obj.delete()
+
+    def test_deletion_of_last_updated_by_user(self):
+        # SET_NULL
+        raise NotImplementedError
+
+
+class ColorTest(TestCase):
+    def test_verbose_name(self):
+        # TODO: activate("nl"), then run checks for translated field names
+        self.assertEqual(str(Color._meta.verbose_name), "Color")
+        self.assertEqual(str(Color._meta.verbose_name_plural), "Colors")
+
+    def test_string_representation(self):
+        obj = Color(name="name")
+        self.assertEqual(str(obj), "{0}".format(obj.name))
+
+    def test_field_names(self):
+        # TODO: activate("nl"), then run checks for translated field names
+        raise NotImplementedError
+        obj = ColorFactory.build()
+        name = "name"
+        slug = "slug"
+
+    def test_required_name_not_given_fails(self):
+        raise NotImplementedError
+
+    def test_slug_creation_on_save(self):
+        name = "(*$jdskfasdf yhjkF~di `qo` oasu*OYUGHJKAf"
+        obj = ColorFactory(name=name)
+        obj.save()
+        self.assertEqual(obj.slug, slugify(name))
+        obj.delete()
 
     def test_deletion_of_last_updated_by_user(self):
         # SET_NULL
@@ -378,17 +419,19 @@ class SizeTest(TestCase):
 
 class MaterialTest(TestCase):
     def test_verbose_name(self):
-        self.assertEqual(str(Material._meta.verbose_name), "Materiaal")
-        self.assertEqual(str(Material._meta.verbose_name_plural), "Materialen")
+        # TODO: activate("nl"), then run checks for translated field names
+        self.assertEqual(str(Material._meta.verbose_name), "Material")
+        self.assertEqual(str(Material._meta.verbose_name_plural), "Materials")
 
     def test_string_representation(self):
         obj = Material(name="name")
         self.assertEqual(str(obj), "{0}".format(obj.name))
 
     def test_field_names(self):
+        # TODO: activate("nl"), then run checks for translated field names
         raise NotImplementedError
-        obj = Material()
-        name = "naam"
+        obj = MaterialFactory.build()
+        name = "name"
         slug = "slug"
         info = "info"
 
@@ -397,9 +440,10 @@ class MaterialTest(TestCase):
 
     def test_slug_creation_on_save(self):
         name = "(*$jdskfasdf yhjkF~di `qo` oasu*OYUGHJKAf"
-        obj = Material(name=name)
+        obj = MaterialFactory(name=name)
         obj.save()
         self.assertEqual(obj.slug, slugify(name))
+        obj.delete()
 
     def test_deletion_of_last_updated_by_user(self):
         # SET_NULL
@@ -411,31 +455,35 @@ class ProductTest(TestCase):
         pass
 
     def test_verbose_name(self):
+        # TODO: activate("nl"), then run checks for translated field names
         self.assertEqual(str(Product._meta.verbose_name), "Product")
-        self.assertEqual(str(Product._meta.verbose_name_plural), "Producten")
+        self.assertEqual(str(Product._meta.verbose_name_plural), "Products")
 
     def test_string_representation(self):
         obj = Product(name="name")
         self.assertEqual(str(obj), "{0}".format(obj.name))
 
     def test_field_names(self):
+        # TODO: activate("nl"), then run checks for translated field names
         raise NotImplementedError
-        obj = Product()
-        name = "naam"
+        obj = ProductFactory.build()
+        name = "name"
         slug = "slug"
         info = "info"
         url = "url"
         logo = "logo"
-        main_image = "hoofdafbeelding"
-        extra_images = "extra afbeeldingen"
+        main_image = "main image"
+        extra_images = "extra images"
+        # TODO: add translations to fk/m2m model fields
         # brand, store, categories, subcategories, materials, sizes
-        color = "kleur"
+        color = "color"
 
     def test_slug_creation_on_save(self):
         name = "(*$jdskfasdf yhjkF~di `qo` oasu*OYUGHJKAf"
-        obj = Product(name=name)
+        obj = ProductFactory(name=name)
         obj.save()
         self.assertEqual(obj.slug, slugify(name))
+        obj.delete()
 
     def test_absolute_url(self):
         return
@@ -453,6 +501,9 @@ class ProductTest(TestCase):
     def test_product_brand_relation(self):
         raise NotImplementedError
 
+    def test_brand_addition(self):
+        raise NotImplementedError
+
     def test_brand_deletion(self):
         # CASCADE, so Product should be removed
         raise NotImplementedError
@@ -460,11 +511,17 @@ class ProductTest(TestCase):
     def test_product_store_relation(self):
         raise NotImplementedError
 
+    def test_store_addition(self):
+        raise NotImplementedError
+
     def test_store_deletion(self):
         # CASCADE, so Product should be removed
         raise NotImplementedError
 
     def test_product_category_relation(self):
+        raise NotImplementedError
+
+    def test_category_addition(self):
         raise NotImplementedError
 
     def test_category_deletion(self):
@@ -475,16 +532,34 @@ class ProductTest(TestCase):
     def test_product_subcategory_relation(self):
         raise NotImplementedError
 
+    def test_subcategory_addition(self):
+        raise NotImplementedError
+
     def test_subcategory_deletion(self):
         raise NotImplementedError
 
     def test_product_material_relation(self):
         raise NotImplementedError
 
+    def test_material_addition(self):
+        raise NotImplementedError
+
     def test_material_deletion(self):
         raise NotImplementedError
 
+    def test_product_color_relation(self):
+        raise NotImplementedError
+
+    def test_color_addition(self):
+        raise NotImplementedError
+
+    def test_color_deletion(self):
+        raise NotImplementedError
+
     def test_product_size_relation(self):
+        raise NotImplementedError
+
+    def test_size_addition(self):
         raise NotImplementedError
 
     def test_size_deletion(self):
