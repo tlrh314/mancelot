@@ -59,11 +59,11 @@ class CategoryFactory(factory.DjangoModelFactory):
     @factory.post_generation
     def subcategories(self, create, extracted, **kwargs):
         # ForeignKey relation at Subcategory. Here we use the related_name
-        if not create:
+        if not create or kwargs.get("return"):
             return
 
         if extracted:
-            for subcategory in subcategories:
+            for subcategory in extracted:
                 # TODO: what happens when extracted.category != self ?
                 # Presumably the category of the given subcategories will be
                 # updated to the Category instance created in this factory call?
@@ -83,7 +83,17 @@ class SubcategoryFactory(factory.DjangoModelFactory):
         django_get_or_create = ("name",)
 
     name = factory.LazyAttribute(lambda _: faker.name())
-    category = factory.SubFactory(CategoryFactory)
+
+    # We do not want CategoryFactory.subcategories post_generation to add any
+    # subcategories (which it does by default), but we cannot use the extracted
+    # block either because we would have to give 'self', i.e. the Subcategory
+    # that we create in this factory (and bool empty QuerySet is False). We
+    # cannot use post_generation on the SubcategoryFactory either because that
+    # is executed after save, and category_id cannot be none on save.
+    # So we pass return=True as kwarg to the subcategories post_generation
+    # method such that the category does not generate subcategories, but
+    # it is added to this subcategory :-).
+    category = factory.SubFactory(CategoryFactory, subcategories__return=True)
 
 
 class PaymentOptionFactory(factory.DjangoModelFactory):
