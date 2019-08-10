@@ -15,5 +15,6 @@ django:
 django-restart:
 	git pull
 	docker build -f backend/Dockerfile -t mancelot backend
-	docker-compose -f backend/docker-compose.yml restart web
-	docker exec mancelot-web bash -c "python manage.py collectstatic --noinput"
+	docker-compose -f backend/docker-compose.yml stop django celery celery-beat celery-flower
+	docker-compose -f backend/docker-compose.yml rm -f django celery celery-beat celery-flower
+	docker-compose -f backend/docker-compose.yml up -d
