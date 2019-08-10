@@ -44,6 +44,14 @@ RUN set -ex && \
     && pip install --install-option="--include-path=/usr/local/include/" \
         --install-option="--library-path=/usr/local/lib/" pygraphviz
 
+# NB, we link the repo at runtime (which 'overwrites' files copied in on build)
+# But production (when we run from image without linking the repo in) does use
+# the files copied in!
+COPY . /mancelot
+COPY tlrh/ /mancelot
+RUN chown -R mancelot:mancelot /mancelot \
+    && rm -rf tlrh
+
 USER mancelot
 
 ENTRYPOINT ["/mancelot/entrypoint.sh"]
