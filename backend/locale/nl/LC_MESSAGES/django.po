@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mancelot\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-08 22:20+0200\n"
+"POT-Creation-Date: 2019-08-10 14:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Timo Halbesma <timo@mancelot.nl>\n"
 "Language-Team: Nederlands <info@mancelot.nl>\n"
@@ -30,11 +30,11 @@ msgstr ""
 msgid "Content interaction"
 msgstr ""
 
-#: apps/accounts/admin.py:34 apps/catalogue/admin.py:37
-#: apps/catalogue/admin.py:58 apps/catalogue/admin.py:86
-#: apps/catalogue/admin.py:106 apps/catalogue/admin.py:132
-#: apps/catalogue/admin.py:159 apps/catalogue/admin.py:179
-#: apps/catalogue/admin.py:200 apps/catalogue/admin.py:258
+#: apps/accounts/admin.py:34 apps/catalogue/admin.py:38
+#: apps/catalogue/admin.py:59 apps/catalogue/admin.py:87
+#: apps/catalogue/admin.py:107 apps/catalogue/admin.py:133
+#: apps/catalogue/admin.py:160 apps/catalogue/admin.py:180
+#: apps/catalogue/admin.py:201 apps/catalogue/admin.py:260
 msgid "Meta"
 msgstr ""
 
@@ -70,7 +70,7 @@ msgstr ""
 msgid "First and last name"
 msgstr ""
 
-#: apps/accounts/models.py:19 apps/catalogue/models.py:185
+#: apps/accounts/models.py:19 apps/catalogue/models.py:199
 msgid "address"
 msgstr ""
 
@@ -78,15 +78,15 @@ msgstr ""
 msgid "Streetname and housenumber"
 msgstr ""
 
-#: apps/accounts/models.py:21 apps/catalogue/models.py:186
+#: apps/accounts/models.py:21 apps/catalogue/models.py:200
 msgid "zip code"
 msgstr ""
 
-#: apps/accounts/models.py:22 apps/catalogue/models.py:187
+#: apps/accounts/models.py:22 apps/catalogue/models.py:201
 msgid "city"
 msgstr ""
 
-#: apps/accounts/models.py:23 apps/catalogue/models.py:188
+#: apps/accounts/models.py:23 apps/catalogue/models.py:202
 msgid "country"
 msgstr ""
 
@@ -117,11 +117,11 @@ msgid "superuser"
 msgstr ""
 
 #: apps/accounts/models.py:38 apps/catalogue/models.py:20
-#: apps/catalogue/models.py:50 apps/catalogue/models.py:87
-#: apps/catalogue/models.py:119 apps/catalogue/models.py:151
-#: apps/catalogue/models.py:192 apps/catalogue/models.py:230
-#: apps/catalogue/models.py:258 apps/catalogue/models.py:283
-#: apps/catalogue/models.py:347
+#: apps/catalogue/models.py:52 apps/catalogue/models.py:91
+#: apps/catalogue/models.py:126 apps/catalogue/models.py:160
+#: apps/catalogue/models.py:206 apps/catalogue/models.py:252
+#: apps/catalogue/models.py:282 apps/catalogue/models.py:308
+#: apps/catalogue/models.py:335 apps/catalogue/models.py:411
 msgid "date created"
 msgstr ""
 
@@ -129,35 +129,44 @@ msgstr ""
 msgid "date Laatst Gewijzigd"
 msgstr ""
 
-#: apps/accounts/models.py:50
+#: apps/accounts/models.py:43 apps/catalogue/models.py:25
+#: apps/catalogue/models.py:57 apps/catalogue/models.py:96
+#: apps/catalogue/models.py:131 apps/catalogue/models.py:165
+#: apps/catalogue/models.py:211 apps/catalogue/models.py:257
+#: apps/catalogue/models.py:287 apps/catalogue/models.py:313
+#: apps/catalogue/models.py:340 apps/catalogue/models.py:416
+msgid "last updated by"
+msgstr ""
+
+#: apps/accounts/models.py:52
 msgid "User"
 msgstr ""
 
-#: apps/accounts/models.py:51
+#: apps/accounts/models.py:53
 msgid "Users"
 msgstr ""
 
-#: apps/catalogue/admin.py:131
+#: apps/catalogue/admin.py:132
 msgid "Address (administrative)"
 msgstr ""
 
-#: apps/catalogue/admin.py:158
+#: apps/catalogue/admin.py:159
 msgid "Sustainability criteria"
 msgstr ""
 
-#: apps/catalogue/admin.py:213 apps/catalogue/admin.py:218
+#: apps/catalogue/admin.py:214 apps/catalogue/admin.py:219
 msgid "Sale"
 msgstr ""
 
-#: apps/catalogue/admin.py:217
+#: apps/catalogue/admin.py:218
 msgid "Regular"
 msgstr ""
 
-#: apps/catalogue/admin.py:269
+#: apps/catalogue/admin.py:271
 msgid "Section1"
 msgstr ""
 
-#: apps/catalogue/admin.py:276
+#: apps/catalogue/admin.py:278
 msgid "Category1"
 msgstr ""
 
@@ -165,167 +174,214 @@ msgstr ""
 msgid "Catalogus"
 msgstr ""
 
-#: apps/catalogue/models.py:14 apps/catalogue/models.py:43
-#: apps/catalogue/models.py:79 apps/catalogue/models.py:110
-#: apps/catalogue/models.py:142 apps/catalogue/models.py:174
-#: apps/catalogue/models.py:215 apps/catalogue/models.py:253
-#: apps/catalogue/models.py:277 apps/catalogue/models.py:302
+#: apps/catalogue/models.py:14 apps/catalogue/models.py:45
+#: apps/catalogue/models.py:83 apps/catalogue/models.py:116
+#: apps/catalogue/models.py:151 apps/catalogue/models.py:185
+#: apps/catalogue/models.py:231 apps/catalogue/models.py:277
+#: apps/catalogue/models.py:303 apps/catalogue/models.py:329
+#: apps/catalogue/models.py:356
 msgid "name"
 msgstr ""
 
-#: apps/catalogue/models.py:15 apps/catalogue/models.py:44
-#: apps/catalogue/models.py:80 apps/catalogue/models.py:111
-#: apps/catalogue/models.py:143 apps/catalogue/models.py:175
-#: apps/catalogue/models.py:216 apps/catalogue/models.py:254
-#: apps/catalogue/models.py:278 apps/catalogue/models.py:303
+#: apps/catalogue/models.py:15 apps/catalogue/models.py:46
+#: apps/catalogue/models.py:84 apps/catalogue/models.py:117
+#: apps/catalogue/models.py:152 apps/catalogue/models.py:186
+#: apps/catalogue/models.py:232 apps/catalogue/models.py:278
+#: apps/catalogue/models.py:304 apps/catalogue/models.py:330
+#: apps/catalogue/models.py:357
 msgid "slug"
 msgstr ""
 
-#: apps/catalogue/models.py:16 apps/catalogue/models.py:45
-#: apps/catalogue/models.py:176 apps/catalogue/models.py:217
-#: apps/catalogue/models.py:279 apps/catalogue/models.py:304
+#: apps/catalogue/models.py:16 apps/catalogue/models.py:47
+#: apps/catalogue/models.py:187 apps/catalogue/models.py:233
+#: apps/catalogue/models.py:331 apps/catalogue/models.py:358
 msgid "info"
 msgstr ""
 
-#: apps/catalogue/models.py:19 apps/catalogue/models.py:49
-#: apps/catalogue/models.py:86 apps/catalogue/models.py:118
-#: apps/catalogue/models.py:150 apps/catalogue/models.py:191
-#: apps/catalogue/models.py:229 apps/catalogue/models.py:257
-#: apps/catalogue/models.py:282 apps/catalogue/models.py:346
-msgid "cece_api_url"
-msgstr ""
-
-#: apps/catalogue/models.py:21 apps/catalogue/models.py:51
-#: apps/catalogue/models.py:88 apps/catalogue/models.py:120
-#: apps/catalogue/models.py:152 apps/catalogue/models.py:193
-#: apps/catalogue/models.py:231 apps/catalogue/models.py:259
-#: apps/catalogue/models.py:284 apps/catalogue/models.py:348
+#: apps/catalogue/models.py:21 apps/catalogue/models.py:53
+#: apps/catalogue/models.py:92 apps/catalogue/models.py:127
+#: apps/catalogue/models.py:161 apps/catalogue/models.py:207
+#: apps/catalogue/models.py:253 apps/catalogue/models.py:283
+#: apps/catalogue/models.py:309 apps/catalogue/models.py:336
+#: apps/catalogue/models.py:412
 msgid "date updated"
 msgstr ""
 
-#: apps/catalogue/models.py:27
+#: apps/catalogue/models.py:29
 msgid "Label"
 msgstr ""
 
-#: apps/catalogue/models.py:28
+#: apps/catalogue/models.py:30
 msgid "Labels"
 msgstr ""
 
-#: apps/catalogue/models.py:57
+#: apps/catalogue/models.py:61
 msgid "Certificate"
 msgstr ""
 
-#: apps/catalogue/models.py:58
+#: apps/catalogue/models.py:62
 msgid "Certificates"
 msgstr ""
 
-#: apps/catalogue/models.py:74
+#: apps/catalogue/models.py:78
 msgid "Men"
 msgstr ""
 
-#: apps/catalogue/models.py:75
+#: apps/catalogue/models.py:79
 msgid "Women"
 msgstr ""
 
-#: apps/catalogue/models.py:76
+#: apps/catalogue/models.py:80
 msgid "Kids"
 msgstr ""
 
-#: apps/catalogue/models.py:94
+#: apps/catalogue/models.py:100
 msgid "Category"
 msgstr ""
 
-#: apps/catalogue/models.py:95
+#: apps/catalogue/models.py:101
 msgid "Categories"
 msgstr ""
 
-#: apps/catalogue/models.py:126
+#: apps/catalogue/models.py:121
+msgid "category"
+msgstr ""
+
+#: apps/catalogue/models.py:135
 msgid "Subcategory"
 msgstr ""
 
-#: apps/catalogue/models.py:127
+#: apps/catalogue/models.py:136
 msgid "Subcategories"
 msgstr ""
 
-#: apps/catalogue/models.py:144 apps/catalogue/models.py:178
-#: apps/catalogue/models.py:219
+#: apps/catalogue/models.py:153 apps/catalogue/models.py:189
+#: apps/catalogue/models.py:235
 msgid "logo"
 msgstr ""
 
-#: apps/catalogue/models.py:158
+#: apps/catalogue/models.py:169
 msgid "PaymentOption"
 msgstr ""
 
-#: apps/catalogue/models.py:159
+#: apps/catalogue/models.py:170
 msgid "PaymentOptions"
 msgstr ""
 
-#: apps/catalogue/models.py:177 apps/catalogue/models.py:218
-#: apps/catalogue/models.py:306
+#: apps/catalogue/models.py:188 apps/catalogue/models.py:234
+#: apps/catalogue/models.py:360
 msgid "url"
 msgstr ""
 
-#: apps/catalogue/models.py:199
+#: apps/catalogue/models.py:195
+msgid "payment options"
+msgstr ""
+
+#: apps/catalogue/models.py:215
 msgid "Store"
 msgstr ""
 
-#: apps/catalogue/models.py:200
+#: apps/catalogue/models.py:216
 msgid "Stores"
 msgstr ""
 
-#: apps/catalogue/models.py:237 apps/catalogue/models.py:238
+#: apps/catalogue/models.py:243
+msgid "labels"
+msgstr ""
+
+#: apps/catalogue/models.py:247
+msgid "certificates"
+msgstr ""
+
+#: apps/catalogue/models.py:261
 msgid "Brand"
 msgstr ""
 
-#: apps/catalogue/models.py:265
+#: apps/catalogue/models.py:262
+msgid "Brands"
+msgstr ""
+
+#: apps/catalogue/models.py:291
 msgid "Size"
 msgstr ""
 
-#: apps/catalogue/models.py:266
+#: apps/catalogue/models.py:292
 msgid "Sizes"
 msgstr ""
 
-#: apps/catalogue/models.py:290 apps/catalogue/models.py:291
+#: apps/catalogue/models.py:317
+msgid "Color"
+msgstr ""
+
+#: apps/catalogue/models.py:318
+msgid "Colors"
+msgstr ""
+
+#: apps/catalogue/models.py:344 apps/catalogue/models.py:345
 msgid "Material"
 msgstr ""
 
-#: apps/catalogue/models.py:305
+#: apps/catalogue/models.py:359
 msgid "extra info"
 msgstr ""
 
-#: apps/catalogue/models.py:308
+#: apps/catalogue/models.py:362
 msgid "cece product id"
 msgstr ""
 
-#: apps/catalogue/models.py:310
+#: apps/catalogue/models.py:364
 msgid "price"
 msgstr ""
 
-#: apps/catalogue/models.py:311
+#: apps/catalogue/models.py:365
 msgid "from price"
 msgstr ""
 
-#: apps/catalogue/models.py:313
+#: apps/catalogue/models.py:367
 msgid "Product on sale if 'from price' is given."
 msgstr ""
 
-#: apps/catalogue/models.py:316
+#: apps/catalogue/models.py:370
 msgid "main image"
 msgstr ""
 
-#: apps/catalogue/models.py:317
+#: apps/catalogue/models.py:371
 msgid "extra images"
 msgstr ""
 
-#: apps/catalogue/models.py:343
-msgid "color"
+#: apps/catalogue/models.py:376
+msgid "brand"
 msgstr ""
 
-#: apps/catalogue/models.py:354
+#: apps/catalogue/models.py:381
+msgid "store"
+msgstr ""
+
+#: apps/catalogue/models.py:385
+msgid "categories"
+msgstr ""
+
+#: apps/catalogue/models.py:389
+msgid "subcategories"
+msgstr ""
+
+#: apps/catalogue/models.py:394
+msgid "materials"
+msgstr ""
+
+#: apps/catalogue/models.py:399
+msgid "sizes"
+msgstr ""
+
+#: apps/catalogue/models.py:404
+msgid "colors"
+msgstr ""
+
+#: apps/catalogue/models.py:420
 msgid "Product"
 msgstr ""
 
-#: apps/catalogue/models.py:355
+#: apps/catalogue/models.py:421
 msgid "Products"
 msgstr ""
 

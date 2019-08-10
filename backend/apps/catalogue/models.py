@@ -83,7 +83,7 @@ class Category(models.Model):
     name = models.CharField(_("name"), max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     section = models.PositiveSmallIntegerField(
-        "sectie", choices=SECTIONS, default=0
+        "section", choices=SECTIONS, default=0
     )
 
     # Fields for bookkeeping of database updates
@@ -342,7 +342,7 @@ class Material(models.Model):
 
     class Meta:
         verbose_name = _("Material")
-        verbose_name_plural = _("Material")
+        verbose_name_plural = _("Materials")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
