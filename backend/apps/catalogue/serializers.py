@@ -32,19 +32,16 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ("id", "name", "slug", "section", "subcategories")
 
-    def subcategories(self):
-        self.subcategories.all()
-
 
 class SubcategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Category
+        model = Subcategory
         fields = ("id", "name", "slug", "category")
 
 
 class PaymentOptionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Category
+        model = PaymentOption
         fields = ("id", "name", "slug", "logo")
 
 
@@ -56,7 +53,7 @@ class StoreSerializer(serializers.ModelSerializer):
         )
 
 
-class BrandSerializer(serializers.HyperlinkedModelSerializer):
+class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
         fields = (
@@ -83,11 +80,17 @@ class MaterialSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "slug", "info")
 
 
-class ProductSerializer(serializers.HyperlinkedModelSerializer):
+class ProductSerializer(serializers.ModelSerializer):
+    categories = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
     class Meta:
         model = Product
         fields = (
             "id", "name", "slug", "info", "extra_info", "url", "cece_id",
-            "price", "from_price" "main_image", "extra_images", "brand", "store",
-            "categories", "subcategories", "materials", "sizes", "colors",
+            "price", "price_currency", "from_price", "from_price_currency",
+            "main_image", "extra_images", "brand", "store",
+            "categories", "categories_api", "subcategories", "materials",
+            "sizes", "colors",
         )
+    def categories_api(self):
+        return serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name="category-list")
