@@ -31,7 +31,7 @@ class UserModelFactory(factory.DjangoModelFactory):
 
     @factory.post_generation
     def favorites(self, create, extracted, **kwargs):  # M2M relation
-        if not create:
+        if not create or kwargs.get("skip"):
             return
 
         if extracted:
@@ -39,7 +39,7 @@ class UserModelFactory(factory.DjangoModelFactory):
                 self.favorites.add(product)
             return
 
-        # Create Product instances if there are less than one hundred available
+        # Create Product instances if there are less than twenty-five available
         if Product.objects.count() < 25:
             ProductFactory.create_batch(25 - Product.objects.count())
 

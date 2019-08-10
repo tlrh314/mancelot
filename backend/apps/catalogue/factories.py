@@ -59,7 +59,7 @@ class CategoryFactory(factory.DjangoModelFactory):
     @factory.post_generation
     def subcategories(self, create, extracted, **kwargs):
         # ForeignKey relation at Subcategory. Here we use the related_name
-        if not create or kwargs.get("return"):
+        if not create or kwargs.get("skip"):
             return
 
         if extracted:
@@ -90,10 +90,10 @@ class SubcategoryFactory(factory.DjangoModelFactory):
     # that we create in this factory (and bool empty QuerySet is False). We
     # cannot use post_generation on the SubcategoryFactory either because that
     # is executed after save, and category_id cannot be none on save.
-    # So we pass return=True as kwarg to the subcategories post_generation
+    # So we pass skip=True as kwarg to the subcategories post_generation
     # method such that the category does not generate subcategories, but
     # it is added to this subcategory :-).
-    category = factory.SubFactory(CategoryFactory, subcategories__return=True)
+    category = factory.SubFactory(CategoryFactory, subcategories__skip=True)
 
 
 class PaymentOptionFactory(factory.DjangoModelFactory):
@@ -128,7 +128,7 @@ class StoreFactory(factory.DjangoModelFactory):
     # Add zero up to all payment_options (number of payment_options is randomly selected)
     @factory.post_generation
     def payment_options(self, create, extracted, **kwargs):
-        if not create:
+        if not create or kwargs.get("skip"):
             return
 
         if extracted:
@@ -161,7 +161,7 @@ class BrandFactory(factory.DjangoModelFactory):
     # Add zero up to all labels (number of labels is randomly selected)
     @factory.post_generation
     def labels(self, create, extracted, **kwargs):
-        if not create:
+        if not create or kwargs.get("skip"):
             return
 
         if extracted:
@@ -181,7 +181,7 @@ class BrandFactory(factory.DjangoModelFactory):
     # Add zero up to 25% of certificates (number of certificates is randomly selected)
     @factory.post_generation
     def certificates(self, create, extracted, **kwargs):
-        if not create:
+        if not create or kwargs.get("skip"):
             return
 
         if extracted:
@@ -248,7 +248,7 @@ class ProductFactory(factory.DjangoModelFactory):
     )
     @factory.post_generation
     def from_price(self, create, extracted, **kwargs):
-        if not create:
+        if not create or kwargs.get("skip"):
             return
 
         if extracted:
@@ -266,7 +266,7 @@ class ProductFactory(factory.DjangoModelFactory):
     )
     @factory.post_generation
     def extra_images(self, create, extracted, **kwargs):
-        if not create:
+        if not create or kwargs.get("skip"):
             return
 
         if extracted:
@@ -292,7 +292,7 @@ class ProductFactory(factory.DjangoModelFactory):
 
     @factory.post_generation
     def categories(self, create, extracted, **kwargs):  # M2M relation
-        if not create:
+        if not create or kwargs.get("skip"):
             return
 
         if extracted:
@@ -311,7 +311,7 @@ class ProductFactory(factory.DjangoModelFactory):
 
     @factory.post_generation
     def subcategories(self, create, extracted, **kwargs):
-        if not create:
+        if not create or kwargs.get("skip"):
             return
 
         if extracted:
@@ -330,7 +330,7 @@ class ProductFactory(factory.DjangoModelFactory):
 
     @factory.post_generation
     def materials(self, create, extracted, **kwargs):
-        if not create:
+        if not create or kwargs.get("skip"):
             return
 
         if extracted:
@@ -349,7 +349,7 @@ class ProductFactory(factory.DjangoModelFactory):
 
     @factory.post_generation
     def sizes(self, create, extracted, **kwargs):
-        if not create:
+        if not create or kwargs.get("skip"):
             return
 
         if extracted:
@@ -368,7 +368,7 @@ class ProductFactory(factory.DjangoModelFactory):
 
     @factory.post_generation
     def colors(self, create, extracted, **kwargs):
-        if not create:
+        if not create or kwargs.get("skip"):
             return
 
         if extracted:
