@@ -186,6 +186,10 @@ tags
 .bash_history
 .cache
 .viminfo
+.bash_aliases
+.bash_functions
+.bashrc
+.vimrc
 
 # Output of graphviz
 *.pdf
