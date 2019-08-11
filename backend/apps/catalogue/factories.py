@@ -282,7 +282,7 @@ class ProductFactory(factory.DjangoModelFactory):
     # TODO: decide on how to sample brand
     if Brand.objects.count() < 40:
         BrandFactory.create_batch(40 - Brand.objects.count())
-    brand = Brand.objects.order_by("?").first()
+    brand = factory.LazyAttribute(lambda _: Brand.objects.order_by("?").first())
 
     # Hmm the line below spawns a new Brand for each ProductFactory call, wops
     # brand = factory.SubFactory(
@@ -294,7 +294,7 @@ class ProductFactory(factory.DjangoModelFactory):
     # TODO: decide on how to sample store
     if Store.objects.count() < 20:
         StoreFactory.create_batch(20 - Store.objects.count())
-    store = Store.objects.order_by("?").first()
+    store = factory.LazyAttribute(lambda _: Store.objects.order_by("?").first())
 
     # Hmm the line below spawns a new Store for each ProductFactory call, wops
     # store = factory.SubFactory(StoreFactory, payment_options__skip=True)

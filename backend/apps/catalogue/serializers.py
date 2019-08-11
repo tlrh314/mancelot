@@ -28,12 +28,16 @@ class CertificateSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    subcategories = serializers.StringRelatedField(many=True)
+
     class Meta:
         model = Category
         fields = ("id", "name", "slug", "section", "subcategories")
 
 
 class SubcategorySerializer(serializers.ModelSerializer):
+    category = serializers.StringRelatedField()
+
     class Meta:
         model = Subcategory
         fields = ("id", "name", "slug", "category")
@@ -46,6 +50,14 @@ class PaymentOptionSerializer(serializers.ModelSerializer):
 
 
 class StoreSerializer(serializers.ModelSerializer):
+    # TODO: decide on serialization strategy: id only? string only?
+    # full serialization of the related instance? id implies making a
+    # second api call to the endpoint of the related instance to get the data,
+    # string may be useful in some cases, and pushing the full serialization
+    # increases traffic to users.
+    payment_options = serializers.StringRelatedField(many=True)
+    # payment_options = PaymentOptionSerializer(many=True, read_only=True)
+
     class Meta:
         model = Store
         fields = (
@@ -54,6 +66,9 @@ class StoreSerializer(serializers.ModelSerializer):
 
 
 class BrandSerializer(serializers.ModelSerializer):
+    labels = serializers.StringRelatedField(many=True)
+    certificates = serializers.StringRelatedField(many=True)
+
     class Meta:
         model = Brand
         fields = (
