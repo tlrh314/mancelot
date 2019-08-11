@@ -40,7 +40,7 @@ from accounts.factories import (
 )
 
 
-class CatalogueAPIBaseTestCase(APITestCase):
+class CatalogueAPIBaseTestCase(object):
     def setUp(self):
         super().setUp()  # in case of inheritance
 
@@ -188,7 +188,7 @@ class CatalogueAPIBaseTestCase(APITestCase):
         self.verify_get_response_data_results(data_api, self.data_orm)
 
     def verify_get_detail_response_data(self, response):
-        data_api = response.data["results"][0]
+        data_api = response.data
         self.verify_get_response_data_results(data_api, self.data_orm_detail)
 
     def test_get_user_is_anonymous_200(self):
@@ -362,7 +362,7 @@ class CatalogueAPIBaseTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class CeceLabelViewSetTest(CatalogueAPIBaseTestCase):
+class CeceLabelViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
     @classmethod
     def setUpTestData(cls):
         # TODO: fixtures
@@ -385,7 +385,7 @@ class CeceLabelViewSetTest(CatalogueAPIBaseTestCase):
         self.resource_name_detail = "Cece Label Instance"
 
 
-class CertificateViewSet(CatalogueAPIBaseTestCase):
+class CertificateViewSet(CatalogueAPIBaseTestCase, APITestCase):
     @classmethod
     def setUpTestData(cls):
         # TODO: fixtures
@@ -409,7 +409,7 @@ class CertificateViewSet(CatalogueAPIBaseTestCase):
         self.resource_name_detail = "Certificate Instance"
 
 
-class CategoryViewSetTest(CatalogueAPIBaseTestCase):
+class CategoryViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
     @classmethod
     def setUpTestData(cls):
         # TODO: fixtures
@@ -433,7 +433,7 @@ class CategoryViewSetTest(CatalogueAPIBaseTestCase):
         self.resource_name_detail = "Category Instance"
 
 
-class SubcategoryViewSetTest(CatalogueAPIBaseTestCase):
+class SubcategoryViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
     @classmethod
     def setUpTestData(cls):
         # TODO: fixtures
@@ -456,12 +456,20 @@ class SubcategoryViewSetTest(CatalogueAPIBaseTestCase):
         self.resource_name_detail = "Subcategory Instance"
 
 
-class PaymentOptionViewSetTest(CatalogueAPIBaseTestCase):
+class PaymentOptionViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
     @classmethod
     def setUpTestData(cls):
         # TODO: fixtures
         if PaymentOption.objects.count() < 20:
             PaymentOptionFactory.create_batch(20 - PaymentOption.objects.count())
+
+        print(PaymentOption.objects.count())
+        print(PaymentOption.objects.count())
+        print(PaymentOption.objects.count())
+        print(PaymentOption.objects.count())
+        print(PaymentOption.objects.count())
+        print(PaymentOption.objects.count())
+        print(PaymentOption.objects.count())
 
     def setUp(self):
         # Set the admin + user tokens
@@ -479,7 +487,7 @@ class PaymentOptionViewSetTest(CatalogueAPIBaseTestCase):
         self.resource_name_detail = "Payment Option Instance"
 
 
-class StoreViewSetTest(CatalogueAPIBaseTestCase):
+class StoreViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
     @classmethod
     def setUpTestData(cls):
         if Store.objects.count() < 40:
@@ -503,7 +511,7 @@ class StoreViewSetTest(CatalogueAPIBaseTestCase):
         self.resource_name_detail = "Store Instance"
 
 
-class BrandViewSetTest(CatalogueAPIBaseTestCase):
+class BrandViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
     @classmethod
     def setUpTestData(cls):
         if Brand.objects.count() < 100:
@@ -528,7 +536,7 @@ class BrandViewSetTest(CatalogueAPIBaseTestCase):
         self.resource_name_detail = "Brand Instance"
 
 
-class SizeViewSet(CatalogueAPIBaseTestCase):
+class SizeViewSet(CatalogueAPIBaseTestCase, APITestCase):
     @classmethod
     def setUpTestData(cls):
         if Size.objects.count() < 50:
@@ -550,7 +558,7 @@ class SizeViewSet(CatalogueAPIBaseTestCase):
         self.resource_name_detail = "Size Instance"
 
 
-class ColorViewSetTest(CatalogueAPIBaseTestCase):
+class ColorViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
     @classmethod
     def setUpTestData(cls):
         if Color.objects.count() < 50:
@@ -573,7 +581,7 @@ class ColorViewSetTest(CatalogueAPIBaseTestCase):
         self.resource_name_detail = "Color Instance"
 
 
-class MaterialViewSetTest(CatalogueAPIBaseTestCase):
+class MaterialViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
     @classmethod
     def setUpTestData(cls):
         if Material.objects.count() < 50:
@@ -595,7 +603,7 @@ class MaterialViewSetTest(CatalogueAPIBaseTestCase):
         self.resource_name_detail = "Material Instance"
 
 
-class ProductViewSetTest(CatalogueAPIBaseTestCase):
+class ProductViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
     @classmethod
     def setUpTestData(cls):
         if Store.objects.count() < 5:

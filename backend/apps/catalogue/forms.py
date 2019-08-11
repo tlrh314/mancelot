@@ -14,4 +14,4 @@ class FixTinyMCEHasTooWideUIForm(forms.ModelForm):
     extra_info = forms.CharField(widget=TinyMCE(mce_attrs=tinymce))
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(FixTinyMCEHasTooWideUIForm, self).__init__(*args, **kwargs)

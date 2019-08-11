@@ -1,4 +1,4 @@
-from django.test import Testcase
+from django.test import TestCase
 
 from catalogue.serializers import (
     CeceLabelSerializer,

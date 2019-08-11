@@ -33,7 +33,7 @@ from accounts.factories import (
 )
 
 
-class CatalogueAdminBaseTestCase(TestCase):
+class CatalogueAdminBaseTestCase(object):
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
 
@@ -112,7 +112,7 @@ class RelatedDropdownFilterTest(TestCase):
         pass
 
 
-class CeceLabelAdminTest(CatalogueAdminBaseTestCase):
+class CeceLabelAdminTest(CatalogueAdminBaseTestCase, TestCase):
     @classmethod
     def setUpTestData(cls):
         if CeceLabel.objects.count() < 5:
@@ -132,7 +132,7 @@ class CeceLabelAdminTest(CatalogueAdminBaseTestCase):
         self.resource_name_detail = "CeceLabel Instance"
 
 
-class CertificateAdminTest(CatalogueAdminBaseTestCase):
+class CertificateAdminTest(CatalogueAdminBaseTestCase, TestCase):
     @classmethod
     def setUpTestData(cls):
         if Certificate.objects.count() < 20:
@@ -154,7 +154,7 @@ class SubcategoryAdminInline(TestCase):
         pass
 
 
-class CategoryAdminTest(CatalogueAdminBaseTestCase):
+class CategoryAdminTest(CatalogueAdminBaseTestCase, TestCase):
 
     @classmethod
     def setUpTestData(cls):
@@ -173,7 +173,7 @@ class CategoryAdminTest(CatalogueAdminBaseTestCase):
         self.count = Category.objects.count()
 
 
-class PaymentOptionAdminTest(CatalogueAdminBaseTestCase):
+class PaymentOptionAdminTest(CatalogueAdminBaseTestCase, TestCase):
     @classmethod
     def setUpTestData(cls):
         if PaymentOption.objects.count() < 20:
@@ -190,7 +190,7 @@ class PaymentOptionAdminTest(CatalogueAdminBaseTestCase):
         self.count = PaymentOption.objects.count()
 
 
-class StoreAdminTest(CatalogueAdminBaseTestCase):
+class StoreAdminTest(CatalogueAdminBaseTestCase, TestCase):
     @classmethod
     def setUpTestData(cls):
         if Store.objects.count() < 40:
@@ -207,7 +207,7 @@ class StoreAdminTest(CatalogueAdminBaseTestCase):
         self.count = Store.objects.count()
 
 
-class BrandAdminTest(CatalogueAdminBaseTestCase):
+class BrandAdminTest(CatalogueAdminBaseTestCase, TestCase):
     @classmethod
     def setUpTestData(cls):
         if Brand.objects.count() < 100:
@@ -224,7 +224,7 @@ class BrandAdminTest(CatalogueAdminBaseTestCase):
         self.count = Brand.objects.count()
 
 
-class SizeAdminTest(CatalogueAdminBaseTestCase):
+class SizeAdminTest(CatalogueAdminBaseTestCase, TestCase):
     @classmethod
     def setUpTestData(cls):
         if Size.objects.count() < 50:
@@ -241,7 +241,7 @@ class SizeAdminTest(CatalogueAdminBaseTestCase):
         self.count = Size.objects.count()
 
 
-class MaterialAdminTest(CatalogueAdminBaseTestCase):
+class MaterialAdminTest(CatalogueAdminBaseTestCase, TestCase):
     @classmethod
     def setUpTestData(cls):
         if Material.objects.count() < 50:
@@ -258,7 +258,7 @@ class MaterialAdminTest(CatalogueAdminBaseTestCase):
         self.count = Material.objects.count()
 
 
-class ProductAdminTest(CatalogueAdminBaseTestCase):
+class ProductAdminTest(CatalogueAdminBaseTestCase, TestCase):
     @classmethod
     def setUpTestData(cls):
         if Store.objects.count() < 5:

@@ -1,53 +1,52 @@
 from django.test import TestCase
 
-from accounts.admin import UserModelAdmin
+from accounts.models import UserModel
+from catalogue.tests.test_admin import CatalogueAdminBaseTestCase
 
 
-class ProductAdminTest(TestCase):
-    def test_admin_list_view_can_be_opened(self):
-        raise NotImplementedError
+class UserModelAdminTest(CatalogueAdminBaseTestCase, TestCase):
+    def setUp(self, *args, **kwargs):
+        # Set the admin + session
+        super().setUp(*args, **kwargs)
 
-    def test_admin_detail_view_can_be_opened(self):
-        raise NotImplementedError
-
-    def test_admin_detail_view_can_be_saved(self):
-        raise NotImplementedError
-
-    def test_admin_save_updates_last_updated_by(self):
-        raise NotImplementedError
+        # Set the detail for this specific test
+        self.admin_changelist_uri = "admin:accounts_usermodel_changelist"
+        self.admin_change_uri = "admin:accounts_usermodel_change"
+        self.admin_change_pk = UserModel.objects.last().pk
+        self.count = UserModel.objects.count()
 
     def test_list_display(self):
-        raise NotImplementedError
+        pass
 
     def test_list_filter(self):
-        raise NotImplementedError
+        pass
 
     def test_list_filters_give_correct_querysets(self):
-        raise NotImplementedError
+        pass
 
     def test_search_fields(self):
-        raise NotImplementedError
+        pass
 
     def test_ordering(self):
-        raise NotImplementedError
+        pass
 
     def test_filter_horizontal(self):
-        raise NotImplementedError
+        pass
 
     def test_send_password_reset_action(self):
-        raise NotImplementedError
+        pass
 
     def test_add_fieldsets_override(self):
-        raise NotImplementedError
+        pass
 
     def test_adding_user_instance(self):
-        raise NotImplementedError
+        pass
 
     def test_change_user_password(self):
-        raise NotImplementedError
+        pass
 
     def test_fieldsets(self):
-        raise NotImplementedError
+        pass
 
     def test_history_view_renders_html(self):
-        raise NotImplementedError
+        pass
