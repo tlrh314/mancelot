@@ -295,10 +295,9 @@ TINYMCE_DEFAULT_CONFIG = {
     { "title": "Test template 2", "content": "Test 2" }
   ],
   "content_css": [
-    "//fonts.googleapis.com/css?family=Lato:300,300i,400,400i",
     "//www.tinymce.com/css/codepen.min.css",
-    "/static/css/main.css",
-  ],
+    # "/static/css/main.css",
+  ]
 }
 # TINYMCE_SPELLCHECKER = True
 TINYMCE_COMPRESSOR = True
