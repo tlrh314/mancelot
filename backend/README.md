@@ -6,6 +6,30 @@
 ## **Database schema**
 ![Database schema for catalogue and accounts](https://github.com/tlrh314/mancelot/edit/master/backend/mancelot_db.png)
 
+## **Resources**
+- Obtain a [JSON Web Token](https://github.com/davesque/django-rest-framework-simplejwt)
+  for usage of the Mancelot API
+  - `POST` [https://www.mancelot.nl/api/v1/auth/jwtoken/](https://www.mancelot.nl/api/v1/auth/jwtoken/)
+      - Use the `access` token obtained in the response **in each consecutive** request
+      by using the request header `Authorization: Bearer token`
+      - See `settings/base.py` for the value of `SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"]`
+      for the lifetime of the access token.
+  - `POST` [https://www.mancelot.nl/api/v1/auth/jwtoken/refresh/](https://www.mancelot.nl/api/v1/auth/jwtoken/refresh/)
+      - See `settings/base.py` for the value of `SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"]`
+      for the lifetime of the refresh token.
+  - `POST` [https://www.mancelot.nl/api/v1/auth/jwtoken/verify/](https://www.mancelot.nl/api/v1/auth/jwtoken/verify/)
+
+- Authentication using Django's built-in session backend (e.g. for the BrowsableAPI)
+  - [https://www.mancelot.nl/api/v1/auth/login/](https://www.mancelot.nl/api/v1/auth/login/)
+  - [https://www.mancelot.nl/api/v1/auth/logout/](https://www.mancelot.nl/api/v1/auth/logout/)
+
+- Retrieve information of the active user / user sign up (TODO)
+  - `GET` [https://www.mancelot.nl/api/v1/users/me](https://www.mancelot.nl/api/v1/users/me)
+  - `PUT` [https://www.mancelot.nl/api/v1/users/me](https://www.mancelot.nl/api/v1/users/me)
+  - `PATCH` [https://www.mancelot.nl/api/v1/users/me](https://www.mancelot.nl/api/v1/users/me)
+  - `DELETE` [https://www.mancelot.nl/api/v1/users/me](https://www.mancelot.nl/api/v1/users/me)
+  - `POST` [https://www.mancelot.nl/api/v1/users](https://www.mancelot.nl/api/v1/users)
+
 ## **Installation for development, e.g. using a virtualenv**
 - Create virtualenvironment: `virtualenv venv`
 - Activate virtualenv: `source venv/bin/activate`
