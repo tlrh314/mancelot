@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.test import TestCase
 
 from catalogue.admin import (
@@ -14,15 +15,53 @@ from catalogue.admin import (
     ProductIsOnSaleFilter,
     ProductAdmin
 )
+from accounts.factories import AdminFactory
 
 
+class CatalogueAdminBaseTestCase(TestCase):
+    def setUp(self, *args, **kwargs):
+        super().setUp(*args, **kwargs)
 
-class RelatedDropdownFilterTest(TestCase):
+        self.admin = AdminFactory(favorites__skip=True)
+        self.admin.set_password("secret")
+        self.admin.save()
+
+    def test_login(self):
+        response = self.client.get(reverse("admin:login"))
+        self.assertTemplateUsed(response, "admin/login.html")
+        self.assertEqual(response.status_code, 200)
+        login_status = self.client.login(email=self.admin.email, password="secret")
+        self.assertTrue(login_status)
+        response = self.client.get(reverse("admin:index"))
+        self.assertEqual(response.status_code, 200)
+
+    def tearDown(self, *args, **kwargs):
+        self.admin.delete()
+        super().tearDown(*args, **kwargs)
+
+
+class RelatedDropdownFilterTest(CatalogueAdminBaseTestCase):
     def test_something(self):
         raise NotImplementedError
 
 
-class CeceLabelAdminTest(TestCase):
+class CeceLabelAdminTest(CatalogueAdminBaseTestCase):
+    def test_admin_list_view_can_be_opened(self):
+        raise NotImplementedError
+        reverse("admin:catalogue_cecelabel_changelist")
+
+    def test_admin_detail_view_can_be_opened(self):
+        raise NotImplementedError
+        reverse("admin:catalogue_cecelabel_change", args=[])
+
+    def test_admin_detail_view_can_be_saved(self):
+        raise NotImplementedError
+
+    def test_admin_save_updates_last_updated_by(self):
+        raise NotImplementedError
+
+
+class CertificateAdminTest(CatalogueAdminBaseTestCase):
     def test_admin_list_view_can_be_opened(self):
         raise NotImplementedError
 
@@ -36,26 +75,12 @@ class CeceLabelAdminTest(TestCase):
         raise NotImplementedError
 
 
-class CertificateAdminTest(TestCase):
-    def test_admin_list_view_can_be_opened(self):
-        raise NotImplementedError
-
-    def test_admin_detail_view_can_be_opened(self):
-        raise NotImplementedError
-
-    def test_admin_detail_view_can_be_saved(self):
-        raise NotImplementedError
-
-    def test_admin_save_updates_last_updated_by(self):
-        raise NotImplementedError
-
-
-class SubcategoryAdminInline(TestCase):
+class SubcategoryAdminInline(CatalogueAdminBaseTestCase):
     def test_something(self):
         raise NotImplementedError
 
 
-class CategoryAdminTest(TestCase):
+class CategoryAdminTest(CatalogueAdminBaseTestCase):
     def test_admin_list_view_can_be_opened(self):
         raise NotImplementedError
 
@@ -69,7 +94,7 @@ class CategoryAdminTest(TestCase):
         raise NotImplementedError
 
 
-class PaymentOptionTest(TestCase):
+class PaymentOptionTest(CatalogueAdminBaseTestCase):
     def test_admin_list_view_can_be_opened(self):
         raise NotImplementedError
 
@@ -83,7 +108,7 @@ class PaymentOptionTest(TestCase):
         raise NotImplementedError
 
 
-class StoreAdminTest(TestCase):
+class StoreAdminTest(CatalogueAdminBaseTestCase):
     def test_admin_list_view_can_be_opened(self):
         raise NotImplementedError
 
@@ -97,7 +122,7 @@ class StoreAdminTest(TestCase):
         raise NotImplementedError
 
 
-class BrandAdminTest(TestCase):
+class BrandAdminTest(CatalogueAdminBaseTestCase):
     def test_admin_list_view_can_be_opened(self):
         raise NotImplementedError
 
@@ -111,7 +136,7 @@ class BrandAdminTest(TestCase):
         raise NotImplementedError
 
 
-class SizeAdminTest(TestCase):
+class SizeAdminTest(CatalogueAdminBaseTestCase):
     def test_admin_list_view_can_be_opened(self):
         raise NotImplementedError
 
@@ -125,7 +150,7 @@ class SizeAdminTest(TestCase):
         raise NotImplementedError
 
 
-class MaterialAdminTest(TestCase):
+class MaterialAdminTest(CatalogueAdminBaseTestCase):
     def test_admin_list_view_can_be_opened(self):
         raise NotImplementedError
 
@@ -139,7 +164,7 @@ class MaterialAdminTest(TestCase):
         raise NotImplementedError
 
 
-class ProductAdminTest(TestCase):
+class ProductAdminTest(CatalogueAdminBaseTestCase):
     def test_admin_list_view_can_be_opened(self):
         raise NotImplementedError
 

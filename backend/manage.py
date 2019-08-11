@@ -16,7 +16,7 @@ if __name__ == "__main__":
     if "test" in sys.argv:
         import logging
         from django.conf import settings
-        # logging.disable(logging.CRITICAL)
+        logging.disable(logging.CRITICAL)
         settings.DEBUG = False
         settings.TEMPLATE_DEBUG = False
         settings.PASSWORD_HASHERS = [

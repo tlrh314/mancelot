@@ -40,31 +40,38 @@ from accounts.factories import (
 )
 
 
-class BaseTestCase(APITestCase):
+class CatalogueAPIBaseTestCase(APITestCase):
     def setUp(self):
+        super().setUp()  # in case of inheritance
+
         # Obtain JSON Web Token for a superuser
-        admin = AdminFactory(favorites__skip=True)
-        admin.set_password("secret")
-        admin.save()
+        self.admin = AdminFactory(favorites__skip=True)
+        self.admin.set_password("secret")
+        self.admin.save()
         response = self.client.post(
             reverse("accounts:token_obtain_pair"), {
-                "email": admin.email, "password": "secret"
+                "email": self.admin.email, "password": "secret"
             }
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.admintoken= "Bearer {0}".format(response.data["access"])
 
         # Obtain JSON Web Token for a regular user
-        user = UserModelFactory(favorites__skip=True)
-        user.set_password("secret")
-        user.save()
+        self.user = UserModelFactory(favorites__skip=True)
+        self.user.set_password("secret")
+        self.user.save()
         response = self.client.post(
             reverse("accounts:token_obtain_pair"), {
-                "email": user.email, "password": "secret"
+                "email": self.user.email, "password": "secret"
             }
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.usertoken = "Bearer {0}".format(response.data["access"])
+
+    def tearDown(self, *args, **kwargs):
+        self.admin.delete()
+        self.user.delete()
+        super().tearDown(*args, **kwargs)
 
     ### HEAD requests --> allowed for anon, user and admin
     def test_head_list_user_is_anonymous_200(self):
@@ -163,6 +170,11 @@ class BaseTestCase(APITestCase):
         self.assertEqual(len(data_api.keys()), len(self.serializer_fields))
         self.assertEqual(list(data_api.keys()), self.serializer_fields)
         for field in self.serializer_fields:
+            # TODO: handle FK and M2M
+            print("\n{0}\napi -> {1}: {2}\norm -> {3}: {4}".format(
+                field, data_api[field], type(data_api[field]),
+                getattr(data_orm, field), type(getattr(data_orm, field))
+            ))
             self.assertEqual(data_api[field], getattr(data_orm, field))
 
     def verify_get_list_response_data(self, response):
@@ -350,7 +362,7 @@ class BaseTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class CeceLabelViewSetTest(BaseTestCase):
+class CeceLabelViewSetTest(CatalogueAPIBaseTestCase):
     def setUp(self):
         # TODO: fixtures
         if CeceLabel.objects.count() < 5:
@@ -371,7 +383,7 @@ class CeceLabelViewSetTest(BaseTestCase):
         self.resource_name_detail = "Cece Label Instance"
 
 
-class CertificateViewSet(BaseTestCase):
+class CertificateViewSet(CatalogueAPIBaseTestCase):
     def setUp(self):
         # TODO: fixtures
         if Certificate.objects.count() < 20:
@@ -392,7 +404,7 @@ class CertificateViewSet(BaseTestCase):
         self.resource_name_detail = "Certificate Instance"
 
 
-class CategoryViewSetTest(BaseTestCase):
+class CategoryViewSetTest(CatalogueAPIBaseTestCase):
     def setUp(self):
         # TODO: fixtures
         if Category.objects.count() < 20:
@@ -414,7 +426,7 @@ class CategoryViewSetTest(BaseTestCase):
         self.resource_name_detail = "Category Instance"
 
 
-class SubcategoryViewSetTest(BaseTestCase):
+class SubcategoryViewSetTest(CatalogueAPIBaseTestCase):
     def setUp(self):
         # TODO: fixtures
         if Subcategory.objects.count() < 20:
@@ -435,7 +447,7 @@ class SubcategoryViewSetTest(BaseTestCase):
         self.resource_name_detail = "Subcategory Instance"
 
 
-class PaymentOptionViewSetTest(BaseTestCase):
+class PaymentOptionViewSetTest(CatalogueAPIBaseTestCase):
     def setUp(self):
         # TODO: fixtures
         if PaymentOption.objects.count() < 20:
@@ -456,7 +468,7 @@ class PaymentOptionViewSetTest(BaseTestCase):
         self.resource_name_detail = "Payment Option Instance"
 
 
-class StoreViewSetTest(BaseTestCase):
+class StoreViewSetTest(CatalogueAPIBaseTestCase):
     def setUp(self):
         if Store.objects.count() < 40:
             Store.create_batch(40 - Store.objects.count())
@@ -478,7 +490,7 @@ class StoreViewSetTest(BaseTestCase):
         self.resource_name_detail = "Store Instance"
 
 
-class BrandViewSetTest(BaseTestCase):
+class BrandViewSetTest(CatalogueAPIBaseTestCase):
     def setUp(self):
         if Brand.objects.count() < 100:
             BrandFactory.create_batch(100 - Brand.objects.count())
@@ -501,7 +513,7 @@ class BrandViewSetTest(BaseTestCase):
         self.resource_name_detail = "Brand Instance"
 
 
-class SizeViewSet(BaseTestCase):
+class SizeViewSet(CatalogueAPIBaseTestCase):
     def setUp(self):
         if Size.objects.count() < 50:
             SizeFactory.create_batch(50 - Size.objects.count())
@@ -521,7 +533,7 @@ class SizeViewSet(BaseTestCase):
         self.resource_name_detail = "Size Instance"
 
 
-class ColorViewSetTest(BaseTestCase):
+class ColorViewSetTest(CatalogueAPIBaseTestCase):
     def setUp(self):
         if Color.objects.count() < 50:
             ColorFactory.create_batch(50 - Color.objects.count())
@@ -541,7 +553,7 @@ class ColorViewSetTest(BaseTestCase):
         self.resource_name_detail = "Color Instance"
 
 
-class MaterialViewSetTest(BaseTestCase):
+class MaterialViewSetTest(CatalogueAPIBaseTestCase):
     def setUp(self):
         if Material.objects.count() < 50:
             MaterialFactory.create_batch(50 - Material.objects.count())
@@ -561,7 +573,7 @@ class MaterialViewSetTest(BaseTestCase):
         self.resource_name_detail = "Material Instance"
 
 
-class ProductViewSetTest(BaseTestCase):
+class ProductViewSetTest(CatalogueAPIBaseTestCase):
     def setUp(self):
         if Product.objects.count() < 20:
             ProductFactory.create_batch(20 - Product.objects.count())
