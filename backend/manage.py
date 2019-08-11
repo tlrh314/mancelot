@@ -50,7 +50,7 @@ if __name__ == "__main__":
             total = time.time() - self.startTime
             if total > 0.5 or True:
                 print("\n\t\033[91m[{0}] took {1:.3f}s\033[0m".format(
-                    self._testMethodName, total))
+                    self.id(), total))
 
         test.TestCase.setUp = setUp
         test.TestCase.tearDown = tearDown

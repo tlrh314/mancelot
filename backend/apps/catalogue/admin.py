@@ -96,7 +96,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(PaymentOption)
-class PaymentOption(admin.ModelAdmin):
+class PaymentOptionAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
     ordering = ("name",)
@@ -170,6 +170,26 @@ class BrandAdmin(admin.ModelAdmin):
 
 @admin.register(Size)
 class SizeAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ("name",)
+    ordering = ("date_created",)
+    readonly_fields = ("slug", "date_created", "date_updated", "last_updated_by",)
+
+    fieldsets = (
+        (None, {"fields": ("name",)}),
+        (_("Meta"), {
+            "classes": ("collapse",),
+            "fields": ("slug", "date_created", "date_updated", "last_updated_by")
+        }),
+    )
+
+    def save_model(self, request, obj, form, change):
+        obj.last_updated_by = request.user
+        obj.save()
+
+
+@admin.register(Color)
+class ColorAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
     ordering = ("date_created",)
