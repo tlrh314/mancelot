@@ -27,5 +27,6 @@ urlpatterns = [
     path("", TemplateView.as_view(template_name="index.html"), name="index"),
     path("", include("accounts.urls")),
     path("api/v1/", include(router.urls)),
+    path("api/v1/auth/", include("rest_framework.urls")),
     path("privacy/", TemplateView.as_view(template_name="privacy_policy.html"), name="privacy_policy"),
 ]

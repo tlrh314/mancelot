@@ -25,7 +25,6 @@ from accounts.api import (
 
 app_name = "accounts"
 urlpatterns = [
-    path("api/v1/auth/", include("rest_framework.urls")),
     path("api/v1/auth/jwtoken/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/v1/auth/jwtoken/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/v1/auth/jwtoken/verify/", TokenVerifyView.as_view(), name="token_verify"),
