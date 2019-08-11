@@ -204,14 +204,13 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.DjangoModelPermissions"
     ],
-    "DEFAULT_RENDERER_CLASSES": (
+    "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
-        "rest_framework.renderers.BrowsableAPIRenderer",
-    ),
+    ],
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
     ],
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 50,
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
     "TEST_REQUEST_RENDERER_CLASSES": [
@@ -255,6 +254,10 @@ sentry_sdk.init(
     integrations=[DjangoIntegration()],
     environment=env("SENTRY_ENVIRONMENT")
 )
+
+CECE_API_USER = env("CECE_API_USER", default="secret")
+CECE_API_PASS = env("CECE_API_PASS", default="secret")
+CECE_API_URI = env("CECE_API_URI", default="http://example.com")
 
 
 ### FileBrowser to tinker with static files at the server
@@ -379,4 +382,8 @@ if DEBUG:
 
     INSTALLED_APPS += [
         "django_extensions"
+    ]
+
+    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] += [
+        "rest_framework.renderers.BrowsableAPIRenderer",
     ]

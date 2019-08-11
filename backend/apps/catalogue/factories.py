@@ -64,7 +64,7 @@ class CategoryFactory(factory.DjangoModelFactory):
 
         if extracted:
             for subcategory in extracted:
-                self.subcategories.add(extracted)
+                self.subcategories.add(subcategory)
             return
 
         for i in range(faker.random_int(min=0, max=10)):
