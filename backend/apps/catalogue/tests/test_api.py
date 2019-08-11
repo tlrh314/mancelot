@@ -363,11 +363,13 @@ class CatalogueAPIBaseTestCase(APITestCase):
 
 
 class CeceLabelViewSetTest(CatalogueAPIBaseTestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         # TODO: fixtures
         if CeceLabel.objects.count() < 5:
             CeceLabelFactory.create_batch(5 - CeceLabel.objects.count())
 
+    def setUp(self):
         # Set the admin + user tokens
         super().setUp()
 
@@ -384,11 +386,14 @@ class CeceLabelViewSetTest(CatalogueAPIBaseTestCase):
 
 
 class CertificateViewSet(CatalogueAPIBaseTestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         # TODO: fixtures
         if Certificate.objects.count() < 20:
             CertificateFactory.create_batch(20 - Certificate.objects.count())
 
+
+    def setUp(self):
         # Set the admin + user tokens
         super().setUp()
 
@@ -405,12 +410,14 @@ class CertificateViewSet(CatalogueAPIBaseTestCase):
 
 
 class CategoryViewSetTest(CatalogueAPIBaseTestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         # TODO: fixtures
         if Category.objects.count() < 20:
             CategoryFactory.create_batch(20 - Category.objects.count(),
                 subcategories__skip=True)
 
+    def setUp(self):
         # Set the admin + user tokens
         super().setUp()
 
@@ -427,11 +434,13 @@ class CategoryViewSetTest(CatalogueAPIBaseTestCase):
 
 
 class SubcategoryViewSetTest(CatalogueAPIBaseTestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         # TODO: fixtures
         if Subcategory.objects.count() < 20:
             SubcategoryFactory.create_batch(20 - Subcategory.objects.count())
 
+    def setUp(self):
         # Set the admin + user tokens
         super().setUp()
 
@@ -448,11 +457,13 @@ class SubcategoryViewSetTest(CatalogueAPIBaseTestCase):
 
 
 class PaymentOptionViewSetTest(CatalogueAPIBaseTestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         # TODO: fixtures
         if PaymentOption.objects.count() < 20:
             PaymentOptionFactory.create_batch(20 - PaymentOption.objects.count())
 
+    def setUp(self):
         # Set the admin + user tokens
         super().setUp()
 
@@ -469,10 +480,12 @@ class PaymentOptionViewSetTest(CatalogueAPIBaseTestCase):
 
 
 class StoreViewSetTest(CatalogueAPIBaseTestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         if Store.objects.count() < 40:
-            Store.create_batch(40 - Store.objects.count())
+            StoreFactory.create_batch(40 - Store.objects.count())
 
+    def setUp(self):
         # Set the admin + user tokens
         super().setUp()
 
@@ -491,10 +504,12 @@ class StoreViewSetTest(CatalogueAPIBaseTestCase):
 
 
 class BrandViewSetTest(CatalogueAPIBaseTestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         if Brand.objects.count() < 100:
             BrandFactory.create_batch(100 - Brand.objects.count())
 
+    def setUp(self):
         # Set the admin + user tokens
         super().setUp()
 
@@ -514,10 +529,12 @@ class BrandViewSetTest(CatalogueAPIBaseTestCase):
 
 
 class SizeViewSet(CatalogueAPIBaseTestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         if Size.objects.count() < 50:
             SizeFactory.create_batch(50 - Size.objects.count())
 
+    def setUp(self):
         # Set the admin + user tokens
         super().setUp()
 
@@ -534,9 +551,12 @@ class SizeViewSet(CatalogueAPIBaseTestCase):
 
 
 class ColorViewSetTest(CatalogueAPIBaseTestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         if Color.objects.count() < 50:
             ColorFactory.create_batch(50 - Color.objects.count())
+
+    def setUp(self):
 
         # Set the admin + user tokens
         super().setUp()
@@ -554,10 +574,12 @@ class ColorViewSetTest(CatalogueAPIBaseTestCase):
 
 
 class MaterialViewSetTest(CatalogueAPIBaseTestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         if Material.objects.count() < 50:
             MaterialFactory.create_batch(50 - Material.objects.count())
 
+    def setUp(self):
         # Set the admin + user tokens
         super().setUp()
 
@@ -574,10 +596,16 @@ class MaterialViewSetTest(CatalogueAPIBaseTestCase):
 
 
 class ProductViewSetTest(CatalogueAPIBaseTestCase):
-    def setUp(self):
-        if Product.objects.count() < 20:
-            ProductFactory.create_batch(20 - Product.objects.count())
+    @classmethod
+    def setUpTestData(cls):
+        if Store.objects.count() < 5:
+            StoreFactory.create_batch(5 - Store.objects.count())
+        if Brand.objects.count() < 10:
+            BrandFactory.create_batch(10 - Brand.objects.count())
+        if Product.objects.count() < 50:
+            ProductFactory.create_batch(50 - Product.objects.count())
 
+    def setUp(self):
         # Set the admin + user tokens
         super().setUp()
 

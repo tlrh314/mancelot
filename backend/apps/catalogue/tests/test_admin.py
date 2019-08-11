@@ -113,10 +113,8 @@ class RelatedDropdownFilterTest(TestCase):
 
 
 class CeceLabelAdminTest(CatalogueAdminBaseTestCase):
-
     @classmethod
     def setUpTestData(cls):
-        super().setUpTestData()
         if CeceLabel.objects.count() < 5:
             CeceLabelFactory.create_batch(5 - CeceLabel.objects.count())
 
@@ -135,10 +133,8 @@ class CeceLabelAdminTest(CatalogueAdminBaseTestCase):
 
 
 class CertificateAdminTest(CatalogueAdminBaseTestCase):
-
     @classmethod
     def setUpTestData(cls):
-        super().setUpTestData()
         if Certificate.objects.count() < 20:
             CertificateFactory.create_batch(20 - Certificate.objects.count())
 
@@ -178,12 +174,14 @@ class CategoryAdminTest(CatalogueAdminBaseTestCase):
 
 
 class PaymentOptionAdminTest(CatalogueAdminBaseTestCase):
+    @classmethod
+    def setUpTestData(cls):
+        if PaymentOption.objects.count() < 20:
+            PaymentOptionFactory.create_batch(20 - PaymentOption.objects.count())
+
     def setUp(self):
         # Set the admin + session
         super().setUp()
-
-        if PaymentOption.objects.count() < 20:
-            PaymentOptionFactory.create_batch(20 - PaymentOption.objects.count())
 
         # Set the detail for this specific test
         self.admin_changelist_uri = "admin:catalogue_paymentoption_changelist"
@@ -262,7 +260,7 @@ class MaterialAdminTest(CatalogueAdminBaseTestCase):
 
 class ProductAdminTest(CatalogueAdminBaseTestCase):
     @classmethod
-    def setUpTestData(self):
+    def setUpTestData(cls):
         if Store.objects.count() < 5:
             StoreFactory.create_batch(5 - Store.objects.count())
         if Brand.objects.count() < 10:
