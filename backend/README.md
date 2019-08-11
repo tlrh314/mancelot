@@ -3,6 +3,9 @@
 - Django 2.2.4
 - See and install `requirements.txt` for full dependencies
 
+## **Database schema**
+![Database schema for catalogue and accounts](https://github.com/tlrh314/mancelot/edit/master/backend/mancelot_db.png)
+
 ## **Installation for development, e.g. using a virtualenv**
 - Create virtualenvironment: `virtualenv venv`
 - Activate virtualenv: `source venv/bin/activate`

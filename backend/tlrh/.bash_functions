@@ -4,7 +4,7 @@ make_graph() {
     fi
     
     # NB graph_models is one of the additions from django-extensions
-    python manage.py graph_models -a -X ContentType,Group,Permission,Site,Session,AbstractBaseSession,LogEntry,FileBrowser,PermissionsMixin,AbstractBaseUser,UserModel,PrivacyPolicy,ContactInfo,TaskResult,PeriodicTask,IntervalSchedule,PeriodicTasks,ClockedSchedule,CrontabSchedule,SolarSchedule -g > dbschema.dot
+    python manage.py graph_models -a -X ContentType,Group,Permission,Site,Session,AbstractBaseSession,LogEntry,FileBrowser,PermissionsMixin,AbstractBaseUser,UserModel,PrivacyPolicy,ContactInfo,TaskResult,PeriodicTask,IntervalSchedule,PeriodicTasks,ClockedSchedule,CrontabSchedule,SolarSchedule,ExchangeBackend,Rate -x last_updated_by -g > dbschema.dot
 
     # Swap the direction of the arrow
     sed -i -e 's/arrowhead=none, arrowtail=dot/arrowhead=vee, arrowtail=none/g' dbschema.dot
