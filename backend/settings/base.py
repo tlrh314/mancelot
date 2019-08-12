@@ -119,9 +119,9 @@ CSRF_COOKIE_HTTPONLY = False  # to allow the front-end to retrieve CSRF token fr
 CSRF_COOKIE_SAMESITE = "Strict"  # TODO: exactly what will the front-end be doing?
 CSRF_COOKIE_SECURE = True
 
-# Security headers
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
+# Security headers --> already set by nginx
+# SECURE_BROWSER_XSS_FILTER = True
+# SECURE_CONTENT_TYPE_NOSNIFF = True
 
 
 # Internationalization

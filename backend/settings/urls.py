@@ -2,6 +2,7 @@ from django.urls import path
 from django.contrib import admin
 from django.conf.urls import include
 from django.views.generic import TemplateView
+from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
 
 from filebrowser.sites import site
@@ -24,7 +25,8 @@ urlpatterns = [
         name="admin_password_reset",),
     path(r"admin/", include("django.contrib.auth.urls")),
 
-    path("", TemplateView.as_view(template_name="index.html"), name="index"),
+    # path("", TemplateView.as_view(template_name="index.html"), name="index"),
+    path("", RedirectView.as_view(url="index.html"), name="index"),
     path("", include("accounts.urls")),
     path("api/v1/", include(router.urls)),
     path("api/v1/auth/", include("rest_framework.urls")),
