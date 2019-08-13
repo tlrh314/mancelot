@@ -30,6 +30,15 @@
   - `DELETE` [https://www.mancelot.nl/api/v1/users/me](https://www.mancelot.nl/api/v1/users/me)
   - `POST` [https://www.mancelot.nl/api/v1/users](https://www.mancelot.nl/api/v1/users)
 
+- Catalogue endpoints are registered in the `BrowsableAPI` root. NB, all resources
+  are `GET` only and require an authenticated user. Details of the catalogue API 
+  can intuitively be explored here.
+  - `GET` [https://www.mancelot.nl/api/v1/](https://www.mancelot.nl/api/v1/)
+
+
+## **Django admin**
+- [https://www.mancelot.nl/admin/](https://www.mancelot.nl/admin/)
+
 ## **Installation for development, e.g. using a virtualenv**
 - Create virtualenvironment: `virtualenv venv`
 - Activate virtualenv: `source venv/bin/activate`
