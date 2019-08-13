@@ -107,4 +107,3 @@ class ProductSerializer(serializers.ModelSerializer):
             "categories", "subcategories", "materials",
             "sizes", "colors",
         )
-    # return serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name="category-list")

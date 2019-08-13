@@ -117,7 +117,11 @@ class StoreViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class BrandViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Brand.objects.order_by("name")
+    queryset = Brand.objects.order_by("name").prefetch_related(
+        "labels",
+        "certificates",
+    )
+
     serializer_class = BrandSerializer
     permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
@@ -173,7 +177,11 @@ class MaterialViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Product.objects.order_by("name")
+    queryset = Product.objects.select_related(
+        "brand", "store").prefetch_related(
+        "categories", "subcategories", "colors", "sizes", "materials",
+    ).all().order_by("name")
+    # queryset = Product.objects.select_related().all().order_by("name")
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
