@@ -38,10 +38,8 @@ services:
   django:
     <<: *defaults
     image: mancelot
-    ports:
-      - "1337:1337"
     restart: "no"
-    container_name: mancelot-django
+    # container_name: mancelot-django
     command: ['uwsgi', '--ini', 'uwsgi/mancelot.ini']
 
   # Celery is a Distributed Task Queue
