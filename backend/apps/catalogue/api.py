@@ -35,7 +35,7 @@ from catalogue.serializers import (
 class CeceLabelViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = CeceLabel.objects.order_by("name")
     serializer_class = CeceLabelSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,]
+    permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
         filters.SearchFilter,
         filters.OrderingFilter,
@@ -49,7 +49,7 @@ class CeceLabelViewSet(viewsets.ReadOnlyModelViewSet):
 class CertificateViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Certificate.objects.order_by("name")
     serializer_class = CertificateSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,]
+    permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
         filters.SearchFilter,
         filters.OrderingFilter,
@@ -63,7 +63,7 @@ class CertificateViewSet(viewsets.ReadOnlyModelViewSet):
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.order_by("name")
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,]
+    permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
         filters.SearchFilter,
         filters.OrderingFilter,
@@ -77,7 +77,7 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
 class SubcategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Subcategory.objects.order_by("name")
     serializer_class = SubcategorySerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,]
+    permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
         filters.SearchFilter,
         filters.OrderingFilter,
@@ -91,7 +91,7 @@ class SubcategoryViewSet(viewsets.ReadOnlyModelViewSet):
 class PaymentOptionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = PaymentOption.objects.order_by("name")
     serializer_class = PaymentOptionSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,]
+    permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
         filters.SearchFilter,
         filters.OrderingFilter,
@@ -105,7 +105,7 @@ class PaymentOptionViewSet(viewsets.ReadOnlyModelViewSet):
 class StoreViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Store.objects.order_by("name")
     serializer_class = StoreSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,]
+    permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
         filters.SearchFilter,
         filters.OrderingFilter,
@@ -119,7 +119,7 @@ class StoreViewSet(viewsets.ReadOnlyModelViewSet):
 class BrandViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Brand.objects.order_by("name")
     serializer_class = BrandSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,]
+    permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
         filters.SearchFilter,
         filters.OrderingFilter,
@@ -133,7 +133,7 @@ class BrandViewSet(viewsets.ReadOnlyModelViewSet):
 class SizeViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Size.objects.order_by("name")
     serializer_class = SizeSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,]
+    permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
         filters.SearchFilter,
         filters.OrderingFilter,
@@ -147,7 +147,7 @@ class SizeViewSet(viewsets.ReadOnlyModelViewSet):
 class ColorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Color.objects.order_by("name")
     serializer_class = SizeSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,]
+    permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
         filters.SearchFilter,
         filters.OrderingFilter,
@@ -161,7 +161,7 @@ class ColorViewSet(viewsets.ReadOnlyModelViewSet):
 class MaterialViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Material.objects.order_by("name")
     serializer_class = MaterialSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,]
+    permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
         filters.SearchFilter,
         filters.OrderingFilter,
@@ -175,7 +175,7 @@ class MaterialViewSet(viewsets.ReadOnlyModelViewSet):
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Product.objects.order_by("name")
     serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,]
+    permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
         filters.SearchFilter,
         filters.OrderingFilter,
