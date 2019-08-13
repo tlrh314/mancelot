@@ -102,7 +102,8 @@ class Category(models.Model):
         verbose_name_plural = _("Categories")
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
+        section_name = self.SECTIONS[self.section][1]
+        self.slug = slugify("{0}-{1}".format(section_name, self.name))
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -137,7 +138,8 @@ class Subcategory(models.Model):
         verbose_name_plural = _("Subcategories")
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
+        section_name = Category.SECTIONS[self.category.section][1]
+        self.slug = slugify("{0}-{1}-{2}".format(section_name, self.category, self.name))
         super().save(*args, **kwargs)
 
     def __str__(self):
