@@ -1,7 +1,9 @@
 import { h, Component } from 'preact';
-import Grid from './grid';
-import products from "../data/products.json";
-import FilteredExplorer from "./filteredexplorer";
+import { Router } from 'preact-router';
+
+import Home from '../routes/home';
+import ColourSelection from '../routes/colourselection';
+import Overview from '../routes/overview';
 
 export default class App extends Component {
 
@@ -25,18 +27,12 @@ export default class App extends Component {
     render() {
         return (
             <div id="app">
-              <div class="btn_back_container"><button class="btn_back" onClick={ e => alert("navigate back to home") }></button></div>
-              <h1>Wil je kleur bekennen?</h1>
-              <h2>Je kunt meerdere kleuren kiezen</h2>
-                {/*<FilteredExplorer />*/}
-                <Grid
-                    columnCount={3}
-                    elementCount={12}
-                    onClick={i => console.log(i)}
-                />
-                <div class="footer_bar"><button class="btn_full" onClick={ e => alert("nice animation starts here!") }>Verder</button></div>
+                <Router onChange={this.handleRoute}>
+                    <Home default />
+                    <ColourSelection path="/colourselection/" />
+                    <Overview path="/overview/:colour" />
+                </Router>
             </div>
-
         );
     }
 }
