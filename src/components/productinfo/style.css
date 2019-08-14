@@ -1,0 +1,33 @@
+.productinfo_container {
+  position: fixed;
+  left: 0px;
+  top: 80%;
+  height: auto;
+  min-height: 230px;
+  z-index: 10;
+  background: #f0f0f0;
+  box-shadow: inset 0px 53px 5px -52px rgba(0,0,0,0.21);
+  box-shadow: 0px 9px 9px 8px rgba(0,0,0,0.22);
+  overflow: hidden;
+  padding: 4% 7% ;
+  transition: all 0.8s;
+}
+.productinfo_container.disappear { top:100%; }
+
+
+.productinfo_container .icons_container .icon {
+      width: 19%;
+      height: 40px;
+      background-size: auto 25px;
+      background-position: center;
+      background-repeat: no-repeat;
+      margin: 0px;
+      display:inline-block;
+}
+
+.productinfo_container .explain_brand {
+    font-family: "Roboto Condensed", Arial, sans-serif;
+    color:#909090;
+    font-size: 90%;
+  }
+}

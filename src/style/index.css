@@ -1,3 +1,10 @@
+:root {
+  --blue-dark-color:#172b37;
+  --blue-ligth-color:#1e5476;
+  --page-width:90%;
+  --page-margin:10px;
+}
+
 @font-face {
   font-family: 'tertre';
   src: url('../assets/fonts/tertre-xbol.ttf') format('truetype');
@@ -23,7 +30,7 @@ html, body {
 	width: 100%;
 	padding: 0;
 	margin: 0;
-	background: #FAFAFA;
+	background: #fff;
 	font-family: 'tertre', arial, sans-serif;
 	font-weight: 400;
 	color: #444;
@@ -99,6 +106,7 @@ html, body {
 	width: 100%;
 	position: absolute;	bottom:0;
 }
+
 .btn_settings {
 	background-color:transparent;
 	background-image: url('../assets/icon_settings.svg');
@@ -129,13 +137,15 @@ html, body {
 /* VERVOLGPAGE  */
 
 .btn_back_container{
-	background-color:#172b37;
-	background-image: url('../assets/back_line_h.png');
+	background-color:#f0f0f0;
 	background-position: right top;
 	background-repeat: no-repeat;
 	background-size: 17px auto;
-	width: 40px;
-	position: absolute;	top:0; left:0;
+	width: 70px;
+  height: 70px;
+  transform: rotate(45deg);
+	position: fixed;	top:-35px; left:-35px;
+  z-index: 5;
 }
 .btn_back{
 	border: none;
@@ -143,12 +153,10 @@ html, body {
 	background-image: url('../assets/icon_back.svg');
 	background-position: 5px center;
 	background-repeat: no-repeat;
-	background-size: 24px auto;
-	color:#fff;
-	font-family: 'tertre', arial, sans-serif;
-	font-size: 21px;
+	background-size: 20px auto;
+  transform: rotate(-45deg);
 	text-align: center;
-	padding: 15px;
+	margin: -5px 0px 0px 33px;
 	width: 100%;
 	height: 58px;
 }
@@ -161,11 +169,35 @@ html, body {
 	width: 100%;
 	position: absolute;	bottom:0;
 }
-.btn_full{
-	border: none;
-	background-color:transparent;
+.btn_footer {
+  display:block;
+  position: absolute;
+  left:50%;  transform: translateX(-50%);
+  bottom:-5px;
+  width: 50px;
+  height: 50px;
+  background:var(--blue-dark-color);
+  border: 1px dashed rgba(255,255,255,0.5);
+  text-align: center;
+  color:#fff;
+  font-size: 28px;
+  padding-top: 5px;
+  font-family: "Roboto Condensed", Arial, sans-serif;
+}
+.btn_footer::before {
+  display:block;
+  position: absolute;
+  left:50%;  transform: translateX(-50%);
+  bottom:-9px;
+  width: 50px;
+  height: 50px;
+  border: 8px solid var(--blue-dark-color);
+  z-index: -1;
+  content:" ";
+}
+.btn_next{
 	background-image: url('../assets/icon_next.svg');
-	background-position: calc(100% - 20px) center;
+	background-position: center 5px;
 	background-repeat: no-repeat;
 	background-size: 24px auto;
 	color:#fff;
@@ -175,16 +207,54 @@ html, body {
 	padding: 20px;
 	width: 100%;
 }
+.input_container{
+  width: 80%;
+  margin: 0px auto;
+  padding: 15px 0px;
+}
+.input_container+.input_container{
+  padding-top: 0px;
+}
 
-.color1{ background-image: url('../assets/tshirt-colors/white.png');  }
-.color2{ background-image: url('../assets/tshirt-colors/grey.png');  }
-.color3{ background-image: url('../assets/tshirt-colors/black.png');  }
-.color4{ background-image: url('../assets/tshirt-colors/blue.png');  }
-.color5{ background-image: url('../assets/tshirt-colors/indigo.png');  }
-.color6{ background-image: url('../assets/tshirt-colors/purple.png');  }
-.color7{ background-image: url('../assets/tshirt-colors/beige.png');  }
-.color8{ background-image: url('../assets/tshirt-colors/yellow.png');  }
-.color9{ background-image: url('../assets/tshirt-colors/brown.png');  }
+input[type=text] {
+  box-shadow: 0px 0px 20px 20px rgba(0,0,0,0.03);
+  width: 100%;
+  height: 40px;
+  border: none;
+  font-size: 16px;
+  font-family: "Roboto Condensed", Arial, sans-serif;
+  text-align: center;
+
+}
+.btn_select {
+  box-shadow: 0px 0px 20px 20px rgba(0,0,0,0.03);
+  border-radius: 5px;
+  height: 40px;
+  text-align: center;
+  padding-top:8px;
+  font-size: 18px;
+  display: block;
+  transition: 0.5s all;
+}
+input[type=radio]:checked + .btn_select {
+  background: var(--blue-ligth-color);
+  color:#fff;
+}
+.color1 { background-image: url('../assets/tshirt-colors/white.png');  }
+.color2 { background-image: url('../assets/tshirt-colors/grey.png');   }
+.color3 { background-image: url('../assets/tshirt-colors/black.png');  }
+.color4 { background-image: url('../assets/tshirt-colors/blue.png');   }
+.color5 { background-image: url('../assets/tshirt-colors/indigo.png'); }
+.color6 { background-image: url('../assets/tshirt-colors/purple.png'); }
+.color7 { background-image: url('../assets/tshirt-colors/beige.png');  }
+.color8 { background-image: url('../assets/tshirt-colors/yellow.png'); }
+.color9 { background-image: url('../assets/tshirt-colors/brown.png');  }
 .color10{ background-image: url('../assets/tshirt-colors/green.png');  }
-.color11{ background-image: url('../assets/tshirt-colors/orange.png');  }
-.color12{ background-image: url('../assets/tshirt-colors/red.png');  }
+.color11{ background-image: url('../assets/tshirt-colors/orange.png'); }
+.color12{ background-image: url('../assets/tshirt-colors/red.png');    }
+
+.icon_vegan        { background-image: url('../assets/labels/vegan.png');}
+.icon_fairtrade    { background-image: url('../assets/labels/fair_trade.png');}
+.icon_environment  { background-image: url('../assets/labels/environment.png');}
+.icon_localproduced{ background-image: url('../assets/labels/icon_local.png');}
+.icon_localsupport { background-image: url('../assets/labels/local_support.png');}

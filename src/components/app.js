@@ -2,6 +2,8 @@ import { h, Component } from 'preact';
 import Grid from './grid';
 import products from "../data/products.json";
 import FilteredExplorer from "./filteredexplorer";
+import Productinfo from "./productinfo";
+import Wishlist from "./wishlist";
 
 
 export default class App extends Component {
@@ -35,6 +37,9 @@ export default class App extends Component {
                     elementCount={12}
                     onClick={i => console.log(i)}
                 />
+                {/*<Productinfo />*/}
+                <Productinfo />
+
                 <div class="footer_bar"><button class="btn_full" onClick={ e => alert("nice animation starts here!") }>Verder</button></div>
             </div>
 
