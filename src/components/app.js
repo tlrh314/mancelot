@@ -3,6 +3,7 @@ import Grid from './grid';
 import products from "../data/products.json";
 import FilteredExplorer from "./filteredexplorer";
 
+
 export default class App extends Component {
 
     state = {
