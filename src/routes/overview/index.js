@@ -1,5 +1,6 @@
 import {h, Component} from 'preact';
 import {route} from "preact-router";
+import FilteredExplorer from "../../components/filteredexplorer";
 
 //TODO
 export default class Overview extends Component {
@@ -11,6 +12,7 @@ export default class Overview extends Component {
                     <button class="btn_back" onClick={e => route('/colourselection')}></button>
                 </div>
                 <h1>Overview voor de gekozen kleur {colour}</h1>
+                <FilteredExplorer />
             </div>
 
         );
