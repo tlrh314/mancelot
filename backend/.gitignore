@@ -184,6 +184,7 @@ tags
 ### Auto-generated items in $HOME
 .ipython/profile_default
 .bash_history
+.mysql_history
 .cache
 .viminfo
 .bash_aliases
