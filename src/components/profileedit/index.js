@@ -1,7 +1,8 @@
 import { h, Component } from 'preact';
 import style from './style';
 
-export default class Wishlist extends Component {
+export default class ProfileEdit
+edit extends Component {
 
     static defaultProps = {
         color : "#FF0000"
@@ -9,8 +10,7 @@ export default class Wishlist extends Component {
 
     render() {
         return (
-          <div>
-          </div>
+          <div>todo</div>
         );
     }
 }

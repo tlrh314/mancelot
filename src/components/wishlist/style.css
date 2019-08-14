@@ -1,10 +1,17 @@
 .wishlist_content { height:100%; transition: all 0.8s; }
-.wishlist_content .no_items { display: none; background: transparent;}
-.wishlist_content .product_image { width: 60px; height: 120px; background-size: contain; background-repeat: no-repeat; background-position: center;transition: all 0.8s;}
-.wishlist_content .wishlist_items  { background-repeat: no-repeat; background-position:center bottom; background-image: url('../../assets/wishcloud.png'); background-size: 110% auto; background-color: transparent; margin-top: 400px; transition: all 0.8s;}
+.wishlist_content .no_items { display: none; background: transparent; position: absolute;}
+.wishlist_content .wishlist_items  { background-repeat: no-repeat; background-position:center bottom; background-image: url('../../assets/wishcloud.png'); background-size: 110% auto; background-color: transparent; height: 75%; transition: all 0.8s; padding: 0px 20px; }
 
-.wishlist_content ul { list-style: none; margin: 0; padding: 0; }
-.wishlist_content li { list-style: none; margin: 0; padding: 0; width: 50%; }
+.wishlist_content ul { list-style: none; margin: 0; padding: 0; position: relative; }
+.wishlist_content li { list-style: none; margin: 0; padding: 0; width: 36%; transition: all 0.8s; margin: 4% 7%; float:left;}
+
+.wishlist_content .product_image { width: 70px; height: 120px; background-size: contain; background-repeat: no-repeat; background-position: center;transition: all 0.8s; margin: 5px auto;}
+.product_button_min, .product_button_plus { float: left;width:20%; height: 30px; font-size: 20px; text-align: center;}
+.product_amountsize { float: left;width:60%; height: 30px; text-align: center; padding-top: 4px;}
+.product_amount {}
+.product_size {}
+
+
 
 .wishlist_content .when {
   padding: 0 7% ;
@@ -14,21 +21,65 @@
   text-align: center;
 }
 .wishlist_content .when h3 { margin: 0px auto; text-align: center;}
+.wishlist_content .impact {
+  display:block;
+  position: fixed;
+  width: 100%;
+  bottom: 15px;
+  font-size: 90%;
+  padding-left: 4px;
+  text-align: center;
+  font-family: "Roboto Condensed", Arial, sans-serif;
+}
+.wishlist_content .betterlives {
+  display:block;
+  position: absolute;
+  left:50%;  transform: translateX(-50%);
+  bottom:-5px;
+  width: 50px;
+  height: 50px;
+  background:var(--blue-dark-color);
+  border: 1px dashed rgba(255,255,255,0.5);
+  text-align: center;
+  color:#fff;
+  font-size: 28px;
+  padding-top: 5px;
+  font-family: "Roboto Condensed", Arial, sans-serif;
+}
+.wishlist_content .betterlives::before {
+  display:block;
+  position: absolute;
+  left:50%;  transform: translateX(-50%);
+  bottom:-6px;
+  width: 50px;
+  height: 50px;
+  border: 5px solid var(--blue-dark-color);
+  z-index: -1;
+  content:" ";
+}
+
+.wishlist_content .betterlives_fake {
+  display:inline-block;
+  width: 64px;
+  content:".";
+}
+
+
 
 
 /* Wishlist op productdetail page (small)*/
 .wishlist_content.small {height: 130px;}
-.wishlist_content.small .no_items { display: block; margin: 0px auto; padding: 15px; font-size: 110%; text-align: center; color:#909090}
+
+.wishlist_content.small .no_items { display: block; transform: translateX(-50%);left:50%; width: 240px; top:10px; padding: 0px 15px; font-size: 110%; text-align: center; color:#909090}
 .wishlist_content.small .no_items span { font-size: 90%;}
-.wishlist_content.small .wishlist_items  { margin-top: 0px;}
+.wishlist_content.small .wishlist_items  { margin-top: 0px; padding: 0px 20px;}
+.wishlist_content.small .wishlist_items li { width: 40px; position: absolute; top:20px;  }
+.wishlist_content.small .wishlist_items li:first-child { left:50px;  }
+.wishlist_content.small .wishlist_items li:nth-child(2) { left:100px;  }
+.wishlist_content.small .wishlist_items li:nth-child(3) { left:150px;  }
 
 
 .wishlist_content.small .product_summary {display:none}
 .wishlist_content.small .when {display:none}
 .wishlist_content.small .impact {display:none}
 .wishlist_content.small .product_image { width: 30px; height: 60px;}
-.product_button_min{}
-.product_amountsize{}
-  .product_amount{}
-  .product_size{}
-.product_button_plus{}
