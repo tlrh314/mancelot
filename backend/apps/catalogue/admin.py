@@ -1,4 +1,6 @@
+from django.urls import reverse
 from django.contrib import admin
+from django.db.models import Count, Sum
 from django.utils.html import format_html
 from django.core.validators import validate_email
 from django.utils.translation import ugettext_lazy as _
@@ -27,7 +29,7 @@ class RelatedDropdownFilter(RelatedFieldListFilter):
 
 @admin.register(CeceLabel)
 class CeceLabelAdmin(admin.ModelAdmin):
-    list_display = ("name",)
+    list_display = ("name", "get_count",)
     search_fields = ("name", "info")
     ordering = ("name",)
     readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
@@ -40,6 +42,16 @@ class CeceLabelAdmin(admin.ModelAdmin):
             "fields": ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by")
         }),
     )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            count=Sum("brands__products")
+        )
+
+    def get_count(self, obj):
+        return obj.count
+    get_count.short_description = _("# Products")
+    get_count.admin_order_field = "count"
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -48,7 +60,7 @@ class CeceLabelAdmin(admin.ModelAdmin):
 
 @admin.register(Certificate)
 class CertificateAdmin(admin.ModelAdmin):
-    list_display = ("name",)
+    list_display = ("name", "get_count")
     search_fields = ("name", "info")
     ordering = ("name",)
     readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
@@ -61,6 +73,58 @@ class CertificateAdmin(admin.ModelAdmin):
             "fields": ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by")
         }),
     )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            count=Sum("brands__products")
+        )
+
+    def get_count(self, obj):
+        return obj.count
+    get_count.short_description = _("# Products")
+    get_count.admin_order_field = "count"
+
+    def save_model(self, request, obj, form, change):
+        obj.last_updated_by = request.user
+        obj.save()
+
+
+@admin.register(Subcategory)
+class SubcategoryAdmin(admin.ModelAdmin):
+    list_display = ("name", "get_count", "get_category", "get_section")
+    search_fields = ("name", "category")
+    ordering = ("name",)
+    readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
+
+    fieldsets = (
+        (None, {"fields": ("name", "category", )}),
+        (_("Meta"), {
+            "classes": ("collapse",),
+            "fields": ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by")
+        }),
+    )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            count=Count("products")
+        )
+
+    def get_count(self, obj):
+        return obj.count
+    get_count.short_description = _("# Products")
+    get_count.admin_order_field = "count"
+
+    def get_category(self, obj):
+        return format_html(
+            "<a href='{0}'>{1}</a>".format(reverse("admin:catalogue_category_change",
+            args=[obj.pk]), obj.name)
+        )
+    get_category.short_description = _("Category")
+    get_category.admin_order_field = "category__name"
+
+    def get_section(self, obj):
+        return obj.category.get_section_display()
+    get_section.short_description = _("Section")
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -75,7 +139,7 @@ class SubcategoryAdminInline(admin.StackedInline):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("name", "section")
+    list_display = ("name", "get_count", "section", "get_subcategories")
     list_filter = ("section",)
     search_fields = ("name",)
     ordering = ("section", "name",)
@@ -90,6 +154,25 @@ class CategoryAdmin(admin.ModelAdmin):
         }),
     )
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            count=Count("products")
+        )
+
+    def get_count(self, obj):
+        return obj.count
+    get_count.short_description = _("# Products")
+    get_count.admin_order_field = "count"
+
+    def get_subcategories(self, obj):
+        return format_html(
+            "<br>".join("<a href='{0}'>{1}</a>".format(
+                reverse("admin:catalogue_subcategory_change", args=[c.pk]), c.name)
+                for c in obj.subcategories.iterator()
+            )
+        )
+    get_subcategories.short_description = _("Subcategories")
+
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
         obj.save()
@@ -97,7 +180,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(PaymentOption)
 class PaymentOptionAdmin(admin.ModelAdmin):
-    list_display = ("name",)
+    list_display = ("name", "show_logo",)
     search_fields = ("name",)
     ordering = ("name",)
     readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
@@ -110,6 +193,12 @@ class PaymentOptionAdmin(admin.ModelAdmin):
         }),
     )
 
+    def show_logo(self, obj):
+        return format_html(
+            "<img src='{0}' alt='{1}', height='42' width/>".format(obj.logo, obj.name)
+        )
+    show_logo.short_description = _("Logo")
+
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
         obj.save()
@@ -117,7 +206,7 @@ class PaymentOptionAdmin(admin.ModelAdmin):
 
 @admin.register(Store)
 class StoreAdmin(admin.ModelAdmin):
-    list_display = ("name",)
+    list_display = ("name", "get_count", "show_logo")
     list_filter = (
         ("payment_options", RelatedDropdownFilter),
     )
@@ -136,6 +225,22 @@ class StoreAdmin(admin.ModelAdmin):
         }),
     )
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            count=Count("products")
+        )
+
+    def get_count(self, obj):
+        return obj.count
+    get_count.short_description = _("# Products")
+    get_count.admin_order_field = "count"
+
+    def show_logo(self, obj):
+        return format_html(
+            "<img src='{0}' alt='{1}', height='42' width/>".format(obj.logo, obj.name)
+        )
+    show_logo.short_description = _("Logo")
+
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
         obj.save()
@@ -143,7 +248,7 @@ class StoreAdmin(admin.ModelAdmin):
 
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
-    list_display = ("name",)
+    list_display = ("name", "get_count", "get_certificates", "get_labels")
     list_filter = (
         ("labels", RelatedDropdownFilter),
         ("certificates", RelatedDropdownFilter),
@@ -163,6 +268,36 @@ class BrandAdmin(admin.ModelAdmin):
         }),
     )
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related(
+            "labels", "certificates",
+        ).annotate(
+            count=Count("products"),
+        )
+
+    def get_count(self, obj):
+        return obj.count
+    get_count.short_description = _("# Products")
+    get_count.admin_order_field = "count"
+
+    def get_labels(self, obj):
+        return format_html(
+            "<br>".join("<a href='{0}'>{1}</a>".format(
+                reverse("admin:catalogue_cecelabel_change", args=[c.pk]), c.name)
+                for c in obj.labels.iterator()
+            )
+        )
+    get_labels.short_description = _("Labels")
+
+    def get_certificates(self, obj):
+        return format_html(
+            "<br>".join("<a href='{0}'>{1}</a>".format(
+                reverse("admin:catalogue_certificate_change", args=[c.pk]), c.name)
+                for c in obj.certificates.iterator()
+            )
+        )
+    get_certificates.short_description = _("Certificates")
+
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
         obj.save()
@@ -170,7 +305,7 @@ class BrandAdmin(admin.ModelAdmin):
 
 @admin.register(Size)
 class SizeAdmin(admin.ModelAdmin):
-    list_display = ("name",)
+    list_display = ("name", "get_count",)
     search_fields = ("name",)
     ordering = ("date_created",)
     readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
@@ -182,6 +317,16 @@ class SizeAdmin(admin.ModelAdmin):
             "fields": ("slug", "date_created", "date_updated", "last_updated_by")
         }),
     )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            count=Count("products")
+        )
+
+    def get_count(self, obj):
+        return obj.count
+    get_count.short_description = _("# Products")
+    get_count.admin_order_field = "count"
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -190,7 +335,7 @@ class SizeAdmin(admin.ModelAdmin):
 
 @admin.register(Color)
 class ColorAdmin(admin.ModelAdmin):
-    list_display = ("name",)
+    list_display = ("name", "get_count",)
     search_fields = ("name",)
     ordering = ("date_created",)
     readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
@@ -203,6 +348,16 @@ class ColorAdmin(admin.ModelAdmin):
         }),
     )
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            count=Count("products")
+        )
+
+    def get_count(self, obj):
+        return obj.count
+    get_count.short_description = _("# Products")
+    get_count.admin_order_field = "count"
+
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
         obj.save()
@@ -210,7 +365,7 @@ class ColorAdmin(admin.ModelAdmin):
 
 @admin.register(Material)
 class MaterialAdmin(admin.ModelAdmin):
-    list_display = ("name",)
+    list_display = ("name", "get_count")
     search_fields = ("name", "info")
     ordering = ("name",)
     readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
@@ -223,6 +378,16 @@ class MaterialAdmin(admin.ModelAdmin):
             "fields": ("slug", "date_created", "date_updated", "last_updated_by")
         }),
     )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            count=Count("products")
+        )
+
+    def get_count(self, obj):
+        return obj.count
+    get_count.short_description = _("# Products")
+    get_count.admin_order_field = "count"
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -251,7 +416,7 @@ class ProductIsOnSaleFilter(admin.SimpleListFilter):
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
         "name",
-        "brand", "store",
+        "get_brand", "get_store",
         "get_categories", "get_sections",
         "cece_id",
         "date_created", "date_updated",
@@ -286,13 +451,63 @@ class ProductAdmin(admin.ModelAdmin):
         }),
     )
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related(
+            "brand", "store",
+        ).prefetch_related(
+            "categories", "subcategories", "colors", "sizes",
+        )
+
+    def get_brand(self, obj):
+        return format_html(
+            "<a href='{0}'>{1}</a>".format(reverse("admin:catalogue_brand_change",
+            args=[obj.brand.pk]), obj.brand.name)
+        )
+    get_brand.short_description = _("Brand")
+    get_brand.admin_order_field = "brand"
+
+    def get_store(self, obj):
+        return format_html(
+            "<a href='{0}'>{1}</a>".format(reverse("admin:catalogue_store_change",
+            args=[obj.store.pk]), obj.store.name)
+        )
+    get_store.short_description = _("Store")
+    get_store.admin_order_field = "store"
+
+    def get_labels(self, obj):
+        return format_html(
+            "<br>".join("<a href='{0}'>{1}</a>".format(
+                reverse("admin:catalogue_label_change", args=[c.pk]), c.name)
+                for c in obj.brand.labels.iterator()
+            )
+        )
+    get_labels.short_description = _("Labels")
+    get_labels.admin_order_field = "brand__labels__name"
+
+    def get_certificates(self, obj):
+        return format_html(
+            "<br>".join("<a href='{0}'>{1}</a>".format(
+                reverse("admin:catalogue_certificates_change", args=[c.pk]), c.name)
+                for c in obj.brand.certificates.iterator()
+            )
+        )
+    get_certificates.short_description = _("Certificates")
+    get_certificates.admin_order_field = "brand__certificates__name"
+
     def get_categories(self, obj):
-        return format_html("<br>".join( c.name for c in obj.categories.all() ))
+        return format_html(
+            "<br>".join("<a href='{0}'>{1}</a>".format(
+                reverse("admin:catalogue_category_change", args=[c.pk]), c.name)
+                for c in obj.categories.iterator()
+            )
+        )
     get_categories.short_description = _("Categories")
+    get_categories.admin_order_field = "categories__name"
 
     def get_sections(self, obj):
         return format_html("<br>".join( c.get_section_display() for c in obj.categories.all() ))
     get_sections.short_description = _("Sections")
+    get_sections.admin_order_field = "categories__section"
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -308,10 +523,3 @@ class ProductAdmin(admin.ModelAdmin):
             except KeyError:
                 pass
         return s
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).select_related(
-            "brand", "store",
-        ).prefetch_related(
-            "categories", "subcategories", "colors", "sizes",
-        )
