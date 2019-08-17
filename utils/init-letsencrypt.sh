@@ -79,11 +79,11 @@ if [ ! -e "${DATA_PATH}/conf/options-ssl-nginx.conf" ] || [ ! -e "${DATA_PATH}/c
 fi
 
 # Make sure our container is at the latest version
-docker-compose build
+docker-compose -p mancelot -f nginx/docker-compose.yml build
 
 # Make sure nginx is running
 echo "### Starting nginx ..."
-docker-compose up --force-recreate -d nginx
+docker-compose -p mancelot -f nginx/docker-compose.yml up --force-recreate -d nginx
 echo
 
 # Declare each domains and generate Let's Encrypt certificate
@@ -122,7 +122,7 @@ do
     echo "### Creating self-signed certificate for $DOMAIN ..."
     LE_PATH="/etc/letsencrypt/live/$DOMAIN"
     mkdir -p "${DATA_PATH}/conf/live/$DOMAIN"  # Inside the container
-    docker-compose run --rm --entrypoint "\
+    docker-compose -p mancelot -f nginx/docker-compose.yml run --rm --entrypoint "\
       openssl req -x509 -nodes -newkey rsa:1024 -days 1\
         -keyout '${LE_PATH}/privkey.pem' \
         -out '${LE_PATH}/fullchain.pem' \
@@ -160,14 +160,14 @@ do
 
 
     echo "### Deleting self-signed certificate for $DOMAIN ..."
-    docker-compose run --rm --entrypoint "\
+    docker-compose -p mancelot -f nginx/docker-compose.yml run --rm --entrypoint "\
       rm -Rf /etc/letsencrypt/live/$DOMAIN && \
       rm -Rf /etc/letsencrypt/archive/$DOMAIN && \
       rm -Rf /etc/letsencrypt/renewal/$DOMAIN.conf" certbot
     echo
 
     echo "### Requesting Let's Encrypt certificate for $DOMAIN_ARGS ..."
-    docker-compose run --rm --entrypoint "\
+    docker-compose -p mancelot -f nginx/docker-compose.yml run --rm --entrypoint "\
       certbot certonly --webroot -w /var/www/certbot \
         $EMAIL_ARG \
         $DOMAIN_ARGS \
@@ -179,4 +179,4 @@ done
 
 # And finally we reload our nginx container
 echo "### Reloading nginx ..."
-docker-compose exec nginx nginx -s reload
+docker-compose -p mancelot -f nginx/docker-compose.yml exec nginx nginx -s reload

@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+
+  nginx:
+    image: mancelot-nginx
+    build: 
+      context: .
+    restart: unless-stopped
+    volumes:
+      - ${MANCELOT_DATA_PATH-../data/}certbot/conf:/etc/letsencrypt
+      - ${MANCELOT_DATA_PATH-../data/}certbot/www:/var/www/certbot
+      - ${MANCELOT_DATA_PATH-../data/}django/media:/var/www/mancelot/media
+      - ${MANCELOT_DATA_PATH-../data/}django/static:/var/www/mancelot/static
+      - ${MANCELOT_DATA_PATH-../data/}flower:/var/www/flower
+      - ../frontend/build:/var/www/mancelot/root
+    ports:
+      - "80:80"
+      - "443:443"
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ${MANCELOT_DATA_PATH-../data/}certbot/conf:/etc/letsencrypt
+      - ${MANCELOT_DATA_PATH-../data/}certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+networks:
+  default:
+    external:
+      name: mancelot
