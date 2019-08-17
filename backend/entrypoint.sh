@@ -38,4 +38,9 @@ python manage.py migrate
 python manage.py compilemessages
 python manage.py collectstatic --noinput
 
+# To kill 404
+tail -n 1  /mancelot/static/rest_framework/css/bootstrap.min.css
+sed -i -e 's/\/\*# sourceMappingURL=bootstrap.min.css.map \*\///g' \
+    /mancelot/static/rest_framework/css/bootstrap.min.css
+tail -n 1  /mancelot/static/rest_framework/css/bootstrap.min.css
 exec "$@"
