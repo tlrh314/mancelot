@@ -30,7 +30,7 @@ class CeceLabelAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name", "info")
     ordering = ("name",)
-    readonly_fields = ("slug", "date_created", "date_updated", "last_updated_by",)
+    readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
     form = FixTinyMCEHasTooWideUIForm
 
     fieldsets = (
@@ -51,7 +51,7 @@ class CertificateAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name", "info")
     ordering = ("name",)
-    readonly_fields = ("slug", "date_created", "date_updated", "last_updated_by",)
+    readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
     form = FixTinyMCEHasTooWideUIForm
 
     fieldsets = (
@@ -79,7 +79,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_filter = ("section",)
     search_fields = ("name",)
     ordering = ("section", "name",)
-    readonly_fields = ("slug", "date_created", "date_updated", "last_updated_by",)
+    readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
     inlines = (SubcategoryAdminInline,)
 
     fieldsets = (
@@ -100,7 +100,7 @@ class PaymentOptionAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
     ordering = ("name",)
-    readonly_fields = ("slug", "date_created", "date_updated", "last_updated_by",)
+    readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
 
     fieldsets = (
         (None, {"fields": ("name", "logo")}),
@@ -123,7 +123,7 @@ class StoreAdmin(admin.ModelAdmin):
     )
     search_fields = ("name", "info")
     ordering = ("name",)
-    readonly_fields = ("slug",  "date_created", "date_updated", "last_updated_by",)
+    readonly_fields = ("cece_api_url", "slug",  "date_created", "date_updated", "last_updated_by",)
     filter_horizontal = ("payment_options",)
     form = FixTinyMCEHasTooWideUIForm
 
@@ -150,7 +150,7 @@ class BrandAdmin(admin.ModelAdmin):
     )
     search_fields = ("name", "info")
     ordering = ("name",)
-    readonly_fields = ("slug", "date_created", "date_updated", "last_updated_by",)
+    readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
     filter_horizontal = ("labels", "certificates")
     form = FixTinyMCEHasTooWideUIForm
 
@@ -173,7 +173,7 @@ class SizeAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
     ordering = ("date_created",)
-    readonly_fields = ("slug", "date_created", "date_updated", "last_updated_by",)
+    readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
 
     fieldsets = (
         (None, {"fields": ("name",)}),
@@ -193,7 +193,7 @@ class ColorAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
     ordering = ("date_created",)
-    readonly_fields = ("slug", "date_created", "date_updated", "last_updated_by",)
+    readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
 
     fieldsets = (
         (None, {"fields": ("name",)}),
@@ -267,7 +267,7 @@ class ProductAdmin(admin.ModelAdmin):
     )
     search_fields = ("name", "info", "extra_info",)
     ordering = ("name",)
-    readonly_fields = ("slug", "date_created", "date_updated", "last_updated_by",)
+    readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
     filter_horizontal = ("categories", "subcategories", "materials", "sizes", "colors")
     form = FixTinyMCEHasTooWideUIForm
 
