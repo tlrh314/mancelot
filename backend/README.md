@@ -56,15 +56,15 @@
 - `python manage.py shell -c 'from django.contrib.sites.models import Site; Site.objects.all().delete(); Site.objects.create(id=1, name="localhost:8000", domain="localhost:8000")'`
 
 ## **Running with Docker**
-- Build the image: `docker build -t mancelot .`
+- Build the image: `docker build -t mancelot-django .`
 
-- Run the built-in Django development server: `docker run --rm -it -v "$(pwd)":/mancelot -p 8000:1337 --name runserver mancelot bash -c "python manage.py runserver 0.0.0.0:1337"`
+- Run the built-in Django development server: `docker run --rm -it -v "$(pwd)":/mancelot -p 8000:1337 --name runserver mancelot-django bash -c "python manage.py runserver 0.0.0.0:1337"`
 - In a new terminal, one can attach to the `runserver` container in an interactive session: `docker exec -it runserver bash`
 - Website runs on http://localhost:8000 
 - Or to run with nginx + uwsgi
-  - in the parent folder: `docker-compose up --build -d nginx`
-  - in this folder: `docker-compose up -d django` (or omit `django` to start all services, e.g. to develop tasks)
-- In a new terminal, one can attach to the `django` container in an interactive session: `docker exec -it mancelot-django bash`
+  - in the `../nginx` folder: `docker-compose -p mancelot up --build -d nginx`
+  - in this folder: `docker-compose -p mancelot up -d django` (or omit `django` to start all services, e.g. to develop tasks)
+- In a new terminal, one can attach to the `django` container in an interactive session: `docker exec -it mancelot_django_1 bash`
 - Website runs on https://localhost (NB, must accept self-signed certificate)
 
 ### Add the initial data to the database
