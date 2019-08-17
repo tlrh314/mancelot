@@ -59,6 +59,6 @@ class Command(CommandWrapper):
         self.cmd_name = __file__.split("/")[-1].replace(".py", "")
         self.method = create_or_update_certificates
         self.margs = [ self.cmd_name, client ]
-        self.mkwargs = { "recursive": True if settings.DEBUG else False }
+        self.mkwargs = { "recursive": not settings.DEBUG }
 
         super().handle(*args, **options)
