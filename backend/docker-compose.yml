@@ -17,57 +17,47 @@ services:
   mariadb:
     image: mariadb:10.4
     restart: unless-stopped
-    container_name: mancelot-mariadb
     environment:
       MYSQL_ROOT_PASSWORD: ${MANCELOT_MYSQL_ROOT_PASSWORD}
     volumes:
       - ${MANCELOT_DATA_PATH-../data/}django/mariadb:/var/lib/mysql
 
-  # Memcached for Django
-  memcached:
-    image: memcached
-    container_name: mancelot-memcached
-    restart: "no"
-
-  # Redis as broker for Celery
+  # Redis as broker for Celery + Cache backend for Django
   redis:
     image: redis:alpine
-    container_name: mancelot-redis
     command: "redis-server"
 
   django:
     <<: *defaults
-    image: mancelot
-    restart: "no"
-    # container_name: mancelot-django
+    image: mancelot-django
+    depends_on:
+      - "redis"
+      - "mariadb"
     command: ['uwsgi', '--ini', 'uwsgi/mancelot.ini']
 
   # Celery is a Distributed Task Queue
   celery:
     <<: *defaults
-    image: mancelot
-    container_name: mancelot-celery
+    image: mancelot-django
     depends_on:
       - "redis"
-      - "celery-beat"
+      - "celery_beat"
     entrypoint: "celery -E -A settings worker -c 2 -l info"
  
   # Celery beat is a scheduler; It kicks off tasks at regular intervals, that
   # are then executed by available worker nodes in the cluster.
-  celery-beat:
+  celery_beat:
     <<: *defaults
-    image: mancelot
-    container_name: mancelot-celery-beat
+    image: mancelot-django
     entrypoint: "celery -A settings beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
     healthcheck:
       disable: true
  
   # Flower to monitor Celery
-  celery-flower:
+  celery_flower:
     <<: *defaults
-    image: mancelot
-    container_name: mancelot-celery-flower
-    entrypoint: "flower -A settings --port=5555"
+    image: mancelot-django
+    entrypoint: "flower -A settings --port=5555 --logging=debug"
     healthcheck:
       disable: true
 
