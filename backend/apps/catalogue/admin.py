@@ -250,8 +250,11 @@ class ProductIsOnSaleFilter(admin.SimpleListFilter):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
-        "name", "cece_id", "date_updated", "section", "first_category",
-        "brand", "store"
+        "name",
+        "brand", "store",
+        "get_categories", "get_sections",
+        "cece_id",
+        "date_created", "date_updated",
     )
     list_filter = (
         ("categories", RelatedDropdownFilter),
@@ -283,19 +286,13 @@ class ProductAdmin(admin.ModelAdmin):
         }),
     )
 
-    def section(self, obj):
-        if obj.categories.count() > 0:
-            return obj.categories.first().section
-        else:
-            return "ERROR"
-    section.short_description = _("Section1")
+    def get_categories(self, obj):
+        return format_html("<br>".join( c.name for c in obj.categories.all() ))
+    get_categories.short_description = _("Categories")
 
-    def first_category(self, obj):
-        if obj.categories.count() > 0:
-            return obj.categories.first()
-        else:
-            return "ERROR"
-    first_category.short_description = _("Category1")
+    def get_sections(self, obj):
+        return format_html("<br>".join( c.get_section_display() for c in obj.categories.all() ))
+    get_sections.short_description = _("Sections")
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -311,3 +308,10 @@ class ProductAdmin(admin.ModelAdmin):
             except KeyError:
                 pass
         return s
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related(
+            "brand", "store",
+        ).prefetch_related(
+            "categories", "subcategories", "colors", "sizes",
+        )
