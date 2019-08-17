@@ -48,6 +48,7 @@ RUN set -ex && \
 # But production (when we run from image without linking the repo in) does use
 # the files copied in!
 COPY . /mancelot
+COPY templates/flower/base.html /usr/local/lib/python3.7/site-packages/flower/templates/base.html
 COPY tlrh/ /mancelot
 RUN chown -R mancelot:mancelot /mancelot \
     && rm -rf tlrh
