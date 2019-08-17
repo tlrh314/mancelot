@@ -107,6 +107,20 @@ def create_or_update_products(logger, cmd_name, client, recursive=True):
                     change_message="Created by '{0}'".format(cmd_name)
                 )
                 color.save()
+
+            # Add the color to the product, and log to Product instance
+            product.colors.add(color)
+            LogEntry.objects.log_action(
+                user_id=client.ceceuser.pk,
+                content_type_id=product_ctpk,
+                object_id=product.pk,
+                object_repr=str(product),
+                action_flag=CHANGE,
+                change_message="Color '{0}' added by '{1}'".format(
+                    color.name, cmd_name
+                )
+            )
+            product.save()
             ### End of color
 
             ### Start of product
