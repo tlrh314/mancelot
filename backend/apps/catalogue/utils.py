@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import logging
 import requests
@@ -64,7 +65,8 @@ class CeceApiClient(object):
     def __init__(self, *args, **kwargs):
         self.ceceuser, created = UserModel.objects.get_or_create(
             email=settings.CECE_API_USER)
-        self.ceceuser.full_name = "CeceUser"; self.ceceuser.save()
+        self.ceceuser.full_name = "CeceUser"
+        self.ceceuser.save()
 
     def set_cece_token_headers(self, logger):
         response = requests.post("{0}v1/token/".format(settings.CECE_API_URI), {

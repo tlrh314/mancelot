@@ -10,63 +10,103 @@ from catalogue.models import (
 )
 
 
-def create_or_update_categories(logger, cmd_name, client):
+def create_or_update_categories(logger, cmd_name, client, recursive=True):
     fn = "create_or_update_categories"
     client.set_cece_token_headers(logger)
 
+    # Retrieve the (paginated) data
     uri = settings.CECE_API_URI + "mancelot/catalog/category/"
     logger.debug("{0}: GET {1}".format(fn, uri))
-    data = client.get_list(logger, uri, recursive=False)
+    data = client.get_list(logger, uri, recursive=recursive)
     logger.debug("{0}: received {1} brands".format(fn, len(data)))
 
+    # Get the ContentType pks for the LogEntry
     category_ctpk = ContentType.objects.get_for_model(Category).pk
     subcategory_ctpk = ContentType.objects.get_for_model(Subcategory).pk
 
-    logger.debug("\n{0}: create/update".format(fn))
+    # Iterate through the Cece data
     section_map = { v: k for k, v in dict(Category.SECTIONS).items() }
     for i, c in enumerate(data):
-        logger.debug("{0} / {1}".format(i, len(data) ))
+        logger.debug("\n{0} / {1}".format(i+1, len(data) ))
+
+        # Get or create Category. Match on **name** only!
         category, created = Category.objects.get_or_create(
             name=c["category_name"],
-            section=section_map.get(c["type"], -1),  # TODO: handle data other than Men/Women/Kids
-            cece_api_url="{0}{1}/".format(uri, c["id"]),
-            last_updated_by=client.ceceuser,
         )
-        logger.debug("  {0} Category: {1}".format("Created" if created else "Have", category))
-        if created:
-            LogEntry.objects.log_action(
-                client.ceceuser.pk, category_ctpk, category.pk, str(category), ADDITION,
-                change_message="Created by '{0}'".format(cmd_name))
-            category.save()
+        logger.debug("{0} Category: {1}".format("Created" if created else "Have", category))
 
-        # Related field: external labels is M2M, serializes as string (name)
+        # Overwrite all fields
+        try:
+            section = section_map[ c["type"] ]
+        except KeyError as e:
+            logger.error("\n\nERROR: encountered unknown section in Cece Category"+
+                " '{0}'. Don't know what to do now.".format(c["type"])
+            )
+            raise
+        cece_api_url = "{0}{1}/".format(uri, c["id"])
+        last_updated_by = client.ceceuser
+
+        # Log Created/Updated to Category instance
+        LogEntry.objects.log_action(
+            user_id=client.ceceuser.pk,
+            content_type_id=category_ctpk,
+            object_id=category.pk,
+            object_repr=str(category),
+            action_flag=ADDITION if created else CHANGE,
+            change_message="{0} by '{1}'".format(
+                "Created" if created else "Updated", cmd_name
+            )
+        )
+        category.save()
+
+        # Related field: external subcategory is M2M, serializes as string (name)
         for l in c["subcategory"]:
-            cattt = Category.objects.get(name=l["category"])
-            print(cattt)
             subcategory, created = Subcategory.objects.get_or_create(
                 name=l["sub_name"],
-                category=cattt,
-                # category=category,  # simpler, aye?
+                category=category,
             )
-            logger.debug("    {0} Subcategory : {1}".format(
+            logger.debug("  {0} Subcategory : {1}".format(
                 "Created" if created else "Have", subcategory))
+
             if created:
+                # Log Created/Updated to Category instance
                 subcategory.last_updated_by = client.ceceuser
                 LogEntry.objects.log_action(
-                    client.ceceuser.pk, subcategory_ctpk, subcategory.pk, str(subcategory), ADDITION,
-                    change_message="Created by '{0}'".format(cmd_name))
-                subcategory.save()
+                    user_id=client.ceceuser.pk,
+                    content_type_id=category_ctpk,
+                    object_id=category.pk,
+                    object_repr=str(category),
+                    action_flag=CHANGE,
+                    change_message="Subcategory '{0}' added by '{1}'".format(
+                        subcategory.name, cmd_name
+                    )
+                )
+
+            # Log Created/Updated to Subcategory instance
+            subcategory.last_updated_by = client.ceceuser
+            LogEntry.objects.log_action(
+                user_id=client.ceceuser.pk,
+                content_type_id=subcategory_ctpk,
+                object_id=subcategory.pk,
+                object_repr=str(subcategory),
+                action_flag=ADDITION if created else CHANGE,
+                change_message="{0} by '{1}'".format(
+                    "Created" if created else "Updated", cmd_name
+                )
+            )
+            subcategory.save()
 
 
 class Command(CommandWrapper):
     help = "Update our database with Brand instances from the Cece API"
+    help = "\033[91mUpdate [Sub]Categories with Cece data, overwriting all fields!\033[0m\n"
 
     def handle(self, *args, **options):
         client = CeceApiClient()
         self.cmd_name = __file__.split("/")[-1].replace(".py", "")
         self.method = create_or_update_categories
         self.margs = [self.cmd_name, client]
-        self.mkwargs = {}
+        self.mkwargs = { "recursive": True if settings.DEBUG else False }
 
         super().handle(*args, **options)
 

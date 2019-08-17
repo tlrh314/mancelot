@@ -25,10 +25,27 @@ logger = get_task_logger(__name__)
 
 @app.task
 def retrieve_data_from_cece():
-    call_command(
-        "retrieve_data_from_cece",
-        "--running_as_task"
-    )
+    for script in [
+            # inserts/updates the 'info' field (which retrieve_brands_from_cece does not!)
+            "retrieve_labels_from_cece",
+            "retrieve_certificates_from_cece",
+
+            # also adds Subcategory instances to Category instances
+            "retrieve_categories_from_cece",
+
+            # inserts/updates the 'icon_url' field (which retrieve_stores_from_cece does not!)
+            "retrieve_paymethods_from_cece",
+
+            # also adds PaymentOptions ('name' only) to Store instances
+            "retrieve_stores_from_cece",
+
+            # also adds CeceLabels / Certificates ('name' only) to Brand instances
+            "retrieve_brands_from_cece",
+
+            # also adds Size/Color/Material ('name' only) to Product instances
+            "retrieve_products_from_cece",
+    ]:
+        call_command( script, "--is_task" )
 
 @app.task
 def update_exchange_rates(backend=settings.EXCHANGE_BACKEND, **kwargs):
