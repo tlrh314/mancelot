@@ -12,7 +12,8 @@ from django_countries.fields import CountryField
 
 
 class CeceLabel(models.Model):
-    name = models.CharField(_("name"), max_length=200)
+    id = models.AutoField(primary_key=True, db_index=True)
+    name = models.CharField(_("name"), db_index=True, max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
 
@@ -43,7 +44,8 @@ class CeceLabel(models.Model):
 
 
 class Certificate(models.Model):
-    name = models.CharField(_("name"), max_length=200)
+    id = models.AutoField(primary_key=True, db_index=True)
+    name = models.CharField(_("name"), db_index=True, max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
     #  url = models.URLField(_("url"))  # TODO: add url of certificate instance website?
@@ -81,7 +83,8 @@ class Category(models.Model):
        (2, _("Kids")),
     )
 
-    name = models.CharField(_("name"), max_length=200)
+    id = models.AutoField(primary_key=True, db_index=True)
+    name = models.CharField(_("name"), db_index=True, max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     section = models.PositiveSmallIntegerField(
         "section", choices=SECTIONS, default=0
@@ -115,7 +118,8 @@ class Category(models.Model):
 
 
 class Subcategory(models.Model):
-    name = models.CharField(_("name"), max_length=200)
+    id = models.AutoField(primary_key=True, db_index=True)
+    name = models.CharField(_("name"), db_index=True, max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     category = models.ForeignKey(Category,
         on_delete=models.CASCADE,
@@ -151,7 +155,8 @@ class Subcategory(models.Model):
 
 
 class PaymentOption(models.Model):
-    name = models.CharField(_("name"), max_length=200)
+    id = models.AutoField(primary_key=True, db_index=True)
+    name = models.CharField(_("name"), db_index=True, max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     logo = FileBrowseField(_("logo"), default="/static/img/test/test_logo.png",
         max_length=200, directory="{0}/img/logos/payment".format(settings.STATIC_ROOT),
@@ -185,7 +190,8 @@ class PaymentOption(models.Model):
 
 
 class Store(models.Model):
-    name = models.CharField(_("name"), max_length=200)
+    id = models.AutoField(primary_key=True, db_index=True)
+    name = models.CharField(_("name"), db_index=True, max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
     url = models.URLField(_("url"))
@@ -231,7 +237,8 @@ class Store(models.Model):
 
 
 class Brand(models.Model):
-    name = models.CharField(_("name"), max_length=200)
+    id = models.AutoField(primary_key=True, db_index=True)
+    name = models.CharField(_("name"), db_index=True, max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
     url = models.URLField(_("url"), null=True, blank=True)
@@ -277,7 +284,8 @@ class Brand(models.Model):
 
 
 class Size(models.Model):
-    name = models.CharField(_("name"), max_length=200)
+    id = models.AutoField(primary_key=True, db_index=True)
+    name = models.CharField(_("name"), db_index=True, max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
 
     # Fields for bookkeeping of database updates
@@ -303,7 +311,8 @@ class Size(models.Model):
 
 
 class Color(models.Model):
-    name = models.CharField(_("name"), max_length=200)
+    id = models.AutoField(primary_key=True, db_index=True)
+    name = models.CharField(_("name"), db_index=True, max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
 
     # Fields for bookkeeping of database updates
@@ -329,7 +338,8 @@ class Color(models.Model):
 
 
 class Material(models.Model):
-    name = models.CharField(_("name"), max_length=200)
+    id = models.AutoField(primary_key=True, db_index=True)
+    name = models.CharField(_("name"), db_index=True, max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
 
@@ -356,7 +366,8 @@ class Material(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(_("name"), max_length=200)
+    id = models.AutoField(primary_key=True, db_index=True)
+    name = models.CharField(_("name"), db_index=True, max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
     extra_info = HTMLField(_("extra info"), null=True, blank=True)
