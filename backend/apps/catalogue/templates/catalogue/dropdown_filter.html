@@ -3,7 +3,7 @@ https://github.com/mrts/django-admin-list-filter-dropdown
 {% endcomment %}
 {% load i18n %}
 <script type="text/javascript">var go_from_select = function(opt) { window.location = window.location.pathname + opt };</script>
-<h3>By {{ filter_title }}</h3>
+<h3>By {{ title }}</h3>
 <ul class="admin-filter-{{ title|cut:' ' }}">
 {% if choices|slice:"4:" %}
     <li>
