@@ -45,11 +45,6 @@ class CatalogueAdminBaseTestCase(object):
         self.user.set_password("secret")
         self.user.save()
 
-        # Some defaults that are overwritten in the child class
-        self.admin_changelist_uri = "admin:sites_site_changelist"
-        self.admin_change_uri = "admin:sites_site_change"
-        self.admin_change_pk = Site.objects.first().pk
-
     def tearDown(self, *args, **kwargs):
         self.admin.delete()
         self.user.delete()
@@ -87,15 +82,60 @@ class CatalogueAdminBaseTestCase(object):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/admin/login/?next="+uri)
 
+    def test_get_admin_add_is_superuser_200(self):
+        self.client.login(email=self.admin.email, password="secret")
+        uri = reverse(self.admin_add_uri)
+        response = self.client.get(uri)
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_admin_add_is_superuser_200(self):
+        pass
+
+    def test_get_admin_add_is_authenticated_302(self):
+        self.client.login(email=self.user.email, password="secret")
+        uri = reverse(self.admin_add_uri)
+        response = self.client.get(uri)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/admin/login/?next="+uri)
+
     def test_get_admin_change_is_superuser_200(self):
         self.client.login(email=self.admin.email, password="secret")
-        uri = reverse(self.admin_change_uri, args=[self.admin_change_pk])
+        uri = reverse(self.admin_change_uri, args=[self.admin_instance_pk])
         response = self.client.get(uri)
         self.assertEqual(response.status_code, 200)
 
     def test_get_admin_change_is_authenticated_302(self):
         self.client.login(email=self.user.email, password="secret")
-        uri = reverse(self.admin_change_uri, args=[self.admin_change_pk])
+        uri = reverse(self.admin_change_uri, args=[self.admin_instance_pk])
+        response = self.client.get(uri)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/admin/login/?next="+uri)
+
+    def test_get_admin_delete_is_superuser_200(self):
+        self.client.login(email=self.admin.email, password="secret")
+        uri = reverse(self.admin_delete_uri, args=[self.admin_instance_pk])
+        response = self.client.get(uri)
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_admin_delete_is_superuser_200(self):
+        pass
+
+    def test_get_admin_delete_is_authenticated_302(self):
+        self.client.login(email=self.user.email, password="secret")
+        uri = reverse(self.admin_delete_uri, args=[self.admin_instance_pk])
+        response = self.client.get(uri)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/admin/login/?next="+uri)
+
+    def test_get_admin_history_is_superuser_200(self):
+        self.client.login(email=self.admin.email, password="secret")
+        uri = reverse(self.admin_history_uri, args=[self.admin_instance_pk])
+        response = self.client.get(uri)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_admin_history_is_authenticated_302(self):
+        self.client.login(email=self.user.email, password="secret")
+        uri = reverse(self.admin_history_uri, args=[self.admin_instance_pk])
         response = self.client.get(uri)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/admin/login/?next="+uri)
@@ -124,8 +164,11 @@ class CeceLabelAdminTest(CatalogueAdminBaseTestCase, TestCase):
 
         # Set the detail for this specific test
         self.admin_changelist_uri = "admin:catalogue_cecelabel_changelist"
+        self.admin_add_uri = "admin:catalogue_cecelabel_add"
         self.admin_change_uri = "admin:catalogue_cecelabel_change"
-        self.admin_change_pk = CeceLabel.objects.last().pk
+        self.admin_delete_uri = "admin:catalogue_cecelabel_delete"
+        self.admin_history_uri = "admin:catalogue_cecelabel_history"
+        self.admin_instance_pk = CeceLabel.objects.last().pk
         self.count = CeceLabel.objects.count()
         # TODO: sanity check that the uri is resolved correctly
         self.resource_name_list = "CeceLabel List"
@@ -144,8 +187,11 @@ class CertificateAdminTest(CatalogueAdminBaseTestCase, TestCase):
 
         # Set the detail for this specific test
         self.admin_changelist_uri = "admin:catalogue_certificate_changelist"
+        self.admin_add_uri = "admin:catalogue_certificate_add"
         self.admin_change_uri = "admin:catalogue_certificate_change"
-        self.admin_change_pk = Certificate.objects.last().pk
+        self.admin_delete_uri = "admin:catalogue_certificate_delete"
+        self.admin_history_uri = "admin:catalogue_certificate_history"
+        self.admin_instance_pk = Certificate.objects.last().pk
         self.count = Certificate.objects.count()
 
 
@@ -168,8 +214,11 @@ class CategoryAdminTest(CatalogueAdminBaseTestCase, TestCase):
 
         # Set the detail for this specific test
         self.admin_changelist_uri = "admin:catalogue_category_changelist"
+        self.admin_add_uri = "admin:catalogue_category_add"
         self.admin_change_uri = "admin:catalogue_category_change"
-        self.admin_change_pk = Category.objects.last().pk
+        self.admin_delete_uri = "admin:catalogue_category_delete"
+        self.admin_history_uri = "admin:catalogue_category_history"
+        self.admin_instance_pk = Category.objects.last().pk
         self.count = Category.objects.count()
 
 
@@ -185,8 +234,11 @@ class PaymentOptionAdminTest(CatalogueAdminBaseTestCase, TestCase):
 
         # Set the detail for this specific test
         self.admin_changelist_uri = "admin:catalogue_paymentoption_changelist"
+        self.admin_add_uri = "admin:catalogue_paymentoption_add"
         self.admin_change_uri = "admin:catalogue_paymentoption_change"
-        self.admin_change_pk = PaymentOption.objects.last().pk
+        self.admin_delete_uri = "admin:catalogue_paymentoption_delete"
+        self.admin_history_uri = "admin:catalogue_paymentoption_history"
+        self.admin_instance_pk = PaymentOption.objects.last().pk
         self.count = PaymentOption.objects.count()
 
 
@@ -202,8 +254,11 @@ class StoreAdminTest(CatalogueAdminBaseTestCase, TestCase):
 
         # Set the detail for this specific test
         self.admin_changelist_uri = "admin:catalogue_store_changelist"
+        self.admin_add_uri = "admin:catalogue_store_add"
         self.admin_change_uri = "admin:catalogue_store_change"
-        self.admin_change_pk = Store.objects.last().pk
+        self.admin_delete_uri = "admin:catalogue_store_delete"
+        self.admin_history_uri = "admin:catalogue_store_history"
+        self.admin_instance_pk = Store.objects.last().pk
         self.count = Store.objects.count()
 
 
@@ -219,8 +274,11 @@ class BrandAdminTest(CatalogueAdminBaseTestCase, TestCase):
 
         # Set the detail for this specific test
         self.admin_changelist_uri = "admin:catalogue_brand_changelist"
+        self.admin_add_uri = "admin:catalogue_brand_add"
         self.admin_change_uri = "admin:catalogue_brand_change"
-        self.admin_change_pk = Brand.objects.last().pk
+        self.admin_delete_uri = "admin:catalogue_brand_delete"
+        self.admin_history_uri = "admin:catalogue_brand_history"
+        self.admin_instance_pk = Brand.objects.last().pk
         self.count = Brand.objects.count()
 
 
@@ -236,8 +294,11 @@ class SizeAdminTest(CatalogueAdminBaseTestCase, TestCase):
 
         # Set the detail for this specific test
         self.admin_changelist_uri = "admin:catalogue_size_changelist"
+        self.admin_add_uri = "admin:catalogue_size_add"
         self.admin_change_uri = "admin:catalogue_size_change"
-        self.admin_change_pk = Size.objects.last().pk
+        self.admin_delete_uri = "admin:catalogue_size_delete"
+        self.admin_history_uri = "admin:catalogue_size_history"
+        self.admin_instance_pk = Size.objects.last().pk
         self.count = Size.objects.count()
 
 
@@ -253,8 +314,11 @@ class MaterialAdminTest(CatalogueAdminBaseTestCase, TestCase):
 
         # Set the detail for this specific test
         self.admin_changelist_uri = "admin:catalogue_material_changelist"
+        self.admin_add_uri = "admin:catalogue_material_add"
         self.admin_change_uri = "admin:catalogue_material_change"
-        self.admin_change_pk = Material.objects.last().pk
+        self.admin_delete_uri = "admin:catalogue_material_delete"
+        self.admin_history_uri = "admin:catalogue_material_history"
+        self.admin_instance_pk = Material.objects.last().pk
         self.count = Material.objects.count()
 
 
@@ -274,8 +338,11 @@ class ProductAdminTest(CatalogueAdminBaseTestCase, TestCase):
 
         # Set the detail for this specific test
         self.admin_changelist_uri = "admin:catalogue_product_changelist"
+        self.admin_add_uri = "admin:catalogue_product_add"
         self.admin_change_uri = "admin:catalogue_product_change"
-        self.admin_change_pk = Product.objects.last().pk
+        self.admin_delete_uri = "admin:catalogue_product_delete"
+        self.admin_history_uri = "admin:catalogue_product_history"
+        self.admin_instance_pk = Product.objects.last().pk
         self.count = Product.objects.count()
 
     def test_list_display(self):

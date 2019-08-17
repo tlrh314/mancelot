@@ -4,15 +4,18 @@ from accounts.models import UserModel
 from catalogue.tests.test_admin import CatalogueAdminBaseTestCase
 
 
-class UserModelAdminTest(CatalogueAdminBaseTestCase, TestCase):
+class UserModelAdminTestCase(CatalogueAdminBaseTestCase, TestCase):
     def setUp(self, *args, **kwargs):
         # Set the admin + session
         super().setUp(*args, **kwargs)
 
         # Set the detail for this specific test
         self.admin_changelist_uri = "admin:accounts_usermodel_changelist"
+        self.admin_add_uri = "admin:accounts_usermodel_add"
         self.admin_change_uri = "admin:accounts_usermodel_change"
-        self.admin_change_pk = UserModel.objects.last().pk
+        self.admin_delete_uri = "admin:accounts_usermodel_delete"
+        self.admin_history_uri = "admin:accounts_usermodel_history"
+        self.admin_instance_pk = UserModel.objects.last().pk
         self.count = UserModel.objects.count()
 
     def test_list_display(self):

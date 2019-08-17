@@ -300,7 +300,7 @@ class ProductAdmin(admin.ModelAdmin):
 
     def history_view(self, request, object_id, extra_context=None):
         """ Hack the history view such that it renders html """
-        s = super(UserModelAdmin, self).history_view(request, object_id, extra_context=None)
+        s = super().history_view(request, object_id, extra_context=None)
         action_list = s.context_data["action_list"]
         for log_entry in action_list:
             try:
