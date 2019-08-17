@@ -435,7 +435,9 @@ class Product(models.Model):
         verbose_name_plural = _("Products")
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
+        self.slug = slugify("{0}-{1}-{2}".format(
+            self.brand, self.name, self.cece_id
+        ))
         super().save(*args, **kwargs)
 
     def __str__(self):
