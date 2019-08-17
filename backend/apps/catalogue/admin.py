@@ -93,7 +93,7 @@ class CertificateAdmin(admin.ModelAdmin):
 class SubcategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "get_count", "get_category", "get_section")
     search_fields = ("name", "category")
-    ordering = ("name",)
+    ordering = ("category__section", "category", "name",)
     readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
 
     fieldsets = (
@@ -105,7 +105,7 @@ class SubcategoryAdmin(admin.ModelAdmin):
     )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).annotate(
+        return super().get_queryset(request).select_related("category").annotate(
             count=Count("products")
         )
 
@@ -117,7 +117,7 @@ class SubcategoryAdmin(admin.ModelAdmin):
     def get_category(self, obj):
         return format_html(
             "<a href='{0}'>{1}</a>".format(reverse("admin:catalogue_category_change",
-            args=[obj.pk]), obj.name)
+            args=[obj.category.pk]), obj.category.name)
         )
     get_category.short_description = _("Category")
     get_category.admin_order_field = "category__name"
@@ -284,7 +284,7 @@ class BrandAdmin(admin.ModelAdmin):
         return format_html(
             "<br>".join("<a href='{0}'>{1}</a>".format(
                 reverse("admin:catalogue_cecelabel_change", args=[c.pk]), c.name)
-                for c in obj.labels.iterator()
+                for c in obj.labels.all()
             )
         )
     get_labels.short_description = _("Labels")
@@ -293,7 +293,7 @@ class BrandAdmin(admin.ModelAdmin):
         return format_html(
             "<br>".join("<a href='{0}'>{1}</a>".format(
                 reverse("admin:catalogue_certificate_change", args=[c.pk]), c.name)
-                for c in obj.certificates.iterator()
+                for c in obj.certificates.all()
             )
         )
     get_certificates.short_description = _("Certificates")
@@ -488,6 +488,8 @@ class ProductAdmin(admin.ModelAdmin):
         return format_html(
             "<br>".join("<a href='{0}'>{1}</a>".format(
                 reverse("admin:catalogue_certificates_change", args=[c.pk]), c.name)
+                # .iterator here seemed 300 ms faster than .all while the
+                # number of queries did not increase. Curious.
                 for c in obj.brand.certificates.iterator()
             )
         )
@@ -498,7 +500,9 @@ class ProductAdmin(admin.ModelAdmin):
         return format_html(
             "<br>".join("<a href='{0}'>{1}</a>".format(
                 reverse("admin:catalogue_category_change", args=[c.pk]), c.name)
-                for c in obj.categories.iterator()
+                # for some reason iterator starts querying the db, whereas
+                # all does not (b/c prefetched). Curious.
+                for c in obj.categories.all()
             )
         )
     get_categories.short_description = _("Categories")
