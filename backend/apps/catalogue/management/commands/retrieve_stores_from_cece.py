@@ -1,7 +1,11 @@
+import os
+from urllib.parse import urlparse
+
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 
+from catalogue.utils import download_image
 from catalogue.utils import CeceApiClient
 from catalogue.utils import CommandWrapper
 from catalogue.models import (
@@ -37,8 +41,7 @@ def create_or_update_stores(logger, cmd_name, client, recursive=True):
         # Overwrite all fields
         store.info = s["about"]
         store.url = s["store_url"]
-        store.logo = s["logo"]
-        # TODO: download logo, set url to mancelot.nl
+        cece_logo_url = s["logo"]
         store.cece_api_url = "{0}{1}/".format(uri, s["id"])
         store.last_updated_by = client.ceceuser
 
@@ -88,6 +91,53 @@ def create_or_update_stores(logger, cmd_name, client, recursive=True):
                 )
             )
             store.save()
+
+        ### Download the logo. Data format is 'img/pay-methods/vvv.png'
+        logger.debug("  Fetch '{0}' from Cece".format(cece_logo_url))
+        fname = os.path.basename(urlparse(cece_logo_url).path)
+        save_to = "{0}/img/logos/stores/{1}".format(settings.STATIC_ROOT, fname)
+
+        if not os.path.exists(save_to) or not os.path.isfile(save_to):
+            if download_image(logger, cece_logo_url, save_to, w="  "):
+                # Download success --> update logo
+                store.logo = "img/logos/stores/"+fname
+                LogEntry.objects.log_action(
+                    user_id=client.ceceuser.pk,
+                    content_type_id=store_ctpk,
+                    object_id=store.pk,
+                    object_repr=str(store),
+                    action_flag=CHANGE,
+                    change_message="Logo downloaded and added by '{0}'".format(
+                        cmd_name
+                    )
+                )
+                store.save()
+            else:  # Download failure
+                LogEntry.objects.log_action(
+                    user_id=client.ceceuser.pk,
+                    content_type_id=store_ctpk,
+                    object_id=store.pk,
+                    object_repr=str(store),
+                    action_flag=CHANGE,
+                    change_message="Logo downloaded failure in '{0}'".format(
+                        cmd_name
+                    )
+                )
+                continue
+        else:  # logo was in Cece format, but we do have the file --> update logo
+            store.logo = "img/logos/stores/"+fname
+            LogEntry.objects.log_action(
+                user_id=client.ceceuser.pk,
+                content_type_id=store_ctpk,
+                object_id=store.pk,
+                object_repr=str(store),
+                action_flag=CHANGE,
+                change_message="Logo updated by '{0}' (from local file)".format(
+                    cmd_name
+                )
+            )
+            store.save()
+        ### End of logo download
 
 
 class Command(CommandWrapper):

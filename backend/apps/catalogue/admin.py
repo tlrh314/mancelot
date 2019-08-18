@@ -193,7 +193,7 @@ class PaymentOptionAdmin(admin.ModelAdmin):
 
     def show_logo(self, obj):
         return format_html(
-            "<img src='{0}' alt='{1}', height='42' width/>".format(obj.logo.url, obj.name)
+            "<img src='{0}' alt='{1}', height='30' width/>".format(obj.logo.url, obj.name)
         )
     show_logo.short_description = _("Logo")
 
@@ -204,7 +204,7 @@ class PaymentOptionAdmin(admin.ModelAdmin):
 
 @admin.register(Store)
 class StoreAdmin(admin.ModelAdmin):
-    list_display = ("name", "get_count", "show_logo")
+    list_display = ("name", "show_logo", "get_count",)
     list_filter = (
         ("payment_options", RelatedDropdownFilter),
     )
@@ -235,7 +235,7 @@ class StoreAdmin(admin.ModelAdmin):
 
     def show_logo(self, obj):
         return format_html(
-            "<img src='{0}' alt='{1}', height='42' width/>".format(obj.logo.url, obj.name)
+            "<img src='{0}' alt='{1}', height='30' width/>".format(obj.logo.url, obj.name)
         )
     show_logo.short_description = _("Logo")
 
