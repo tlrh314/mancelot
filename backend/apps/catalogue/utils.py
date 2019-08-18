@@ -10,6 +10,8 @@ from django.conf import settings
 from django.utils import timezone
 from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 
 from accounts.models import UserModel
 
@@ -56,6 +58,54 @@ def download_image(logger, url, save_to, stream=True, attempts=5, sleep=30, w=""
     with open(save_to, "wb") as f:
         for chunk in response:  # reads the data in 128 bytes
             f.write(chunk)
+    return True
+
+
+def call_download_image(logger, url, save_to, instance, field, ctpk, userpk, cmd_name):
+    if not os.path.exists(save_to) or not os.path.isfile(save_to):
+        if download_image(logger, url, save_to, w="  "):
+            # Download success --> update logo
+            setattr(instance, field,
+                save_to.replace("{0}/".format(settings.STATIC_ROOT), "")
+            )
+            LogEntry.objects.log_action(
+                user_id=userpk,
+                content_type_id=ctpk,
+                object_id=instance.pk,
+                object_repr=str(instance),
+                action_flag=CHANGE,
+                change_message="Image for '{0}' downloaded and added by '{1}'".format(
+                    field, cmd_name
+                )
+            )
+            instance.save()
+        else:  # Download failure
+            LogEntry.objects.log_action(
+                user_id=userpk,
+                content_type_id=ctpk,
+                object_id=instance.pk,
+                object_repr=str(instance),
+                action_flag=CHANGE,
+                change_message="Image for '{0}' downloaded failure in '{1}', url = {2}".format(
+                    field, cmd_name, url
+                )
+            )
+            return False
+    else:  # logo was in Cece format, but we do have the file --> update logo
+        setattr(instance, field,
+            save_to.replace("{0}/".format(settings.STATIC_ROOT), "")
+        )
+        LogEntry.objects.log_action(
+            user_id=userpk,
+            content_type_id=ctpk,
+            object_id=instance.pk,
+            object_repr=str(instance),
+            action_flag=CHANGE,
+            change_message="Image for '{0}' updated by '{1}' (from local file)".format(
+                field, cmd_name
+            )
+        )
+        instance.save()
     return True
 
 

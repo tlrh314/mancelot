@@ -1,10 +1,12 @@
 import os
+from urllib.parse import urlparse
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 
 from catalogue.utils import download_image
+from catalogue.utils import call_download_image
 from catalogue.utils import CeceApiClient
 from catalogue.utils import CommandWrapper
 from catalogue.models import (
@@ -53,58 +55,16 @@ def create_or_update_paymentoptions(logger, cmd_name, client, recursive=True):
         )
         paymentoption.save()
 
-        ### Download the logo. Data format is 'img/pay-methods/vvv.png'
+        ### Download the logo.
+        fname = urlparse(cece_logo_url).path
+        cece_logo_url = "https://www.projectcece.nl/static/{0}".format(fname)
         logger.debug("  Fetch '{0}' from Cece".format(cece_logo_url))
-        try:
-            fname = cece_logo_url.split("img/pay-methods/")[-1]
-        except KeyError:
-            logger.error("  KeyError: format is not 'img/pay-methods/fname.ext'"+
-                ", but {0}".format(cece_logo_url))
-            continue
 
-        cece_logo_url = "https://www.projectcece.nl/static/{0}".format(cece_logo_url)
-        save_to = "{0}/img/logos/payment/{1}".format(settings.STATIC_ROOT, fname)
+        save_to = "{0}/img/logos/payment/{1}".format(settings.STATIC_ROOT, os.path.basename(fname))
 
-        if not os.path.exists(save_to) or not os.path.isfile(save_to):
-            if download_image(logger, cece_logo_url, save_to, w="  "):
-                # Download success --> update logo
-                paymentoption.logo = "img/logos/payment/"+fname
-                LogEntry.objects.log_action(
-                    user_id=client.ceceuser.pk,
-                    content_type_id=paymentoption_ctpk,
-                    object_id=paymentoption.pk,
-                    object_repr=str(paymentoption),
-                    action_flag=CHANGE,
-                    change_message="Logo downloaded and added by '{0}'".format(
-                        cmd_name
-                    )
-                )
-                paymentoption.save()
-            else:  # Download failure
-                LogEntry.objects.log_action(
-                    user_id=client.ceceuser.pk,
-                    content_type_id=paymentoption_ctpk,
-                    object_id=paymentoption.pk,
-                    object_repr=str(paymentoption),
-                    action_flag=CHANGE,
-                    change_message="Logo downloaded failure in '{0}'".format(
-                        cmd_name
-                    )
-                )
-                continue
-        else:  # logo was in Cece format, but we do have the file --> update logo
-            paymentoption.logo = "img/logos/payment/"+fname
-            LogEntry.objects.log_action(
-                user_id=client.ceceuser.pk,
-                content_type_id=paymentoption_ctpk,
-                object_id=paymentoption.pk,
-                object_repr=str(paymentoption),
-                action_flag=CHANGE,
-                change_message="Logo updated by '{0}' (from local file)".format(
-                    cmd_name
-                )
-            )
-            paymentoption.save()
+        call_download_image(logger, cece_logo_url, save_to,
+            paymentoption, "logo", paymentoption_ctpk, client.ceceuser.pk, cmd_name
+        )
         ### End of logo download
 
 
