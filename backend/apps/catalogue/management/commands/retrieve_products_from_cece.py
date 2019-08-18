@@ -316,7 +316,7 @@ def create_or_update_products(logger, cmd_name, client, recursive=True):
     client.set_cece_token_headers(logger)
 
     # Retrieve the (paginated) data
-    uri = settings.CECE_API_URI + "mancelot/catalog/product?page_size=10"  # 1000
+    uri = settings.CECE_API_URI + "mancelot/catalog/product?page_size=1000"
     logger.debug("{0}: GET {1} <-- recursive = {2}".format(fn, uri, recursive))
     data = client.get_list(logger, uri, recursive=recursive)
     logger.debug("{0}: received {1} products".format(fn, len(data)))
@@ -414,6 +414,7 @@ def create_or_update_products(logger, cmd_name, client, recursive=True):
             # Iterate through all images
             all_extra_images = []
             for i, img_url in enumerate([ p["primary_image"] ] + extra_images):
+                if not img_url: continue
                 fname = os.path.basename(urlparse(img_url).path)
                 logger.debug("  Fetch '{0}' from Cece".format(img_url))
 
@@ -428,12 +429,11 @@ def create_or_update_products(logger, cmd_name, client, recursive=True):
                 # b/c set to single image above
                 if i > 0: all_extra_images.append(product.extra_images)
             product.extra_images = all_extra_images
-            print(product.extra_images)
             product.save()
-            break
             ### End of logo download
         except Exception as e:
-            raise
+            # Pushes to Sentry
+            logger.error("Caught error in '{0}': {1}".format(cmd_name))
 
 
 class Command(CommandWrapper):
@@ -444,7 +444,7 @@ class Command(CommandWrapper):
         self.cmd_name = __file__.split("/")[-1].replace(".py", "")
         self.method = create_or_update_products
         self.margs = [ self.cmd_name, client ]
-        self.mkwargs = { "recursive": False }  # not settings.DEBUG
+        self.mkwargs = { "recursive": not settings.DEBUG }
 
         super().handle(*args, **options)
 

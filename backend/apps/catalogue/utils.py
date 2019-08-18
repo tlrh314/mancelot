@@ -44,7 +44,9 @@ def download_image(logger, url, save_to, stream=True, attempts=5, sleep=30, w=""
             logger.warning("  could not retrieve, now sleep for {0}s".format(
                 sleep*attempt))
             time.sleep(sleep*attempt)  # incremental (linear) back-off
+            continue
 
+        # Should only hit code below if response was successful, yeah?
         logger.info("{0}  attempt {1}/{2} --> status_code {3}".format(
             w, attempt, attempts, response.status_code
         ))
