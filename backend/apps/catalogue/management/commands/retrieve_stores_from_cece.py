@@ -5,7 +5,6 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 
-from catalogue.utils import download_image
 from catalogue.utils import call_download_image
 from catalogue.utils import CeceApiClient
 from catalogue.utils import CommandWrapper

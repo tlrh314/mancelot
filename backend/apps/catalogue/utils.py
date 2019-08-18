@@ -93,7 +93,8 @@ def call_download_image(logger, url, save_to, instance, field, ctpk, userpk, cmd
             return False
     else:  # logo was in Cece format, but we do have the file --> update logo
         setattr(instance, field,
-            save_to.replace("{0}/".format(settings.STATIC_ROOT), "")
+            save_to.replace("{0}/".format(settings.STATIC_ROOT), "") if "image" not in field
+                else save_to.replace("{0}/".format(settings.STATIC_ROOT), settings.STATIC_URL)
         )
         LogEntry.objects.log_action(
             user_id=userpk,
