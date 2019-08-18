@@ -193,7 +193,7 @@ class PaymentOptionAdmin(admin.ModelAdmin):
 
     def show_logo(self, obj):
         return format_html(
-            "<img src='{0}' alt='{1}', height='42' width/>".format(obj.logo, obj.name)
+            "<img src='{0}' alt='{1}', height='42' width/>".format(obj.logo.url, obj.name)
         )
     show_logo.short_description = _("Logo")
 
@@ -235,7 +235,7 @@ class StoreAdmin(admin.ModelAdmin):
 
     def show_logo(self, obj):
         return format_html(
-            "<img src='{0}' alt='{1}', height='42' width/>".format(obj.logo, obj.name)
+            "<img src='{0}' alt='{1}', height='42' width/>".format(obj.logo.url, obj.name)
         )
     show_logo.short_description = _("Logo")
 

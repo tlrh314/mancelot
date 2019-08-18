@@ -1,8 +1,10 @@
 import os
 import sys
 import json
+import time
 import logging
 import requests
+from requests.exceptions import ConnectionError, RequestException
 
 from django.conf import settings
 from django.utils import timezone
@@ -22,6 +24,39 @@ def format_time_diff(s, e):
 
 def response_to_json(response):
     return json.loads(response.content.decode("utf8"))
+
+
+def download_image(logger, url, save_to, stream=True, attempts=5, sleep=30, w=""):
+    logging.getLogger("requests").setLevel(logging.WARNING)
+    logging.getLogger("urllib3").setLevel(logging.WARNING)
+
+    headers = {
+        "user-agent": "Mancelot Bot v1.3.3.7",
+    }
+
+    logger.info("{0}download_image: {1}".format(w, url))
+    for attempt in range(1, attempts+1):
+        try:
+            response = requests.get(url, stream=stream, headers=headers)
+        except (Exception, ConnectionError, RequestException) as e:
+            logger.warning("  could not retrieve, now sleep for {0}s".format(
+                sleep*attempt))
+            time.sleep(sleep*attempt)  # incremental (linear) back-off
+
+        logger.info("{0}  attempt {1}/{2} --> status_code {3}".format(
+            w, attempt, attempts, response.status_code
+        ))
+        if response.status_code == 200: break
+        if response.status_code == 404: return False
+    else:  # kicks in if no break
+        logger.error("{0}ERROR: download_image: {1} failed.".format(w, url))
+        return False
+
+    logger.info("{0}SUCCESS, now save_to: {1}".format(w, save_to))
+    with open(save_to, "wb") as f:
+        for chunk in response:  # reads the data in 128 bytes
+            f.write(chunk)
+    return True
 
 
 class CommandWrapper(BaseCommand):
