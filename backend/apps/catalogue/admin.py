@@ -44,14 +44,13 @@ class CeceLabelAdmin(admin.ModelAdmin):
     )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).annotate(
-            count=Sum("brands__products")
-        )
+        # TODO: aggregate/annotate `count` instead of `get_count` to reduce # queries.
+        return super().get_queryset(request)
 
     def get_count(self, obj):
-        return obj.count
+        return Product.objects.filter(brand__in=obj.brands.all()).count()
     get_count.short_description = _("# Products")
-    get_count.admin_order_field = "count"
+    # get_count.admin_order_field = "count"
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -75,14 +74,13 @@ class CertificateAdmin(admin.ModelAdmin):
     )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).annotate(
-            count=Sum("brands__products")
-        )
+        # TODO: aggregate/annotate `count` instead of `get_count` to reduce # queries.
+        return super().get_queryset(request)
 
     def get_count(self, obj):
-        return obj.count
+        return Product.objects.filter(brand__in=obj.brands.all()).count()
     get_count.short_description = _("# Products")
-    get_count.admin_order_field = "count"
+    # get_count.admin_order_field = "count"
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user

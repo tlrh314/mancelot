@@ -146,6 +146,12 @@ class CatalogueAdminBaseTestCase(object):
     def test_admin_save_updates_last_updated_by(self):
         pass
 
+    def test_annotation_in_queryset(self):
+        pass
+
+    def test_get_count(self):
+        pass
+
 
 class RelatedDropdownFilterTest(TestCase):
     def test_something(self):
