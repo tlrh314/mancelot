@@ -433,7 +433,7 @@ def create_or_update_products(logger, cmd_name, client, recursive=True):
             ### End of logo download
         except Exception as e:
             # Pushes to Sentry
-            logger.error("Caught error in '{0}': {1}".format(cmd_name))
+            logger.error("Caught error in '{0}': {1}".format(cmd_name, e))
 
 
 class Command(CommandWrapper):
