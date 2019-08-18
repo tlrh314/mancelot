@@ -48,6 +48,37 @@ def retrieve_data_from_cece():
         call_command( script, "--is_task" )
 
 @app.task
+def retrieve_labels_from_cece():
+    # inserts/updates the 'info' field (which retrieve_brands_from_cece does not!)
+    call_command( "retrieve_labels_from_cece", "--is_task" )
+
+@app.task
+def retrieve_certificates_from_cece():
+    # inserts/updates the 'info' field (which retrieve_brands_from_cece does not!)
+    call_command( "retrieve_certificates_from_cece", "--is_task" )
+
+@app.task
+def retrieve_categories_from_cece():
+    # also adds Subcategory instances to Category instances
+    call_command( "retrieve_categories_from_cece", "--is_task" )
+
+@app.task
+def retrieve_paymethods_from_cece():
+    call_command( "retrieve_paymethods_from_cece", "--is_task" )
+
+@app.task
+def retrieve_stores_from_cece():
+    call_command( "retrieve_stores_from_cece", "--is_task" )
+
+@app.task
+def retrieve_brands_from_cece():
+    call_command( "retrieve_brands_from_cece", "--is_task" )
+
+@app.task
+def retrieve_products_from_cece():
+    call_command( "retrieve_products_from_cece", "--is_task" )
+
+@app.task
 def update_exchange_rates(backend=settings.EXCHANGE_BACKEND, **kwargs):
     backend = import_string(backend)()
     backend.update_rates(**kwargs)
