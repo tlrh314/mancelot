@@ -31,14 +31,15 @@ def generate_thumbnails(logger, cmd_name):
             img = img+extension
 
         for size in [(64, 64), (128, 128), (256, 256), (512, 512), (1024, 1024)]:
-            if os.path.exists(img) and os.path.isfile(img):
+            out = "{0}_{2}x{3}{1}".format(fname, extension, *size)
+            if os.path.exists(out) and os.path.isfile(out):
                 continue
 
             try:
                 # with suppress_stdout():
                 im = Image.open(img)
                 im.thumbnail(size)
-                im.save("{0}_{2}x{3}{1}".format(fname, extension, *size))
+                im.save(out)
             except Exception as e:
                 logger.info("ERROR generating thumnail\n{0}".format(e))
                 continue
