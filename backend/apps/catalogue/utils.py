@@ -4,6 +4,8 @@ import json
 import time
 import logging
 import requests
+from PIL import Image
+from contextlib import contextmanager
 from requests.exceptions import ConnectionError, RequestException
 
 from django.conf import settings
@@ -14,6 +16,19 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 
 from accounts.models import UserModel
+
+
+@contextmanager
+def suppress_stdout():
+    with open(os.devnull, "w") as devnull:
+        # old_settings = numpy.seterr(all="ignore")
+        old_stdout = sys.stdout
+        sys.stdout = devnull
+        try:
+            yield
+        finally:
+            sys.stdout = old_stdout
+            # numpy.seterr(**old_settings)
 
 
 def format_time_diff(s, e):
@@ -110,6 +125,65 @@ def call_download_image(logger, url, save_to, instance, field, ctpk, userpk, cmd
         )
         instance.save()
     return True
+
+
+def generate_thumbnail(logger, img, size=(120, 120)):
+    if not os.path.exists(img) or not os.path.isfile(img):
+        logger.warning("WARNING in generate_thumbnail: img '{0}' does not exist!".format(img))
+        return
+
+    fname, extension = os.path.splitext(img)  # extension contains a leading dot
+
+    try:
+        im = Image.open(img)
+        im.thumbnail(size)
+        im.save("{0}_{2}x{3}{1}".format(fname, extension, *size))
+    except Exception as e:
+        raise
+
+
+def optimize_image(logger, img):
+    if not os.path.exists(img) or not os.path.isfile(img):
+        logger.warning("WARNING in optimize_image: img '{0}' does not exist!".format(img))
+        return
+
+    fname, extension = os.path.splitext(img)  # extension contains a leading dot
+    logger.debug("fname = {0}".format(fname))
+    logger.debug("extension = {0}".format(extension))
+
+    if extension == ".jpg" or extension == ".jpeg":
+        command = "jpegoptim"
+        options = [
+            "--strip-all",   # this strips out all text information such as comments and EXIF data
+            "--all-progressive",  #  this will make sure the resulting image is a progressive one
+        ]
+    elif extension == ".png":
+        command = "pngquant"
+        options = [
+            "--force",  # required parameter for this package
+        ]
+
+        command = "optipng"
+        options = [
+            "-i0",  # this will result in a non-interlaced, progressive scanned image
+            "-o2",  # this set the optimization level to two (multiple IDAT compression trials)
+            "-quiet",  # required parameter for this package
+        ]
+    elif extension == ".svg":
+        command = "svgo"
+        options = [
+            "--disable=cleanupIDs",  # disabling because it is known to cause troubles
+        ]
+    elif extension == ".gif":
+        command = "gifsicle"
+        options = [
+            "-b",  # required parameter for this package
+            "-O3",  # this produces the slowest but best results
+        ]
+
+    logger.debug("Executing: {0}".format( [command] + options + [img]))
+    status = subprocess.call([command] + options + [img], shell=True)
+    logger.debug("Returned status: {0}".format(status))
 
 
 class CommandWrapper(BaseCommand):

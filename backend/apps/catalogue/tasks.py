@@ -79,6 +79,10 @@ def retrieve_products_from_cece():
     call_command( "retrieve_products_from_cece", "--is_task" )
 
 @app.task
+def generate_thumbnails():
+    call_command( "generate_thumbnails", "--is_task" )
+
+@app.task
 def update_exchange_rates(backend=settings.EXCHANGE_BACKEND, **kwargs):
     backend = import_string(backend)()
     backend.update_rates(**kwargs)
