@@ -7,6 +7,7 @@ from django.test import TestCase
 
 from catalogue.utils import (
     generate_thumbnail,
+    optimize_image,
 )
 
 
@@ -28,3 +29,8 @@ class CatalogueUtilsTestCase(TestCase):
             self.assertTrue(
                 os.path.isfile("{0}_{2}x{3}{1}".format(fname, extension, *size))
             )
+
+    def test_optimize_image(self):
+        for img in glob.glob("{0}/img/test/*".format(settings.STATIC_ROOT)):
+            fname, extension = os.path.splitext(img)  # extension contains a leading dot
+

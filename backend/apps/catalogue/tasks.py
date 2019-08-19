@@ -83,6 +83,10 @@ def generate_thumbnails():
     call_command( "generate_thumbnails", "--is_task" )
 
 @app.task
+def optimize_images():
+    call_command( "optimize_images", "--is_task" )
+
+@app.task
 def update_exchange_rates(backend=settings.EXCHANGE_BACKEND, **kwargs):
     backend = import_string(backend)()
     backend.update_rates(**kwargs)

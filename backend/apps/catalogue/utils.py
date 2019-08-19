@@ -4,6 +4,7 @@ import json
 import time
 import logging
 import requests
+import subprocess
 from PIL import Image
 from contextlib import contextmanager
 from requests.exceptions import ConnectionError, RequestException
@@ -148,20 +149,28 @@ def optimize_image(logger, img):
         return
 
     fname, extension = os.path.splitext(img)  # extension contains a leading dot
-    logger.debug("fname = {0}".format(fname))
+    logger.debug("\nfname = {0}".format(fname))
     logger.debug("extension = {0}".format(extension))
 
+    commands = []
     if extension == ".jpg" or extension == ".jpeg":
         command = "jpegoptim"
         options = [
             "--strip-all",   # this strips out all text information such as comments and EXIF data
             "--all-progressive",  #  this will make sure the resulting image is a progressive one
         ]
+
+        commands.append(
+            [command] + options + [img]
+        )
     elif extension == ".png":
         command = "pngquant"
         options = [
             "--force",  # required parameter for this package
         ]
+        commands.append(
+            [command] + options + [img]
+        )
 
         command = "optipng"
         options = [
@@ -169,6 +178,9 @@ def optimize_image(logger, img):
             "-o2",  # this set the optimization level to two (multiple IDAT compression trials)
             "-quiet",  # required parameter for this package
         ]
+        commands.append(
+            [command] + options + [img]
+        )
     elif extension == ".svg":
         command = "svgo"
         options = [
@@ -180,10 +192,14 @@ def optimize_image(logger, img):
             "-b",  # required parameter for this package
             "-O3",  # this produces the slowest but best results
         ]
+        commands.append(
+            [command] + options + [img]
+        )
 
-    logger.debug("Executing: {0}".format( [command] + options + [img]))
-    status = subprocess.call([command] + options + [img], shell=True)
-    logger.debug("Returned status: {0}".format(status))
+    for command in commands:
+        logger.debug("Executing: {0}".format( command ))
+        status = subprocess.call(command)
+        logger.debug("Returned status: {0}".format(status))
 
 
 class CommandWrapper(BaseCommand):
