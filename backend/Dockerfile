@@ -27,6 +27,9 @@ RUN set -ex \
         libpcre3 libpcre3-dev \
         # ... for communication with the database (runtime)
         mariadb-client libmariadb-dev-compat \
+        # ... to optimize images
+        jpegoptim optipng pngquant gifsicle \
+        # if needed, add SVGO to optimize svg files: npm install -g svgo
 \
     # Create mancelot user to run uWSGI as non-root
     && groupadd -g 1000 mancelot \
