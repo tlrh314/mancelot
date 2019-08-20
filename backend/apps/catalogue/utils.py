@@ -139,9 +139,9 @@ def generate_thumbnail(logger, img, size=(120, 120), w=""):
     fname, extension = os.path.splitext(img)  # extension contains a leading dot
     out = "{0}_{2}x{3}{1}".format(fname, extension, *size)
 
-    # if os.path.exists(out) and os.path.isfile(out):
-    #     logger.debug("{0}generate_thumbnail: out '{1}' already exists".format(w, out))
-    #     return
+    if os.path.exists(out) and os.path.isfile(out):
+        logger.debug("{0}generate_thumbnail: out '{1}' already exists".format(w, out))
+        return
 
     logger.debug("\n{0}generate_thumbnail: '{1}'".format(w, out))
     try:
