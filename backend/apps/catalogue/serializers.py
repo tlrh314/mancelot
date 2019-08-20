@@ -113,6 +113,9 @@ class BrandNameInfoSerializer(serializers.ModelSerializer):
 class ProductRetrieveSerializer(serializers.ModelSerializer):
     brand = BrandNameInfoSerializer()
     labels = serializers.StringRelatedField(source="brand.labels", many=True)
+    sizes = serializers.StringRelatedField(many=True, read_only=True)
+    colors = serializers.StringRelatedField(many=True, read_only=True)
+
     class Meta:
         model = Product
         fields = (
