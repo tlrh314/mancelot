@@ -320,7 +320,7 @@ def create_or_update_products(logger, cmd_name, client, recursive=True):
     client.set_cece_token_headers(logger)
 
     # Retrieve the (paginated) data
-    uri = settings.CECE_API_URI + "mancelot/catalog/product?page_size=50"
+    uri = settings.CECE_API_URI + "mancelot/catalog/product?page_size=1000"
     logger.debug("{0}: GET {1} <-- recursive = {2}".format(fn, uri, recursive))
     data = client.get_list(logger, uri, recursive=recursive)
     logger.debug("{0}: received {1} products".format(fn, len(data)))
@@ -457,7 +457,7 @@ class Command(CommandWrapper):
         self.cmd_name = __file__.split("/")[-1].replace(".py", "")
         self.method = create_or_update_products
         self.margs = [ self.cmd_name, client ]
-        self.mkwargs = { "recursive": False }
+        self.mkwargs = { "recursive": not settings.DEBUG }
 
         super().handle(*args, **options)
 
