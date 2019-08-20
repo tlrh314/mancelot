@@ -6,9 +6,13 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 from djmoney.money import Money
 
-from catalogue.utils import call_download_image
-from catalogue.utils import CeceApiClient
-from catalogue.utils import CommandWrapper
+from catalogue.utils import (
+    call_download_image,
+    generate_thumbnail,
+    optimize_image,
+    CeceApiClient,
+    CommandWrapper,
+)
 from catalogue.models import (
     CeceLabel,
     Certificate,
@@ -316,7 +320,7 @@ def create_or_update_products(logger, cmd_name, client, recursive=True):
     client.set_cece_token_headers(logger)
 
     # Retrieve the (paginated) data
-    uri = settings.CECE_API_URI + "mancelot/catalog/product?page_size=1000"
+    uri = settings.CECE_API_URI + "mancelot/catalog/product?page_size=50"
     logger.debug("{0}: GET {1} <-- recursive = {2}".format(fn, uri, recursive))
     data = client.get_list(logger, uri, recursive=recursive)
     logger.debug("{0}: received {1} products".format(fn, len(data)))
@@ -421,13 +425,22 @@ def create_or_update_products(logger, cmd_name, client, recursive=True):
                 save_to = "{0}/img/products/{1}/{2}".format(
                     settings.STATIC_ROOT, store.slug, fname
                 )
-                call_download_image(logger, img_url, save_to,
+                download_success = call_download_image(logger, img_url, save_to,
                     product, "main_image" if i is 0 else "extra_images",
                     product_ctpk, client.ceceuser.pk, cmd_name
                 )
+                if download_success:
+                    optimize_image(logger, save_to, w="    ")
+                    for size in [(64, 64), (128, 128), (256, 256), (512, 512), (1024, 1024)]:
+                        # generate_thumbnail also calls optimize_image on thumb
+                        generate_thumbnail(logger, save_to, size=size, w="    ")
 
-                # b/c set to single image above
-                if i > 0: all_extra_images.append(product.extra_images)
+                    if i is 0:  # Set full url including our domain
+                        # TODO: fetch product from db b/c images updated elsewhere?
+                        product.main_image = "https://www.mancelot.nl"+product.main_image
+                    else:
+                        # b/c set to single image above
+                        all_extra_images.append("https://www.mancelot.nl"+product.extra_images)
             product.extra_images = all_extra_images
             product.save()
             ### End of logo download
@@ -444,7 +457,7 @@ class Command(CommandWrapper):
         self.cmd_name = __file__.split("/")[-1].replace(".py", "")
         self.method = create_or_update_products
         self.margs = [ self.cmd_name, client ]
-        self.mkwargs = { "recursive": not settings.DEBUG }
+        self.mkwargs = { "recursive": False }
 
         super().handle(*args, **options)
 

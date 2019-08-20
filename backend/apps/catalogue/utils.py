@@ -97,6 +97,7 @@ def call_download_image(logger, url, save_to, instance, field, ctpk, userpk, cmd
                 )
             )
             instance.save()
+            return True
         else:  # Download failure
             LogEntry.objects.log_action(
                 user_id=userpk,
@@ -125,32 +126,42 @@ def call_download_image(logger, url, save_to, instance, field, ctpk, userpk, cmd
             )
         )
         instance.save()
-    return True
+        return True
+    return None
 
 
-def generate_thumbnail(logger, img, size=(120, 120)):
+def generate_thumbnail(logger, img, size=(120, 120), w=""):
     if not os.path.exists(img) or not os.path.isfile(img):
-        logger.warning("WARNING in generate_thumbnail: img '{0}' does not exist!".format(img))
+        logger.warning("{0}WARNING in generate_thumbnail: img '{1}' does not exist!".format(w, img))
         return
 
+    cmd_name = "generate_thumbnail"
     fname, extension = os.path.splitext(img)  # extension contains a leading dot
+    out = "{0}_{2}x{3}{1}".format(fname, extension, *size)
 
+    # if os.path.exists(out) and os.path.isfile(out):
+    #     logger.debug("{0}generate_thumbnail: out '{1}' already exists".format(w, out))
+    #     return
+
+    logger.debug("\n{0}generate_thumbnail: '{1}'".format(w, out))
     try:
         im = Image.open(img)
         im.thumbnail(size)
-        im.save("{0}_{2}x{3}{1}".format(fname, extension, *size))
+        im.save(out)
+        optimize_image(logger, out, w=w)
     except Exception as e:
-        raise
+        # Pushes to Sentry
+        logger.error("{0}Caught error in '{1}': {2}".format(w, cmd_name, e))
 
 
-def optimize_image(logger, img):
+def optimize_image(logger, img, w=""):
     if not os.path.exists(img) or not os.path.isfile(img):
-        logger.warning("WARNING in optimize_image: img '{0}' does not exist!".format(img))
+        logger.warning("{0}WARNING in optimize_image: img '{1}' does not exist!".format(w, img))
         return
 
     fname, extension = os.path.splitext(img)  # extension contains a leading dot
-    logger.debug("\nfname = {0}".format(fname))
-    logger.debug("extension = {0}".format(extension))
+    logger.debug("{0}fname = {1}".format(w, fname))
+    logger.debug("{0}extension = {1}".format(w, extension))
 
     commands = []
     if extension == ".jpg" or extension == ".jpeg":
@@ -197,9 +208,12 @@ def optimize_image(logger, img):
         )
 
     for command in commands:
-        logger.debug("Executing: {0}".format( command ))
-        status = subprocess.call(command)
-        logger.debug("Returned status: {0}".format(status))
+        logger.debug("{0}Executing: {1}".format(w, command))
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = process.communicate()
+        logger.debug("{0}{1}".format(w, out))
+        if err: logger.debug("{0}ERROR: {1}".format(w, err))
+        logger.debug("{0}Returned status: {1}".format(w, process.returncode))
 
 
 class CommandWrapper(BaseCommand):
