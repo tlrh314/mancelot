@@ -430,7 +430,6 @@ def create_or_update_products(logger, cmd_name, client, recursive=True):
                     product_ctpk, client.ceceuser.pk, cmd_name
                 )
                 if download_success:
-                    optimize_image(logger, save_to, w="    ")
                     for size in [(64, 64), (128, 128), (256, 256), (512, 512), (1024, 1024)]:
                         # generate_thumbnail also calls optimize_image on thumb
                         generate_thumbnail(logger, save_to, size=size, w="    ")

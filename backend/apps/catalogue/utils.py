@@ -82,7 +82,10 @@ def download_image(logger, url, save_to, stream=True, attempts=5, sleep=30, w=""
 def call_download_image(logger, url, save_to, instance, field, ctpk, userpk, cmd_name):
     if not os.path.exists(save_to) or not os.path.isfile(save_to):
         if download_image(logger, url, save_to, w="  "):
-            # Download success --> update logo
+            # Download success --> optimize, then update logo
+
+            optimize_image(logger, save_to, w="    ")
+
             setattr(instance, field,
                 save_to.replace("{0}/".format(settings.STATIC_ROOT), "")
             )
