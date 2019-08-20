@@ -1,3 +1,4 @@
+import logging
 import factory
 from faker import Factory
 from django.conf import settings
@@ -16,6 +17,7 @@ from catalogue.models import (
     Material,
     Product
 )
+from catalogue.utils import generate_thumbnail
 
 
 faker = Factory.create("nl_NL")
@@ -28,6 +30,9 @@ SIZES = [ "3XS", "XXS", "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL"] + \
     ["UK {0}".format(i) for i in range(4, 30, 2)] + \
     ["FR {0}".format(i) for i in range(32, 58, 2)] + \
     ["EU {0}".format(i) for i in range(40, 52, 2)]
+
+
+logger = logging.getLogger(__name__)
 
 
 class CeceLabelFactory(factory.DjangoModelFactory):
@@ -261,6 +266,18 @@ class ProductFactory(factory.DjangoModelFactory):
             settings.STATIC_ROOT, faker.random_int(min=1, max=30)
         )
     )
+    @factory.post_generation
+    def thumbnail(self, create, extracted, **kwargs):
+        if not create or kwargs.get("skip"):
+            return
+
+        if extracted:
+            self.thumbnail = extracted
+            return
+
+        generate_thumbnail(logger, self.main_image, size=(256, 256), w="")
+        self.thumbnail = self.main_image.replace(".jpg", "_256x256.jpg")
+
     @factory.post_generation
     def extra_images(self, create, extracted, **kwargs):
         if not create or kwargs.get("skip"):

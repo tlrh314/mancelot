@@ -382,6 +382,7 @@ class Product(models.Model):
     )
 
     main_image = models.URLField(_("main image"), max_length=450)
+    thumbnail = models.URLField(_("thumbnail"), max_length=450, null=True, blank=True)
     extra_images = JSONField(_("extra images"), blank=True)
 
     brand = models.ForeignKey(Brand,

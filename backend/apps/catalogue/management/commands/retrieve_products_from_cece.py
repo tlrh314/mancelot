@@ -440,6 +440,15 @@ def create_or_update_products(logger, cmd_name, client, recursive=True):
                     else:
                         # b/c set to single image above
                         all_extra_images.append("https://www.mancelot.nl"+product.extra_images)
+
+            thumbnail = product.main_image.replace(".jpg", "_256x256.jpg")
+            thumbnail_path = "{0}/{1}".format(
+                str(settings.STATIC_ROOT),
+                urlparse(thumbnail).path
+            ).replace("//static", "")
+            if os.path.exists(thumbnail_path) and os.path.isfile(thumbnail_path):
+                product.thumbnail = thumbnail
+                product.save()
             product.extra_images = all_extra_images
             product.save()
             ### End of logo download
@@ -459,4 +468,3 @@ class Command(CommandWrapper):
         self.mkwargs = { "recursive": not settings.DEBUG }
 
         super().handle(*args, **options)
-

@@ -95,15 +95,28 @@ class MaterialSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "slug", "info")
 
 
-class ProductSerializer(serializers.ModelSerializer):
-    categories = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+class ProductListSerializer(serializers.ModelSerializer):
+    sizes = serializers.StringRelatedField(many=True, read_only=True)
+    colors = serializers.StringRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Product
         fields = (
-            "id", "name", "slug", "info", "extra_info", "url", "cece_id",
-            "price", "price_currency", "from_price", "from_price_currency",
-            "main_image", "extra_images", "brand", "store",
-            "categories", "subcategories", "materials",
+            "id", "name", "main_image", "thumbnail", "sizes", "colors",
+        )
+
+
+class BrandNameInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Brand
+        fields = ("name", "info")
+class ProductRetrieveSerializer(serializers.ModelSerializer):
+    brand = BrandNameInfoSerializer()
+    labels = serializers.StringRelatedField(source="brand.labels", many=True)
+    class Meta:
+        model = Product
+        fields = (
+            "id", "name", "info", "main_image",
+            "brand", "labels",
             "sizes", "colors",
         )

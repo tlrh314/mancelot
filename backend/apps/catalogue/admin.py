@@ -428,7 +428,7 @@ class ProductAdmin(admin.ModelAdmin):
         ("colors", RelatedDropdownFilter),
         ProductIsOnSaleFilter,
     )
-    search_fields = ("name", "info", "extra_info",)
+    search_fields = ("name", "info", "extra_info", "cece_id", "brand__name", "store__name",)
     ordering = ("name",)
     readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
     filter_horizontal = ("categories", "subcategories", "materials", "sizes", "colors")
@@ -437,7 +437,7 @@ class ProductAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {"fields": (
             "name", "cece_id", "url", "price", "from_price",
-            "main_image", "extra_images",
+            "main_image", "thumbnail", "extra_images",
             "info", "extra_info",
             "brand", "store", "categories",
             "colors", "sizes", "materials",

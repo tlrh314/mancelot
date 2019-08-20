@@ -1,7 +1,13 @@
-from rest_framework import filters
-from rest_framework import generics
-from rest_framework import viewsets
-from rest_framework import permissions
+from django.db.models import Prefetch
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from rest_framework import (
+    filters,
+    generics,
+    viewsets,
+    permissions,
+)
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
 from catalogue.models import (
@@ -28,7 +34,8 @@ from catalogue.serializers import (
     SizeSerializer,
     ColorSerializer,
     MaterialSerializer,
-    ProductSerializer
+    ProductListSerializer,
+    ProductRetrieveSerializer,
 )
 
 
@@ -89,7 +96,7 @@ class SubcategoryViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class PaymentOptionViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = PaymentOption.objects.order_by("name")
+    queryset = PaymentOption.objects.order_by("id")
     serializer_class = PaymentOptionSerializer
     permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
@@ -103,7 +110,7 @@ class PaymentOptionViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class StoreViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Store.objects.order_by("name")
+    queryset = Store.objects.order_by("id")
     serializer_class = StoreSerializer
     permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
@@ -117,7 +124,7 @@ class StoreViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class BrandViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Brand.objects.order_by("name").prefetch_related(
+    queryset = Brand.objects.order_by("id").prefetch_related(
         "labels",
         "certificates",
     )
@@ -135,7 +142,7 @@ class BrandViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class SizeViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Size.objects.order_by("name")
+    queryset = Size.objects.order_by("id")
     serializer_class = SizeSerializer
     permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
@@ -149,7 +156,7 @@ class SizeViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class ColorViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Color.objects.order_by("name")
+    queryset = Color.objects.order_by("id")
     serializer_class = SizeSerializer
     permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
@@ -163,7 +170,7 @@ class ColorViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class MaterialViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Material.objects.order_by("name")
+    queryset = Material.objects.order_by("id")
     serializer_class = MaterialSerializer
     permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
@@ -177,21 +184,29 @@ class MaterialViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Product.objects.select_related(
-        "brand", "store").prefetch_related(
-        "categories", "subcategories", "colors", "sizes", "materials",
-    ).all().order_by("name")
-    # queryset = Product.objects.select_related().all().order_by("name")
-    serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    queryset = Product.objects.order_by("id").select_related(
+        "brand"  # 1 query /w join
+    ).prefetch_related(
+        # 1 query /w join each, so 4 queries
+        "categories", "subcategories", "sizes", "colors",
+    )
+    permission_classes = [permissions.IsAuthenticated,]  # 1 query to usermodel
     filter_backends = [
-        filters.SearchFilter,
-        filters.OrderingFilter,
         DjangoFilterBackend,
     ]
     filter_fields = [
-        "name", "price", "from_price",
-        "brand", "store", "categories", "subcategories",
+        # one query each, so 4 queries
+        "categories", "subcategories", "colors", "sizes",
     ]
-    ordering_fields = ["name",]
-    search_fields = ["name", "info", "extra_info",]
+    # Total 10 queries + count --> 11 queries
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ProductListSerializer
+        if self.action == "retrieve":
+            return ProductRetrieveSerializer
+        return super().get_serializer_class()  # create/destroy/update
+
+    @method_decorator(cache_page(15 * 60))  # 15 minutes
+    def list(self, request, format=None):
+        return super().list(request, format=format)
