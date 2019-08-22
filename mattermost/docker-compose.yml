@@ -4,7 +4,7 @@ services:
 
   db:
     build: db
-    image: mattermost-db:v5.12.4
+    image: mattermost-db:v5.14.0
     read_only: true
     restart: unless-stopped
     volumes:
@@ -23,7 +23,7 @@ services:
         - edition=team
         - PUID=1000
         - PGID=1000
-    image: mattermost-app:v5.12.4
+    image: mattermost-app:v5.14.0
     restart: unless-stopped
     volumes:
       - ${MANCELOT_DATA_PATH}mattermost/config:/mattermost/config:rw
