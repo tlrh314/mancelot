@@ -442,17 +442,15 @@ def create_or_update_products(logger, cmd_name, client, recursive=True):
                     product, "main_image" if i is 0 else "extra_images",
                     product_ctpk, client.ceceuser.pk, cmd_name
                 )
+                logger.debug("    download_success: {0}".format(download_success))
                 if download_success:
                     for size in [(64, 64), (128, 128), (256, 256), (512, 512), (1024, 1024)]:
                         # generate_thumbnail also calls optimize_image on thumb
                         generate_thumbnail(logger, save_to, size=size, w="    ")
 
-                    if i is 0:  # Set full url including our domain
-                        # TODO: fetch product from db b/c images updated elsewhere?
-                        product.main_image = "https://www.mancelot.nl"+product.main_image
-                    else:
+                    if i > 0:
                         # b/c set to single image above
-                        all_extra_images.append("https://www.mancelot.nl"+product.extra_images)
+                        all_extra_images.append(product.extra_images)
 
             thumbnail = product.main_image.replace(".jpg", "_256x256.jpg")
             thumbnail_path = "{0}/{1}".format(
