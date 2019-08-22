@@ -1,4 +1,6 @@
 import os
+import hashlib
+import requests
 from urllib.parse import urlparse
 
 from django.conf import settings
@@ -421,6 +423,17 @@ def create_or_update_products(logger, cmd_name, client, recursive=True):
                 if not img_url: continue
                 fname = os.path.basename(urlparse(img_url).path)
                 logger.debug("  Fetch '{0}' from Cece".format(img_url))
+                if "cece" not in img_url:
+                    headers = { "user-agent": "Mancelot Bot v1.3.3.7" }
+                    response = requests.head(img_url, headers=headers)
+                    if response.status_code != 200:
+                        logger.error("    Could not retrieve img_uri = '{0}'.".format(img_uri))
+                        continue
+                    extension = response.headers["Content-Type"].replace("image/", "")
+                    fname = "{0}.{1}".format(
+                        hashlib.md5(img_url.encode("utf-8")).hexdigest()[0:7],
+                        extension
+                    )
 
                 save_to = "{0}/img/products/{1}/{2}".format(
                     settings.STATIC_ROOT, store.slug, fname

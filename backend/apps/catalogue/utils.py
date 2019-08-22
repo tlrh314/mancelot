@@ -142,6 +142,10 @@ def generate_thumbnail(logger, img, size=(120, 120), w=""):
     fname, extension = os.path.splitext(img)  # extension contains a leading dot
     out = "{0}_{2}x{3}{1}".format(fname, extension, *size)
 
+    if not extension:  # TODO: fix
+        logger.error("{0}ERROR in generate_thumbnail: img '{1}' has no extension ".format(w, img))
+        return
+
     if os.path.exists(out) and os.path.isfile(out):
         logger.debug("{0}generate_thumbnail: out '{1}' already exists".format(w, out))
         return
@@ -149,6 +153,7 @@ def generate_thumbnail(logger, img, size=(120, 120), w=""):
     logger.debug("\n{0}generate_thumbnail: '{1}'".format(w, out))
     try:
         im = Image.open(img)
+        # extension = str(im.format).lower()
         im.thumbnail(size)
         im.save(out)
         optimize_image(logger, out, w=w)
@@ -163,6 +168,9 @@ def optimize_image(logger, img, w=""):
         return
 
     fname, extension = os.path.splitext(img)  # extension contains a leading dot
+    if not extension:  # TODO: fix
+        logger.error("{0}ERROR in optimize_image: img '{1}' has no extension ".format(w, img))
+        return
     logger.debug("{0}fname = {1}".format(w, fname))
     logger.debug("{0}extension = {1}".format(w, extension))
 
