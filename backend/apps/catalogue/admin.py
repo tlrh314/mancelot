@@ -32,14 +32,14 @@ class CeceLabelAdmin(admin.ModelAdmin):
     list_display = ("name", "get_count",)
     search_fields = ("name", "info")
     ordering = ("name",)
-    readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
+    readonly_fields = ("cece_api_url", "date_created", "date_updated", "last_updated_by",)
     form = FixTinyMCEHasTooWideUIForm
 
     fieldsets = (
         (None, {"fields": ("name", "info")}),
         (_("Meta"), {
             "classes": ("collapse",),
-            "fields": ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by")
+            "fields": ("cece_api_url", "date_created", "date_updated", "last_updated_by")
         }),
     )
 
@@ -181,13 +181,13 @@ class PaymentOptionAdmin(admin.ModelAdmin):
     list_display = ("name", "show_logo",)
     search_fields = ("name",)
     ordering = ("name",)
-    readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
+    readonly_fields = ("cece_api_url", "date_created", "date_updated", "last_updated_by",)
 
     fieldsets = (
         (None, {"fields": ("name", "logo")}),
         (_("Meta"), {
             "classes": ("collapse",),
-            "fields": ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by")
+            "fields": ("cece_api_url", "date_created", "date_updated", "last_updated_by")
         }),
     )
 
@@ -306,13 +306,13 @@ class SizeAdmin(admin.ModelAdmin):
     list_display = ("name", "get_count",)
     search_fields = ("name",)
     ordering = ("date_created",)
-    readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
+    readonly_fields = ("cece_api_url", "date_created", "date_updated", "last_updated_by",)
 
     fieldsets = (
         (None, {"fields": ("name",)}),
         (_("Meta"), {
             "classes": ("collapse",),
-            "fields": ("slug", "date_created", "date_updated", "last_updated_by")
+            "fields": ("date_created", "date_updated", "last_updated_by")
         }),
     )
 
@@ -336,13 +336,13 @@ class ColorAdmin(admin.ModelAdmin):
     list_display = ("name", "get_count",)
     search_fields = ("name",)
     ordering = ("date_created",)
-    readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
+    readonly_fields = ("cece_api_url", "date_created", "date_updated", "last_updated_by",)
 
     fieldsets = (
         (None, {"fields": ("name",)}),
         (_("Meta"), {
             "classes": ("collapse",),
-            "fields": ("slug", "date_created", "date_updated", "last_updated_by")
+            "fields": ("date_created", "date_updated", "last_updated_by")
         }),
     )
 
@@ -366,14 +366,14 @@ class MaterialAdmin(admin.ModelAdmin):
     list_display = ("name", "get_count")
     search_fields = ("name", "info")
     ordering = ("name",)
-    readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
+    readonly_fields = ("cece_api_url", "date_created", "date_updated", "last_updated_by",)
     form = FixTinyMCEHasTooWideUIForm
 
     fieldsets = (
         (None, {"fields": ("name", "info")}),
         (_("Meta"), {
             "classes": ("collapse",),
-            "fields": ("slug", "date_created", "date_updated", "last_updated_by")
+            "fields": ("date_created", "date_updated", "last_updated_by")
         }),
     )
 

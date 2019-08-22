@@ -14,7 +14,6 @@ from django_countries.fields import CountryField
 class CeceLabel(models.Model):
     id = models.AutoField(primary_key=True, db_index=True)
     name = models.CharField(_("name"), db_index=True, max_length=200)
-    slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
 
     # Fields for bookkeeping of database updates
@@ -30,10 +29,6 @@ class CeceLabel(models.Model):
     class Meta:
         verbose_name = _("Label")
         verbose_name_plural = _("Labels")
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -157,7 +152,6 @@ class Subcategory(models.Model):
 class PaymentOption(models.Model):
     id = models.AutoField(primary_key=True, db_index=True)
     name = models.CharField(_("name"), db_index=True, max_length=200)
-    slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     logo = FileBrowseField(_("logo"), default="/static/img/test/test_logo.png",
         max_length=200, directory="{0}/img/logos/payment".format(settings.STATIC_ROOT),
         extensions=[".jpg", ".jpeg", ".gif", ".png"],
@@ -176,10 +170,6 @@ class PaymentOption(models.Model):
     class Meta:
         verbose_name = _("PaymentOption")
         verbose_name_plural = _("PaymentOptions")
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -286,7 +276,6 @@ class Brand(models.Model):
 class Size(models.Model):
     id = models.AutoField(primary_key=True, db_index=True)
     name = models.CharField(_("name"), db_index=True, max_length=200)
-    slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(null=True, blank=True)
@@ -302,10 +291,6 @@ class Size(models.Model):
         verbose_name = _("Size")
         verbose_name_plural = _("Sizes")
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
     def __str__(self):
         return self.name
 
@@ -313,7 +298,6 @@ class Size(models.Model):
 class Color(models.Model):
     id = models.AutoField(primary_key=True, db_index=True)
     name = models.CharField(_("name"), db_index=True, max_length=200)
-    slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(null=True, blank=True)
@@ -329,10 +313,6 @@ class Color(models.Model):
         verbose_name = _("Color")
         verbose_name_plural = _("Colors")
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
     def __str__(self):
         return self.name
 
@@ -340,7 +320,6 @@ class Color(models.Model):
 class Material(models.Model):
     id = models.AutoField(primary_key=True, db_index=True)
     name = models.CharField(_("name"), db_index=True, max_length=200)
-    slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
 
     # Fields for bookkeeping of database updates
@@ -357,10 +336,6 @@ class Material(models.Model):
         verbose_name = _("Material")
         verbose_name_plural = _("Materials")
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
     def __str__(self):
         return self.name
 
@@ -371,7 +346,7 @@ class Product(models.Model):
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
     extra_info = HTMLField(_("extra info"), null=True, blank=True)
-    url = models.URLField(_("url"))
+    url = models.URLField(_("url"), max_length=255)
 
     cece_id = models.CharField(_("cece product id"), null=True, blank=True, max_length=100)
 
