@@ -427,7 +427,7 @@ def create_or_update_products(logger, cmd_name, client, recursive=True):
                     headers = { "user-agent": "Mancelot Bot v1.3.3.7" }
                     response = requests.head(img_url, headers=headers)
                     if response.status_code != 200:
-                        logger.error("    Could not retrieve img_uri = '{0}'.".format(img_uri))
+                        logger.error("    Could not retrieve img_url = '{0}'.".format(img_url))
                         continue
                     extension = response.headers["Content-Type"].replace("image/", "")
                     fname = "{0}.{1}".format(
