@@ -23,7 +23,7 @@ services:
         - edition=team
         - PUID=1000
         - PGID=1000
-    image: mattermost-app:v5.14.0
+    image: mattermost-app:v5.14.1
     restart: unless-stopped
     volumes:
       - ${MANCELOT_DATA_PATH}mattermost/config:/mattermost/config:rw
