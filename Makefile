@@ -8,6 +8,15 @@ help: ## This help.
 .DEFAULT_GOAL := help
 
 
+docker-pull:  ## Pull the latest Docker images from Dockerhub
+	docker pull python:3.7-slim-buster
+	docker pull certbot/certbot:latest
+	docker pull redis:alpine
+	docker pull nginx:1.17-alpine
+	docker pull mariadb:10.4
+	docker pull postgres:9.4-alpine
+
+
 nginx:  ## Build container for nginx
 	docker-compose -f nginx/docker-compose.yml build
 
