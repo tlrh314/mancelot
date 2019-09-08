@@ -10,6 +10,11 @@ from djmoney.models.fields import MoneyField
 from filebrowser.fields import FileBrowseField
 from django_countries.fields import CountryField
 
+BOOL_CHOICES = (
+    (True, _("Yes")),
+    (False, _("No")),
+)
+
 
 class CeceLabel(models.Model):
     id = models.AutoField(primary_key=True, db_index=True)
@@ -85,6 +90,9 @@ class Category(models.Model):
         "section", choices=SECTIONS, default=0
     )
 
+    # Bool to show/hide instance in the api QuerySet
+    active = models.BooleanField(_("active"), default=True, choices=BOOL_CHOICES)
+
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
@@ -121,6 +129,9 @@ class Subcategory(models.Model):
         related_name="subcategories",
         verbose_name=_("category"),
     )
+
+    # Bool to show/hide instance in the api QuerySet
+    active = models.BooleanField(_("active"), default=True, choices=BOOL_CHOICES)
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(null=True, blank=True)
@@ -200,6 +211,9 @@ class Store(models.Model):
     city = models.CharField(_("city"), max_length=42, null=True, blank=True)
     country = CountryField(_("country"), default="NL", null=True, blank=True)
 
+    # Bool to show/hide instance in the api QuerySet
+    active = models.BooleanField(_("active"), default=True, choices=BOOL_CHOICES)
+
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
@@ -246,6 +260,9 @@ class Brand(models.Model):
         blank=True, related_name="brands",
         verbose_name=_("certificates"),
     )
+
+    # Bool to show/hide instance in the api QuerySet
+    active = models.BooleanField(_("active"), default=True, choices=BOOL_CHOICES)
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(null=True, blank=True)
@@ -395,6 +412,9 @@ class Product(models.Model):
         related_name="products",
         blank=True
     )
+
+    # Bool to show/hide instance in the api QuerySet
+    active = models.BooleanField(_("active"), default=True, choices=BOOL_CHOICES)
 
     # Fields for bookkeeping of database updates
     cece_api_url = models.URLField(null=True, blank=True)

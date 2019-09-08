@@ -52,7 +52,8 @@ class CertificateViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Category.objects.prefetch_related("subcategories").order_by("name")
+    queryset = Category.objects.filter(active=True).prefetch_related(
+        "subcategories").order_by("name")
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
@@ -62,7 +63,8 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class SubcategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Subcategory.objects.select_related("category").order_by("name")
+    queryset = Subcategory.objects.filter(active=True).select_related(
+        "category").order_by("name")
     serializer_class = SubcategorySerializer
     permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
@@ -78,7 +80,8 @@ class PaymentOptionViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class StoreViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Store.objects.prefetch_related("payment_options").order_by("id")
+    queryset = Store.objects.filter(active=True).prefetch_related(
+        "payment_options").order_by("id")
     serializer_class = StoreSerializer
     permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
@@ -88,7 +91,7 @@ class StoreViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class BrandViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Brand.objects.order_by("id").prefetch_related(
+    queryset = Brand.objects.filter(active=True).order_by("id").prefetch_related(
         "labels",
         "certificates",
     )
@@ -120,7 +123,10 @@ class MaterialViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Product.objects.order_by("id").select_related(
+    queryset = Product.objects.filter(
+        active=True, brand__active=True, store__active=True,
+        categories__active=True, subcategories__active=True,
+    ).order_by("id").select_related(
         "brand",
     ).prefetch_related(
         "categories", "subcategories", "sizes", "colors",  # "materials",

@@ -5,7 +5,7 @@ https://github.com/mrts/django-admin-list-filter-dropdown
 <script type="text/javascript">var go_from_select = function(opt) { window.location = window.location.pathname + opt };</script>
 <h3>By {{ title }}</h3>
 <ul class="admin-filter-{{ title|cut:' ' }}">
-{% if choices|slice:"4:" %}
+{% if choices|slice:"0:" %}
     <li>
     <select style="width: 95%;"
         onchange="go_from_select(this.options[this.selectedIndex].value)">

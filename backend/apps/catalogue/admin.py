@@ -1,10 +1,11 @@
 from django.urls import reverse
 from django.contrib import admin
+from django.forms.widgets import Select
 from django.db.models import Count, Sum
+from django.db.models import BooleanField
 from django.utils.html import format_html
 from django.core.validators import validate_email
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.admin.filters import RelatedFieldListFilter
 
 from catalogue.forms import FixTinyMCEHasTooWideUIForm
 from catalogue.models import (
@@ -20,11 +21,8 @@ from catalogue.models import (
     Material,
     Product
 )
-
-
-class RelatedDropdownFilter(RelatedFieldListFilter):
-    """ https://github.com/mrts/django-admin-list-filter-dropdown/ """
-    template = "catalogue/dropdown_filter.html"
+from catalogue.filters import ChoiceDropdownFilter
+from catalogue.filters import RelatedDropdownFilter
 
 
 @admin.register(CeceLabel)
@@ -89,13 +87,16 @@ class CertificateAdmin(admin.ModelAdmin):
 
 @admin.register(Subcategory)
 class SubcategoryAdmin(admin.ModelAdmin):
-    list_display = ("name", "get_count", "get_category", "get_section")
+    list_display = ("name", "_active", "get_count", "get_category", "get_section")
     search_fields = ("name", "category")
     ordering = ("category__section", "category", "name",)
     readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
+    formfield_overrides = {
+        BooleanField: {"widget": Select},
+    }
 
     fieldsets = (
-        (None, {"fields": ("name", "category", )}),
+        (None, {"fields": ("name", "category", "active",)}),
         (_("Meta"), {
             "classes": ("collapse",),
             "fields": ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by")
@@ -106,6 +107,10 @@ class SubcategoryAdmin(admin.ModelAdmin):
         return super().get_queryset(request).select_related("category").annotate(
             count=Count("products")
         )
+
+    def _active(self, obj):
+        return obj.active
+    _active.boolean = True
 
     def get_count(self, obj):
         return obj.count
@@ -137,15 +142,21 @@ class SubcategoryAdminInline(admin.StackedInline):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("name", "get_count", "section", "get_subcategories")
-    list_filter = ("section",)
+    list_display = ("name", "_active", "get_count", "section", "get_subcategories")
+    list_filter = (
+        ("active", ChoiceDropdownFilter),
+        "section",
+    )
     search_fields = ("name",)
     ordering = ("section", "name",)
     readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
     inlines = (SubcategoryAdminInline,)
+    formfield_overrides = {
+        BooleanField: {"widget": Select},
+    }
 
     fieldsets = (
-        (None, {"fields": ("name", "section")}),
+        (None, {"fields": ("name", "section", "active")}),
         (_("Meta"), {
             "classes": ("collapse",),
             "fields": ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by")
@@ -156,6 +167,10 @@ class CategoryAdmin(admin.ModelAdmin):
         return super().get_queryset(request).annotate(
             count=Count("products")
         )
+
+    def _active(self, obj):
+        return obj.active
+    _active.boolean = True
 
     def get_count(self, obj):
         return obj.count
@@ -204,8 +219,9 @@ class PaymentOptionAdmin(admin.ModelAdmin):
 
 @admin.register(Store)
 class StoreAdmin(admin.ModelAdmin):
-    list_display = ("name", "show_logo", "get_count",)
+    list_display = ("name", "_active", "show_logo", "get_count",)
     list_filter = (
+        ("active", ChoiceDropdownFilter),
         ("payment_options", RelatedDropdownFilter),
     )
     search_fields = ("name", "info")
@@ -213,9 +229,12 @@ class StoreAdmin(admin.ModelAdmin):
     readonly_fields = ("cece_api_url", "slug",  "date_created", "date_updated", "last_updated_by",)
     filter_horizontal = ("payment_options",)
     form = FixTinyMCEHasTooWideUIForm
+    formfield_overrides = {
+        BooleanField: {"widget": Select},
+    }
 
     fieldsets = (
-        (None, {"fields": ("name", "info", "url", "logo", "payment_options")}),
+        (None, {"fields": ("name", "active", "info", "url", "logo", "payment_options")}),
         (_("Address (administrative)"), {"fields": ("address", "zip_code", "city", "country")}),
         (_("Meta"), {
             "classes": ("collapse",),
@@ -227,6 +246,10 @@ class StoreAdmin(admin.ModelAdmin):
         return super().get_queryset(request).annotate(
             count=Count("products")
         )
+
+    def _active(self, obj):
+        return obj.active
+    _active.boolean = True
 
     def get_count(self, obj):
         return obj.count
@@ -246,8 +269,9 @@ class StoreAdmin(admin.ModelAdmin):
 
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
-    list_display = ("name", "get_count", "get_certificates", "get_labels")
+    list_display = ("name", "_active", "get_count", "get_certificates", "get_labels")
     list_filter = (
+        ("active", ChoiceDropdownFilter),
         ("labels", RelatedDropdownFilter),
         ("certificates", RelatedDropdownFilter),
     )
@@ -256,9 +280,12 @@ class BrandAdmin(admin.ModelAdmin):
     readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
     filter_horizontal = ("labels", "certificates")
     form = FixTinyMCEHasTooWideUIForm
+    formfield_overrides = {
+        BooleanField: {"widget": Select},
+    }
 
     fieldsets = (
-        (None, {"fields": ("name", "info", "url", "logo")}),
+        (None, {"fields": ("name", "active", "info", "url", "logo")}),
         (_("Sustainability criteria"), {"fields": ("labels", "certificates")}),
         (_("Meta"), {
             "classes": ("collapse",),
@@ -272,6 +299,10 @@ class BrandAdmin(admin.ModelAdmin):
         ).annotate(
             count=Count("products"),
         )
+
+    def _active(self, obj):
+        return obj.active
+    _active.boolean = True
 
     def get_count(self, obj):
         return obj.count
@@ -413,13 +444,18 @@ class ProductIsOnSaleFilter(admin.SimpleListFilter):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
-        "name",
+        "name", "_active",
         "get_brand", "get_store",
         "get_categories", "get_sections",
         "cece_id",
         "date_created", "date_updated",
     )
     list_filter = (
+        ("active", ChoiceDropdownFilter),
+        ("store__active", ChoiceDropdownFilter),
+        ("brand__active", ChoiceDropdownFilter),
+        ("categories__active", ChoiceDropdownFilter),
+        ("subcategories__active", ChoiceDropdownFilter),
         ("categories", RelatedDropdownFilter),
         ("brand", RelatedDropdownFilter),
         ("store", RelatedDropdownFilter),
@@ -455,6 +491,10 @@ class ProductAdmin(admin.ModelAdmin):
         ).prefetch_related(
             "categories", "subcategories", "colors", "sizes",
         )
+
+    def _active(self, obj):
+        return obj.active
+    _active.boolean = True
 
     def get_brand(self, obj):
         return format_html(
