@@ -10,6 +10,7 @@ x-defaults: &defaults
     - ${MANCELOT_DATA_PATH-../data/}django/log:/mancelot/log:rw
     - ${MANCELOT_DATA_PATH-../data/}django/media:/mancelot/media:rw
     - ${MANCELOT_DATA_PATH-../data/}django/static:/mancelot/static:rw
+    - ${MANCELOT_DATA_PATH-../data/}sqldumps:/sqldumps:rw
   restart: unless-stopped
 
 services:
@@ -25,6 +26,7 @@ services:
   # Redis as broker for Celery + Cache backend for Django
   redis:
     image: redis:alpine
+    restart: unless-stopped
     command: "redis-server"
 
   django:

@@ -69,17 +69,18 @@ django-sqldump:  ## sql dump of the database (e.g. for backups)
 	mkdir -p $${MANCELOT_DATA_PATH-./data/}/sqldumps/$$TODAY; \
 	DB_HOST=$$(docker exec mancelot_django_1 python manage.py shell -c \
 		"from django.conf import settings; print(settings.DATABASES['default']['HOST'])"); \
-	echo $$DB_HOST
 	DB_NAME=$$(docker exec mancelot_django_1 python manage.py shell -c \
 		"from django.conf import settings; print(settings.DATABASES['default']['NAME'])"); \
 	DB_USER=$$(docker exec mancelot_django_1 python manage.py shell -c \
 		"from django.conf import settings; print(settings.DATABASES['default']['USER'])"); \
-	DB_PASSWORD=$$(docker mancelot_django_1 python manage.py shell -c \
+	DB_PASSWORD=$$(docker exec mancelot_django_1 python manage.py shell -c \
 		"from django.conf import settings; print(settings.DATABASES['default']['PASSWORD'])"); \
 	\
-	mysqldump --protocol TCP -h$$DB_HOST -u$$DB_USER --password=$$DB_PASSWORD $$DB_NAME > \
-		/data/backups/sqldumps/$${TODAY}/$${DB_NAME}_$${TODAY}.sql; \
-	ls -lah $${MANCELOT_DATA_PATH-./data/}/sqldumps/$$TODAY/$${DB_NAME}_$${TODAY}.sql; \
+	docker exec -it mancelot_django_1 bash -c " \
+		mysqldump --protocol TCP -h$$DB_HOST -u$$DB_USER --password=$$DB_PASSWORD $$DB_NAME > \
+			/sqldumps/$${TODAY}/$${DB_NAME}_$${TODAY}.sql \
+	"; \
+	ls -lah $${MANCELOT_DATA_PATH-./data/}sqldumps/$$TODAY/$${DB_NAME}_$${TODAY}.sql; \
 
 
 preact:  ## Build Preact (frontend)
