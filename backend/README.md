@@ -7,6 +7,25 @@
 ![Database schema for catalogue and accounts](https://github.com/tlrh314/mancelot/edit/master/backend/mancelot_db.png)
 
 ## **Resources**
+
+
+- The endpoints for the `accounts` and `catalogue` apps are registered and hyperlinked 
+in the `BrowsableAPI` root.  Details can intuitively be explored there. NB, all
+`catalogue` resources are `GET` only and require an authenticated user.
+  - `GET` [https://www.mancelot.nl/api/v1/](https://www.mancelot.nl/api/v1/)
+
+
+- `accounts.models.UserModel` endpoints. Note that `<pk>=me` returns `request.user`
+  - `GET` [https://www.mancelot.nl/api/v1/users](https://www.mancelot.nl/api/v1/users), permissions = `IsAdmin`
+  - `POST` [https://www.mancelot.nl/api/v1/users](https://www.mancelot.nl/api/v1/users), permissions = `AllowAny`
+  - `GET` [https://www.mancelot.nl/api/v1/users/\<pk>](https://www.mancelot.nl/api/v1/users/me), permissions = `IsAdminOrSelf`
+  - `PUT` [https://www.mancelot.nl/api/v1/users/\<pk>](https://www.mancelot.nl/api/v1/users/me), permissions = `IsAdminOrSelf`
+  - `PATCH` [https://www.mancelot.nl/api/v1/users/\<pk>](https://www.mancelot.nl/api/v1/users/me), permissions = `IsAdminOrSelf`
+  - `DELETE` [https://www.mancelot.nl/api/v1/users/\<pk>](https://www.mancelot.nl/api/v1/users/me), permissions = `IsAdmin`
+
+
+#### Additional auth resources that are not listed in the `BrowsableAPI` root
+
 - Obtain a [JSON Web Token](https://github.com/davesque/django-rest-framework-simplejwt)
   for usage of the Mancelot API
   - `POST` [https://www.mancelot.nl/api/v1/auth/jwtoken/](https://www.mancelot.nl/api/v1/auth/jwtoken/)
@@ -22,18 +41,6 @@
 - Authentication using Django's built-in session backend (e.g. for the BrowsableAPI)
   - [https://www.mancelot.nl/api/v1/auth/login/](https://www.mancelot.nl/api/v1/auth/login/)
   - [https://www.mancelot.nl/api/v1/auth/logout/](https://www.mancelot.nl/api/v1/auth/logout/)
-
-- Retrieve information of the active user / user sign up (TODO)
-  - `GET` [https://www.mancelot.nl/api/v1/users/me](https://www.mancelot.nl/api/v1/users/me)
-  - `PUT` [https://www.mancelot.nl/api/v1/users/me](https://www.mancelot.nl/api/v1/users/me)
-  - `PATCH` [https://www.mancelot.nl/api/v1/users/me](https://www.mancelot.nl/api/v1/users/me)
-  - `DELETE` [https://www.mancelot.nl/api/v1/users/me](https://www.mancelot.nl/api/v1/users/me)
-  - `POST` [https://www.mancelot.nl/api/v1/users](https://www.mancelot.nl/api/v1/users)
-
-- Catalogue endpoints are registered in the `BrowsableAPI` root. NB, all resources
-  are `GET` only and require an authenticated user. Details of the catalogue API 
-  can intuitively be explored here.
-  - `GET` [https://www.mancelot.nl/api/v1/](https://www.mancelot.nl/api/v1/)
 
 
 ## **Django admin**

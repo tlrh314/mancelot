@@ -385,7 +385,7 @@ class CeceLabelViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
         self.resource_name_detail = "Cece Label Instance"
 
 
-class CertificateViewSet(CatalogueAPIBaseTestCase, APITestCase):
+class CertificateViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
     @classmethod
     def setUpTestData(cls):
         # TODO: fixtures
@@ -462,14 +462,6 @@ class PaymentOptionViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
         # TODO: fixtures
         if PaymentOption.objects.count() < 20:
             PaymentOptionFactory.create_batch(20 - PaymentOption.objects.count())
-
-        print(PaymentOption.objects.count())
-        print(PaymentOption.objects.count())
-        print(PaymentOption.objects.count())
-        print(PaymentOption.objects.count())
-        print(PaymentOption.objects.count())
-        print(PaymentOption.objects.count())
-        print(PaymentOption.objects.count())
 
     def setUp(self):
         # Set the admin + user tokens
@@ -565,7 +557,6 @@ class ColorViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
             ColorFactory.create_batch(50 - Color.objects.count())
 
     def setUp(self):
-
         # Set the admin + user tokens
         super().setUp()
 

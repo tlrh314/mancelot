@@ -1,35 +1,57 @@
+from rest_framework import validators
 from rest_framework import serializers
-from django_countries.serializer_fields import CountryField
+from django_countries.serializers import CountryFieldMixin
 
 from accounts.models import UserModel
 
 
-class UserModelSerializer(serializers.ModelSerializer):
-    # id = IntegerField(label=_("id"), read_only=True)
-    country = CountryField()
+class UserModelSerializer(CountryFieldMixin, serializers.ModelSerializer):
+    email = serializers.EmailField(
+        validators=[validators.UniqueValidator(
+            queryset=UserModel.objects.all().values_list("email", flat=True)
+        )]
+    )
+    password = serializers.CharField(
+        min_length=8,
+        write_only=True,
+        required=False,
+        style={"input_type": "password", "placeholder": "Password"}
+    )
 
     class Meta:
         model = UserModel
         fields = (
-            "email", "full_name",
+            "email", "full_name", "password",
             "address", "zip_code", "country",
             "balance", "monthly_top_up", "payment_preference"
         )
+        read_only_fields = ("balance",)
 
     def create(self, validated_data):
-        return UserModel.objects.create(**validated_data)
+        try:
+            password = validated_data.pop("password")
+        except KeyError:
+            raise serializers.ValidationError({"password": ["This field is required.",]})
+        user = super(UserModelSerializer, self).create(validated_data)
+        user.set_password(password)
+        user.is_active=True
+        user.save()
+        return user
 
     def update(self, instance, validated_data):
-        instance.title = validated_data.get("email", instance.email)
-        instance.style = validated_data.get("full_name", instance.full_name)
+        for field in validated_data:
+            if field == "password":
+                instance.set_password(validated_data.get(field))
+            else:
+                instance.__setattr__(field, validated_data.get(field))
+        instance.save()
+        return instance
 
-        instance.style = validated_data.get("address", instance.address)
-        instance.style = validated_data.get("zip_code", instance.zip_code)
-        instance.style = validated_data.get("country", instance.country)
-
-        instance.style = validated_data.get("balance", instance.balance)
-        instance.style = validated_data.get("monthly_top_up", instance.monthly_top_up)
-        instance.style = validated_data.get("payment_preference", instance.payment_preference)
-
+    def partial_update(self, instance, validated_data):
+        for field in validated_data:
+            if field == "password":
+                instance.set_password(validated_data.get(field))
+            else:
+                instance.__setattr__(field, validated_data.get(field))
         instance.save()
         return instance

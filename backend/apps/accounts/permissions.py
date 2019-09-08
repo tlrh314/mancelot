@@ -1,10 +1,8 @@
 from rest_framework.permissions import BasePermission
 
-from account.models import UserModel
+from accounts.models import UserModel
 
 
-class IsUserModelInstace(BasePermission):
+class IsAdminUserOrSelf(BasePermission):
     def has_object_permission(self, request, view, obj):
-        if isinstance(obj, UserModel):
-            return obj == request.user
-        return obj == request.user
+        return obj == request.user or request.user.is_superuser

@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import user_passes_test
 from filebrowser.sites import site
 from rest_framework import routers
 
+from accounts.urls import router as accounts_router
 from catalogue.urls import router as catalogue_router
 
 
@@ -33,6 +34,7 @@ handler404 = "catalogue.views.handler404"
 handler500 = "catalogue.views.handler500"
 
 router = routers.DefaultRouter(False)
+router.registry.extend(accounts_router.registry)
 router.registry.extend(catalogue_router.registry)
 
 urlpatterns = [
