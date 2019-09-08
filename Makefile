@@ -82,6 +82,27 @@ django-sqldump:  ## sql dump of the database (e.g. for backups)
 	"; \
 	ls -lah $${MANCELOT_DATA_PATH-./data/}sqldumps/$$TODAY/$${DB_NAME}_$${TODAY}.sql; \
 
+dev-db-update:  ## download and load sql dump
+	@if [[ $$HOSTNAME == "ChezTimo15"* ]]; then  \
+		TODAY=$$(date "+%Y%m%d"); \
+		rsync -auHxv --progress mancelot:~/DevOps/data/sqldumps/ $${MANCELOT_DATA_PATH-./data/}sqldumps/; \
+		\
+		DB_HOST=$$(docker exec mancelot_django_1 python manage.py shell -c \
+			"from django.conf import settings; print(settings.DATABASES['default']['HOST'])"); \
+		DB_NAME=$$(docker exec mancelot_django_1 python manage.py shell -c \
+			"from django.conf import settings; print(settings.DATABASES['default']['NAME'])"); \
+		DB_USER=$$(docker exec mancelot_django_1 python manage.py shell -c \
+			"from django.conf import settings; print(settings.DATABASES['default']['USER'])"); \
+		DB_PASSWORD=$$(docker exec mancelot_django_1 python manage.py shell -c \
+			"from django.conf import settings; print(settings.DATABASES['default']['PASSWORD'])"); \
+		\
+		docker exec -it mancelot_django_1 bash -c " \
+			mysql --protocol TCP -h$$DB_HOST -u$$DB_USER --password=$$DB_PASSWORD $$DB_NAME \
+				< /sqldumps/$${TODAY}/$${DB_NAME}_$${TODAY}.sql"; \
+	else  \
+		echo "For safety not implemented for hostname on $$HOSTNAME"; \
+	fi
+
 
 preact:  ## Build Preact (frontend)
 	@cd frontend; \
