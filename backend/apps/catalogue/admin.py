@@ -208,7 +208,7 @@ class PaymentOptionAdmin(admin.ModelAdmin):
 
     def show_logo(self, obj):
         return format_html(
-            "<img src='{0}' alt='{1}', height='30' width/>".format(obj.logo.url, obj.name)
+            "<img src='{0}' alt='{1}', height='30' width/>".format(obj.logo, obj.name)
         )
     show_logo.short_description = _("Logo")
 
@@ -258,7 +258,7 @@ class StoreAdmin(admin.ModelAdmin):
 
     def show_logo(self, obj):
         return format_html(
-            "<img src='{0}' alt='{1}', height='30' width/>".format(obj.logo.url, obj.name)
+            "<img src='{0}' alt='{1}', height='30' width/>".format(obj.logo, obj.name)
         )
     show_logo.short_description = _("Logo")
 
@@ -445,7 +445,7 @@ class ProductIsOnSaleFilter(admin.SimpleListFilter):
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
         "name", "_active",
-        "get_brand", "get_store",
+        "get_brand", "get_brand_active", "get_store", "get_store_active",
         "get_categories", "get_sections",
         "cece_id",
         "date_created", "date_updated",
@@ -504,6 +504,11 @@ class ProductAdmin(admin.ModelAdmin):
     get_brand.short_description = _("Brand")
     get_brand.admin_order_field = "brand"
 
+    def get_brand_active(self, obj):
+        return obj.brand.active
+    get_brand_active.short_description = _("Brand active")
+    get_brand_active.boolean = True
+
     def get_store(self, obj):
         return format_html(
             "<a href='{0}'>{1}</a>".format(reverse("admin:catalogue_store_change",
@@ -511,6 +516,11 @@ class ProductAdmin(admin.ModelAdmin):
         )
     get_store.short_description = _("Store")
     get_store.admin_order_field = "store"
+
+    def get_store_active(self, obj):
+        return obj.store.active
+    get_store_active.short_description = _("Store active")
+    get_store_active.boolean = True
 
     def get_labels(self, obj):
         return format_html(
