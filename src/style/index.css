@@ -4,7 +4,7 @@
   --page-width:90%;
   --page-margin:10px;
 }
-
+.hide { display: none!important;}
 @font-face {
   font-family: 'tertre';
   src: url('../assets/fonts/tertre-xbol.ttf') format('truetype');
@@ -23,6 +23,18 @@ h1 {
 h2 {
 	font-size:15px;
 }
+.firstuse_text{
+  text-align: center;
+	font-size:18px;
+	padding-top: 10px;
+}
+.firstuse_text span {
+  font-size: 120%;
+  color:#1e5476;
+}
+.slider-container { width: 100%; display: block; overflow: scroll;}
+slider { width: 400%; display: block; }
+slider card { width: 25%; float:left; }
 
 
 html, body {
@@ -58,7 +70,7 @@ html, body {
 	width: 100%;
 }
 .home_category_container {
-	background-image: url('../assets/Man_full.png');
+	background-image: url('../assets/Man_mvp.png');
 	background-position: center top;
 	background-repeat: no-repeat;
 	background-size:contain;
@@ -98,6 +110,7 @@ html, body {
 .category_label.shirt { right:calc(50% + 10vh);	top:18%; width: 100px; } .category_label.shirt .line{right: -10vw;	width: 15vw;}
 .category_label.jack  { left:calc(50% + 11vh);  top:28%; width: 90px; }  .category_label.jack  .line{left: -6vw;	width: 9vw;}
 .category_label.short { right:calc(50% + 10vh);	top:54%; width: 100px; } .category_label.short .line{right: -10vw;	width: 10vw;}
+.category_label.short_mvp { left:calc(50% + 10vh); top:54%; width: 90px; } .category_label.short_mvp  .line{left: -11vw;	width: 10vw;}
 .category_label.long  { left:calc(50% + 10vh);  top:63%; width: 90px; }  .category_label.long  .line{left: -12vw;	width: 10vw;}
 .category_label.sock  { right:calc(50% + 10vh);	top:94%; width: 100px; } .category_label.sock  .line{right: -2.5vw;	width: 7.5vw;}
 .category_label.shoe  { left:calc(50% + 12vh);  top:94%; width: 90px; }  .category_label.shoe  .line{left: -5vw;	width: 6vw;}
@@ -258,3 +271,5 @@ input[type=radio]:checked + .btn_select {
 .icon_environment  { background-image: url('../assets/labels/environment.png');}
 .icon_localproduced{ background-image: url('../assets/labels/icon_local.png');}
 .icon_localsupport { background-image: url('../assets/labels/local_support.png');}
+
+.content { padding: 25px;}

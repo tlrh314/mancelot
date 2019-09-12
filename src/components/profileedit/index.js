@@ -1,8 +1,7 @@
 import { h, Component } from 'preact';
 import style from './style';
 
-export default class ProfileEdit
-edit extends Component {
+export default class ProfileEdit extends Component {
 
     static defaultProps = {
         color : "#FF0000"
