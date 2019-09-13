@@ -94,6 +94,9 @@ class SubcategoryAdmin(admin.ModelAdmin):
     formfield_overrides = {
         BooleanField: {"widget": Select},
     }
+    actions = (
+        "activate", "deactivate",
+    )
 
     fieldsets = (
         (None, {"fields": ("name", "category", "active",)}),
@@ -129,6 +132,18 @@ class SubcategoryAdmin(admin.ModelAdmin):
         return obj.category.get_section_display()
     get_section.short_description = _("Section")
 
+    def activate(self, request, queryset):
+        for instance in queryset:
+            instance.active = True
+            instance.save()
+    activate.short_description = _("Activate selected subcategory instance")
+
+    def deactivate(self, request, queryset):
+        for instance in queryset:
+            instance.active = False
+            instance.save()
+    activate.short_description = _("Deactivate selected subcategory instance")
+
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
         obj.save()
@@ -154,6 +169,9 @@ class CategoryAdmin(admin.ModelAdmin):
     formfield_overrides = {
         BooleanField: {"widget": Select},
     }
+    actions = (
+        "activate", "deactivate",
+    )
 
     fieldsets = (
         (None, {"fields": ("name", "section", "active")}),
@@ -185,6 +203,18 @@ class CategoryAdmin(admin.ModelAdmin):
             )
         )
     get_subcategories.short_description = _("Subcategories")
+
+    def activate(self, request, queryset):
+        for instance in queryset:
+            instance.active = True
+            instance.save()
+    activate.short_description = _("Activate selected category instance")
+
+    def deactivate(self, request, queryset):
+        for instance in queryset:
+            instance.active = False
+            instance.save()
+    activate.short_description = _("Deactivate selected category instance")
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -232,6 +262,9 @@ class StoreAdmin(admin.ModelAdmin):
     formfield_overrides = {
         BooleanField: {"widget": Select},
     }
+    actions = (
+        "activate", "deactivate",
+    )
 
     fieldsets = (
         (None, {"fields": ("name", "active", "info", "url", "logo", "payment_options")}),
@@ -262,6 +295,18 @@ class StoreAdmin(admin.ModelAdmin):
         )
     show_logo.short_description = _("Logo")
 
+    def activate(self, request, queryset):
+        for instance in queryset:
+            instance.active = True
+            instance.save()
+    activate.short_description = _("Activate selected store instance")
+
+    def deactivate(self, request, queryset):
+        for instance in queryset:
+            instance.active = False
+            instance.save()
+    activate.short_description = _("Deactivate selected store instance")
+
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
         obj.save()
@@ -283,6 +328,9 @@ class BrandAdmin(admin.ModelAdmin):
     formfield_overrides = {
         BooleanField: {"widget": Select},
     }
+    actions = (
+        "activate", "deactivate",
+    )
 
     fieldsets = (
         (None, {"fields": ("name", "active", "info", "url", "logo")}),
@@ -326,6 +374,18 @@ class BrandAdmin(admin.ModelAdmin):
             )
         )
     get_certificates.short_description = _("Certificates")
+
+    def activate(self, request, queryset):
+        for instance in queryset:
+            instance.active = True
+            instance.save()
+    activate.short_description = _("Activate selected brand instance")
+
+    def deactivate(self, request, queryset):
+        for instance in queryset:
+            instance.active = False
+            instance.save()
+    activate.short_description = _("Deactivate selected brand instance")
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -469,6 +529,9 @@ class ProductAdmin(admin.ModelAdmin):
     readonly_fields = ("cece_api_url", "slug", "date_created", "date_updated", "last_updated_by",)
     filter_horizontal = ("categories", "subcategories", "materials", "sizes", "colors")
     form = FixTinyMCEHasTooWideUIForm
+    actions = (
+        "activate", "deactivate",
+    )
 
     fieldsets = (
         (None, {"fields": (
@@ -560,6 +623,18 @@ class ProductAdmin(admin.ModelAdmin):
         return format_html("<br>".join( c.get_section_display() for c in obj.categories.all() ))
     get_sections.short_description = _("Sections")
     get_sections.admin_order_field = "categories__section"
+
+    def activate(self, request, queryset):
+        for instance in queryset:
+            instance.active = True
+            instance.save()
+    activate.short_description = _("Activate selected product instance")
+
+    def deactivate(self, request, queryset):
+        for instance in queryset:
+            instance.active = False
+            instance.save()
+    activate.short_description = _("Deactivate selected product instance")
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
