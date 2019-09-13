@@ -136,13 +136,13 @@ class SubcategoryAdmin(admin.ModelAdmin):
         for instance in queryset:
             instance.active = True
             instance.save()
-    activate.short_description = _("Activate selected subcategory instance")
+    activate.short_description = _("Activate selected Subcategories")
 
     def deactivate(self, request, queryset):
         for instance in queryset:
             instance.active = False
             instance.save()
-    deactivate.short_description = _("Deactivate selected subcategory instance")
+    deactivate.short_description = _("Deactivate selected Subcategories")
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -208,13 +208,13 @@ class CategoryAdmin(admin.ModelAdmin):
         for instance in queryset:
             instance.active = True
             instance.save()
-    activate.short_description = _("Activate selected category instance")
+    activate.short_description = _("Activate selected Categories")
 
     def deactivate(self, request, queryset):
         for instance in queryset:
             instance.active = False
             instance.save()
-    deactivate.short_description = _("Deactivate selected category instance")
+    deactivate.short_description = _("Deactivate selected Categories")
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -299,13 +299,13 @@ class StoreAdmin(admin.ModelAdmin):
         for instance in queryset:
             instance.active = True
             instance.save()
-    activate.short_description = _("Activate selected store instance")
+    activate.short_description = _("Activate selected Stores")
 
     def deactivate(self, request, queryset):
         for instance in queryset:
             instance.active = False
             instance.save()
-    deactivate.short_description = _("Deactivate selected store instance")
+    deactivate.short_description = _("Deactivate selected Stores")
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -379,13 +379,13 @@ class BrandAdmin(admin.ModelAdmin):
         for instance in queryset:
             instance.active = True
             instance.save()
-    activate.short_description = _("Activate selected brand instance")
+    activate.short_description = _("Activate selected Brands")
 
     def deactivate(self, request, queryset):
         for instance in queryset:
             instance.active = False
             instance.save()
-    deactivate.short_description = _("Deactivate selected brand instance")
+    deactivate.short_description = _("Deactivate selected Brands")
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -628,13 +628,13 @@ class ProductAdmin(admin.ModelAdmin):
         for instance in queryset:
             instance.active = True
             instance.save()
-    activate.short_description = _("Activate selected product instance")
+    activate.short_description = _("Activate selected Products")
 
     def deactivate(self, request, queryset):
         for instance in queryset:
             instance.active = False
             instance.save()
-    deactivate.short_description = _("Deactivate selected product instance")
+    deactivate.short_description = _("Deactivate selected Products")
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
