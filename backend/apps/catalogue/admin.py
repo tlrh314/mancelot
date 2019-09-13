@@ -142,7 +142,7 @@ class SubcategoryAdmin(admin.ModelAdmin):
         for instance in queryset:
             instance.active = False
             instance.save()
-    activate.short_description = _("Deactivate selected subcategory instance")
+    deactivate.short_description = _("Deactivate selected subcategory instance")
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -214,7 +214,7 @@ class CategoryAdmin(admin.ModelAdmin):
         for instance in queryset:
             instance.active = False
             instance.save()
-    activate.short_description = _("Deactivate selected category instance")
+    deactivate.short_description = _("Deactivate selected category instance")
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -305,7 +305,7 @@ class StoreAdmin(admin.ModelAdmin):
         for instance in queryset:
             instance.active = False
             instance.save()
-    activate.short_description = _("Deactivate selected store instance")
+    deactivate.short_description = _("Deactivate selected store instance")
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -385,7 +385,7 @@ class BrandAdmin(admin.ModelAdmin):
         for instance in queryset:
             instance.active = False
             instance.save()
-    activate.short_description = _("Deactivate selected brand instance")
+    deactivate.short_description = _("Deactivate selected brand instance")
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
@@ -634,7 +634,7 @@ class ProductAdmin(admin.ModelAdmin):
         for instance in queryset:
             instance.active = False
             instance.save()
-    activate.short_description = _("Deactivate selected product instance")
+    deactivate.short_description = _("Deactivate selected product instance")
 
     def save_model(self, request, obj, form, change):
         obj.last_updated_by = request.user
