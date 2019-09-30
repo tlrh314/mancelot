@@ -7,7 +7,6 @@
 | [Django REST](https://www.django-rest-framework.org)          | Django REST Framework      |  `backend`       | [mancelot.nl/api/v1](https://www.mancelot.nl/api/v1) |
 | [Preact](https://preactjs.com/guide/getting-started) | Frontend |  `frontend`       |  |
 | [Mattermost](https://docs.mattermost.com)      | Team Communication |  `mattermost`    | [mm.mancelot.nl](https://mm.mancelot.nl/)           |
-| [Psono](https://doc.psono.com)           | Password Manager   |  `psono`         | [psono.mancelot.nl](https://psono.mancelot.nl/)     |
 
 
 ## Infrastructure
@@ -30,11 +29,3 @@
 
 ## Mattermost
 - Fetched from: `https://github.com/mattermost/mattermost-docker`
-
-
-## Psono (tbd)
-### Server: psono-server
-- Fetched from: `psono-server https://gitlab.com/psono/psono-server.git`
-
-### Client: psono-client
-- Fetched from: `https://gitlab.com/psono/psono-client.git`
