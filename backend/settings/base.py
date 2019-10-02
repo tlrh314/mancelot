@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "django_celery_results",
     "django_countries",
     "django_filters",
+    "corsheaders",
     "rest_framework",
     # "rest_framework_simplejwt.token_blacklist",
     "silk",
@@ -65,6 +66,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -244,6 +246,38 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_LIFETIME": timedelta(days=1),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=30),
 }
+
+# True --> CORS_ORIGIN_WHITELIST not used and all origins will be accepted
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = [
+    "https://mancelot.nl",
+    "https://www.mancelot.nl",
+    "https://mancelot.app",
+    "https://www.mancelot.app",
+    "http://localhost:3000",
+]
+CSRF_TRUSTED_ORIGINS = [  # TODO
+    "change.allowed.com",
+]
+CORS_ALLOW_METHODS = [  # Default, but explicitly added to settings
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+CORS_ALLOW_HEADERS = [  # Default, but explicitly added to settings
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
 
 # Silky for profiling / monitoring the api response times
 SILKY_AUTHENTICATION = True
