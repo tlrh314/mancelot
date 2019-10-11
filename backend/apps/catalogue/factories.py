@@ -297,8 +297,8 @@ class ProductFactory(factory.DjangoModelFactory):
     # Create Brand instances if there are less than fourty brands available
     # NB, this code might also execute on import. Not sure if that's desired
     # TODO: decide on how to sample brand
-    if Brand.objects.count() < 40:
-        BrandFactory.create_batch(40 - Brand.objects.count())
+    # if Brand.objects.count() < 40:
+    #     BrandFactory.create_batch(40 - Brand.objects.count())
     brand = factory.LazyAttribute(lambda _: Brand.objects.order_by("?").first())
 
     # Hmm the line below spawns a new Brand for each ProductFactory call, wops
@@ -309,8 +309,8 @@ class ProductFactory(factory.DjangoModelFactory):
     # Create Store instances if there are less than twenty brands available
     # NB, this code might also execute on import. Not sure if that's desired
     # TODO: decide on how to sample store
-    if Store.objects.count() < 20:
-        StoreFactory.create_batch(20 - Store.objects.count())
+    # if Store.objects.count() < 20:
+    #     StoreFactory.create_batch(20 - Store.objects.count())
     store = factory.LazyAttribute(lambda _: Store.objects.order_by("?").first())
 
     # Hmm the line below spawns a new Store for each ProductFactory call, wops

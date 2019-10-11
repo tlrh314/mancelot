@@ -191,6 +191,7 @@ tags
 .bash_functions
 .bashrc
 .vimrc
+.python_history
 
 # Output of graphviz
 *.pdf

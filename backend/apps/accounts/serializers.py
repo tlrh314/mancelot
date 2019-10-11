@@ -55,3 +55,7 @@ class UserModelSerializer(CountryFieldMixin, serializers.ModelSerializer):
                 instance.__setattr__(field, validated_data.get(field))
         instance.save()
         return instance
+
+
+class UserFavoriteSerializer(serializers.Serializer):
+    product_id = serializers.IntegerField()

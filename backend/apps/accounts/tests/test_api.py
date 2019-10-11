@@ -11,9 +11,29 @@ from accounts.factories import (
     UserModelFactory,
     AdminFactory,
 )
+from catalogue.models import (
+    Store,
+    Brand,
+    Product,
+)
+from catalogue.factories import (
+    StoreFactory,
+    BrandFactory,
+    ProductFactory,
+)
+from catalogue.serializers import ProductListSerializer
 
 
 class UserModelViewSetTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls, nstores=1, nbrands=1, nproducts=5):
+        if Store.objects.count() < nstores:
+            StoreFactory.create_batch(nstores - Store.objects.count())
+        if Brand.objects.count() < nbrands:
+            BrandFactory.create_batch(nbrands - Brand.objects.count())
+        if Product.objects.count() < nproducts:
+            ProductFactory.create_batch(nproducts - Product.objects.count())
+
     def setUp(self):
         super().setUp()  # in case of inheritance
 
@@ -295,3 +315,96 @@ class UserModelViewSetTest(APITestCase):
         self.assertIsNone(
             UserModel.objects.filter(email=self.testuser_to_change.email).first()
         )
+
+    def test_get_favorites(self):
+        for product in Product.objects.all()[0:5]:
+            self.user.favorites.add(product)
+        self.assertEqual(self.user.favorites.count(), 5)
+        response = self.client.get(reverse("usermodel-favorites", args=["me"]),
+            HTTP_AUTHORIZATION=self.usertoken
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.user.favorites.count(), 5)
+        self.assertEqual(response.data, ProductListSerializer(self.user.favorites.all(), many=True).data)
+
+    def test_post_favorites(self):
+        response = self.client.post(reverse("usermodel-favorites", args=["me"]),
+            HTTP_AUTHORIZATION=self.usertoken
+        )
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_patch_favorites(self):
+        response = self.client.patch(reverse("usermodel-favorites", args=["me"]),
+            HTTP_AUTHORIZATION=self.usertoken
+        )
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_add_favorite(self):
+        product = Product.objects.first()
+        self.assertEqual(self.user.favorites.count(), 0)
+        with self.subTest("Product exists"):
+            response = self.client.put(
+                reverse("usermodel-favorites", args=["me"]),
+                {"product_id": product.id},
+                HTTP_AUTHORIZATION=self.usertoken
+            )
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["status"], "Favorite added")
+            self.assertEqual(self.user.favorites.count(), 1)
+        with self.subTest("Product does not exist"):
+            response = self.client.put(
+                reverse("usermodel-favorites", args=["me"]),
+                {"product_id": -1},
+                HTTP_AUTHORIZATION=self.usertoken
+            )
+            self.assertEqual(response.data["status"], "Product does not exist")
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        with self.subTest("Incorrect Field"):
+            response = self.client.put(
+                reverse("usermodel-favorites", args=["me"]),
+                {"product": -1},
+                HTTP_AUTHORIZATION=self.usertoken
+            )
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        with self.subTest("Incorrect Type in Field"):
+            response = self.client.put(
+                reverse("usermodel-favorites", args=["me"]),
+                {"product": "sjenkie"},
+                HTTP_AUTHORIZATION=self.usertoken
+            )
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_delete_favorite(self):
+        product = Product.objects.first()
+        self.user.favorites.add(product)
+        self.assertEqual(self.user.favorites.count(), 1)
+        with self.subTest("Product exists"):
+            response = self.client.delete(
+                reverse("usermodel-favorites", args=["me"]),
+                {"product_id": product.id},
+                HTTP_AUTHORIZATION=self.usertoken
+            )
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["status"], "Favorite deleted")
+            self.assertEqual(self.user.favorites.count(), 0)
+        with self.subTest("Product does not exist"):
+            response = self.client.delete(
+                reverse("usermodel-favorites", args=["me"]),
+                {"product_id": -1},
+                HTTP_AUTHORIZATION=self.usertoken
+            )
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        with self.subTest("Incorrect Field"):
+            response = self.client.delete(
+                reverse("usermodel-favorites", args=["me"]),
+                {"product": -1},
+                HTTP_AUTHORIZATION=self.usertoken
+            )
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        with self.subTest("Incorrect Type in Field"):
+            response = self.client.delete(
+                reverse("usermodel-favorites", args=["me"]),
+                {"product": "sjenkie"},
+                HTTP_AUTHORIZATION=self.usertoken
+            )
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

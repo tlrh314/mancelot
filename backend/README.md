@@ -23,6 +23,10 @@ in the `BrowsableAPI` root.  Details can intuitively be explored there. NB, all
   - `PATCH` [https://www.mancelot.nl/api/v1/users/\<pk>](https://www.mancelot.nl/api/v1/users/me), permissions = `IsAdminOrSelf`
   - `DELETE` [https://www.mancelot.nl/api/v1/users/\<pk>](https://www.mancelot.nl/api/v1/users/me), permissions = `IsAdmin`
 
+  - `GET` [https://www.mancelot.nl/api/v1/users/\<pk>/favorites](https://www.mancelot.nl/api/v1/users/me/favorites), permissions = `IsAdminUserOrSelf`
+  - `PUT` [https://www.mancelot.nl/api/v1/users/\<pk>/favorites](https://www.mancelot.nl/api/v1/users/me/favorites), permissions = `IsAdminUserOrSelf`
+  - `DELETE` [https://www.mancelot.nl/api/v1/users/\<pk>/favorites](https://www.mancelot.nl/api/v1/users/me/favorites), permissions = `IsAdminUserOrSelf`
+
 
 #### Additional auth resources that are not listed in the `BrowsableAPI` root
 

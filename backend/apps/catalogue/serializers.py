@@ -110,6 +110,8 @@ class BrandNameInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
         fields = ("name", "info")
+
+
 class ProductRetrieveSerializer(serializers.ModelSerializer):
     brand = BrandNameInfoSerializer()
     labels = serializers.StringRelatedField(source="brand.labels", many=True)
