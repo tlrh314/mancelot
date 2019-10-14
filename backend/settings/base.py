@@ -87,7 +87,6 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "context_processors.set_meta_tags",
-                "context_processors.set_contactinfo",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
@@ -178,8 +177,8 @@ LOGIN_URL = "admin:login"
 LOGIN_REDIRECT_URL = "accounts:profile"
 ADMIN_BCC = []
 
-SERVER_EMAIL = "django@mancelot.nl"
-DEFAULT_FROM_EMAIL = "info@mancelot.nl"
+SERVER_EMAIL = "django@mancelot.app"
+DEFAULT_FROM_EMAIL = "info@mancelot.app"
 EMAIL_CONFIG = env.email_url("EMAIL_URL")
 vars().update(EMAIL_CONFIG)
 
@@ -250,8 +249,6 @@ SIMPLE_JWT = {
 # True --> CORS_ORIGIN_WHITELIST not used and all origins will be accepted
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = [
-    "https://mancelot.nl",
-    "https://www.mancelot.nl",
     "https://mancelot.app",
     "https://www.mancelot.app",
     "http://localhost:3000",
@@ -306,6 +303,9 @@ sentry_sdk.init(
 CECE_API_USER = env("CECE_API_USER", default="secret")
 CECE_API_PASS = env("CECE_API_PASS", default="secret")
 CECE_API_URI = env("CECE_API_URI", default="http://example.com")
+
+MANCELOT_KVK_NUMMER = env("MANCELOT_KVK_NUMMER")
+MANCELOT_BTW_NUMMER = env("MANCELOT_BTW_NUMMER")
 
 
 ### FileBrowser to tinker with static files at the server
@@ -423,7 +423,7 @@ LOGGING = {
     }
 }
 
-if DEBUG:
+if DEBUG or True:
     PREPEND_WWW = False
 
     INSTALLED_APPS += [

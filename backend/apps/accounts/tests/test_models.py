@@ -38,7 +38,7 @@ class UserModelTest(TestCase):
 
     def test_save_method_of_new_usermodel_instance(self):
         user = UserModelFactory(
-            email="timo@mancelot.nl",
+            email="timo@mancelot.app",
             full_name="Timo Halbesma",
             favorites__skip=True,
         )
@@ -48,7 +48,7 @@ class UserModelTest(TestCase):
 
     def test_new_user_is_not_active(self):
         user = UserModel.objects.create(
-            email="timo@mancelot.nl",
+            email="timo@mancelot.app",
             full_name="Timo Halbesma",
         )
         self.assertEqual(user.is_active, False)
@@ -56,7 +56,7 @@ class UserModelTest(TestCase):
 
     def test_new_user_is_not_staff_is_not_superuser(self):
         user = UserModel.objects.create(
-            email="timo@mancelot.nl",
+            email="timo@mancelot.app",
             full_name="Timo Halbesma",
         )
         self.assertEqual(user.is_staff, False)
@@ -78,7 +78,7 @@ class UserModelTest(TestCase):
 
     def test_new_user_with_nonunique_email_raises_validation_error(self):
         user1 = UserModelFactory(
-            email="timo@mancelot.nl",
+            email="timo@mancelot.app",
             full_name="Timo Halbesma",
             favorites__skip=True,
         )
@@ -98,20 +98,20 @@ class UserModelTest(TestCase):
 
     def test_user_with_address(self):
         user = UserModel(
-            email="timo@mancelot.nl",
+            email="timo@mancelot.app",
             full_name="Timo Halbesma",
             address="Straatnaam 42",
             zip_code="1337 XD",
             country="NL"
         )
-        self.assertEqual(user.email, "timo@mancelot.nl")
+        self.assertEqual(user.email, "timo@mancelot.app")
         self.assertEqual(user.full_name, "Timo Halbesma")
         self.assertEqual(user.address, "Straatnaam 42")
         self.assertEqual(user.country, "NL")
 
     def test_send_email_to_user(self):
         # user = UserModel(
-        #     email="timo@mancelot.nl",
+        #     email="timo@mancelot.app",
         #     full_name="Timo Halbesma",
         # )
         # user.email_user(subject, message, from_email=settings.DEFAULT_FROM_EMAIL)

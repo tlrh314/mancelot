@@ -47,8 +47,8 @@ urlpatterns = [
     path("admin/silk/", include("silk.urls", namespace="silk")),
     re_path(r"^flower/(?P<path>.*)$", flower_view),
 
-    # path("", TemplateView.as_view(template_name="index.html"), name="index"),
-    path("", RedirectView.as_view(url="index.html"), name="index"),
+    path("", TemplateView.as_view(template_name="index.html"), name="index"),
+    path("contact/", include('contact_form.urls')),
     path("", include("accounts.urls")),
     path("api/v1/", include(router.urls)),
     path("api/v1/auth/", include("rest_framework.urls")),
