@@ -4,7 +4,7 @@ set -e
 
 # TODO: implement these functions as arguments
 DATA_PATH="./data/certbot"
-EMAIL="info@mancelot.nl"
+EMAIL="info@mancelot.app"
 RSA_KEY_SIZE=4096
 PRODUCTION=false
 case "$EMAIL" in
@@ -89,15 +89,14 @@ echo
 # Declare each domains and generate Let's Encrypt certificate
 declare -a DOMAINS=(
     "mancelot.app"
+        "api.mancelot.app"
+        "mm.mancelot.app"
     "mancelot.be"
     "mancelot.com"
     "mancelot.co.uk"
     "mancelot.de"
     "mancelot.eu"
     "mancelot.nl"
-        "api.mancelot.nl"
-        "mm.mancelot.nl"
-        "pw.mancelot.nl"
 )
 
 for DOMAIN in "${DOMAINS[@]}"
