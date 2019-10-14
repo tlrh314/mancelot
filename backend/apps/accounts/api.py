@@ -55,14 +55,14 @@ class UserModelViewSet(ModelViewSet):
             else:
                 raise PermissionDenied
 
-    @action(methods=["get", "put", "delete"], detail=True)
+    @action(methods=["get", "patch", "delete"], detail=True)
     def favorites(self, request, pk=None):
         user = self.get_object()
 
         if self.request.method == "GET":
             return Response(ProductListSerializer(user.favorites.all(), many=True).data)
 
-        if self.request.method == "PUT":
+        if self.request.method == "PATCH":
             serializer = UserFavoriteSerializer(data=request.data)
             if serializer.is_valid():
                 product_id = serializer.data["product_id"]

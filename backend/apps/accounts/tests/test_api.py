@@ -333,8 +333,8 @@ class UserModelViewSetTest(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def test_patch_favorites(self):
-        response = self.client.patch(reverse("usermodel-favorites", args=["me"]),
+    def test_put_favorites(self):
+        response = self.client.put(reverse("usermodel-favorites", args=["me"]),
             HTTP_AUTHORIZATION=self.usertoken
         )
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -343,7 +343,7 @@ class UserModelViewSetTest(APITestCase):
         product = Product.objects.first()
         self.assertEqual(self.user.favorites.count(), 0)
         with self.subTest("Product exists"):
-            response = self.client.put(
+            response = self.client.patch(
                 reverse("usermodel-favorites", args=["me"]),
                 {"product_id": product.id},
                 HTTP_AUTHORIZATION=self.usertoken
@@ -352,7 +352,7 @@ class UserModelViewSetTest(APITestCase):
             self.assertEqual(response.data["status"], "Favorite added")
             self.assertEqual(self.user.favorites.count(), 1)
         with self.subTest("Product does not exist"):
-            response = self.client.put(
+            response = self.client.patch(
                 reverse("usermodel-favorites", args=["me"]),
                 {"product_id": -1},
                 HTTP_AUTHORIZATION=self.usertoken
@@ -360,14 +360,14 @@ class UserModelViewSetTest(APITestCase):
             self.assertEqual(response.data["status"], "Product does not exist")
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         with self.subTest("Incorrect Field"):
-            response = self.client.put(
+            response = self.client.patch(
                 reverse("usermodel-favorites", args=["me"]),
                 {"product": -1},
                 HTTP_AUTHORIZATION=self.usertoken
             )
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         with self.subTest("Incorrect Type in Field"):
-            response = self.client.put(
+            response = self.client.patch(
                 reverse("usermodel-favorites", args=["me"]),
                 {"product": "sjenkie"},
                 HTTP_AUTHORIZATION=self.usertoken

@@ -24,7 +24,7 @@ in the `BrowsableAPI` root.  Details can intuitively be explored there. NB, all
   - `DELETE` [https://www.mancelot.app/api/v1/users/\<pk>](https://www.mancelot.app/api/v1/users/me), permissions = `IsAdmin`
 
   - `GET` [https://www.mancelot.app/api/v1/users/\<pk>/favorites](https://www.mancelot.app/api/v1/users/me/favorites), permissions = `IsAdminUserOrSelf`
-  - `PUT` [https://www.mancelot.app/api/v1/users/\<pk>/favorites](https://www.mancelot.app/api/v1/users/me/favorites), permissions = `IsAdminUserOrSelf`
+  - `PATCH` [https://www.mancelot.app/api/v1/users/\<pk>/favorites](https://www.mancelot.app/api/v1/users/me/favorites), permissions = `IsAdminUserOrSelf`
   - `DELETE` [https://www.mancelot.app/api/v1/users/\<pk>/favorites](https://www.mancelot.app/api/v1/users/me/favorites), permissions = `IsAdminUserOrSelf`
 
 
