@@ -1,28 +1,14 @@
+from django.conf import settings
 from django.contrib.staticfiles.templatetags.staticfiles import static
-
-# from about.models import ContactInfo
-
-
-class ContactInfoDefault(object):
-    def __init__(self):
-        """ Hardcoded in case there is no ContactInfo object """
-
-        self.contact_email = "info@mancelot.nl"
-
-
-def set_contactinfo(request):
-    contactinfo = None  # ContactInfo.objects.first()
-    if not contactinfo:
-        contactinfo = ContactInfoDefault()
-
-    return { "contact_email": contactinfo.contact_email }
 
 
 def set_meta_tags(request):
     page_title = "Mancelot"
     page_image = static("img/todo.png")
     page_description = "Mancelot: App voor Duurzame Mannenkleding"
-    page_keywords = "mannen, kleding, duurzame mannenkleding, eerlijke mannenkleding, conscious clothing"
+    page_keywords = "Mancelot, 'duurzame kleding', app, duurzaam," + \
+        " duurzame, mannenmode, 'Roman Markovski', 'Lorentz Stout'," + \
+        " Verantwoord, 'verantwoorde kleding'"
     og_image = page_image
     og_title = page_title
     twitter_card = ""
@@ -43,4 +29,6 @@ def set_meta_tags(request):
         "twitter_title": twitter_title,
         "twitter_description": twitter_description,
         "twitter_image": twitter_image,
+        "mancelot_kvk": settings.MANCELOT_KVK_NUMMER,
+        "mancelot_btw": settings.MANCELOT_BTW_NUMMER,
     }

@@ -1,21 +1,25 @@
 {% load static %}
 {% load staticfiles %}
 <!doctype html>
-<html lang="en">
+<html lang="nl">
   <head>
-    <meta charset="utf-8">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <meta name="Referrer" content="origin">
     <meta name="robots" content="index, follow"/> 
 
-    <meta name="author" content="Timo Halbesma"/>
-    <meta name="copyright" content="Timo Halbesma" />
+    <meta name="author" content="Stichting Mancelot"/>
+    <meta name="copyright" content="Stichting Mancelot" />
 
-    <link rel="apple-touch-icon" href="{% static 'img/favicon.png' %}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'img/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'img/favicon-32x32.png' %}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{% static 'img/favicon-16x16.png' %}" sizes="16x16">
     <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />
-    <link rel="icon" type="image/vnd.microsoft.icon" href="{% static 'img/favicon.png' %}" />
-    <link rel="icon" type="image/gif/png" href="{% static 'img/favicon.png' %}">
+    <link rel="mask-icon" href="{% static 'img/safari-pinned-tab.svg' %}" color="#022a39">
+    <meta name="msapplication-config" content="{% static 'img/browserconfig.xml' %}">
+    <meta name="theme-color" content="#ffffff">
+
 
     {# Meta tags for auto-retrieved data when shared on social #}
     <title>{% block page_title %} Mancelot {% endblock page_title %}</title>
@@ -31,18 +35,21 @@
     <meta name="twitter:image" content="{% block meta_twitter_image %}{{ twitter_image }}{% endblock meta_twitter_image %}"/>
 
 {% block stylesheets %}
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-139275191-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-139275191-1');
-</script>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/small.css' %}" media="all and (max-width: 999px)">
 {% endblock stylesheets %}
 
 {% block topscripts %}
+    {# Global site tag (gtag.js) - Google Analytics #}
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139275191-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'UA-139275191-1');
+    </script>
+
     {# Mandatory cookie consent pop-up #}
     <script type="text/javascript">
         window.cookieconsent_options = {
@@ -55,7 +62,7 @@
 {% endblock topscripts %}
 </head>
 
-</body>
+<body onLoad="setTimeout(function() { showCounter = true; }, 100)">
     {% block content %}
     {% endblock content %}
 

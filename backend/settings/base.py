@@ -87,7 +87,6 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "context_processors.set_meta_tags",
-                "context_processors.set_contactinfo",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
@@ -307,6 +306,9 @@ CECE_API_USER = env("CECE_API_USER", default="secret")
 CECE_API_PASS = env("CECE_API_PASS", default="secret")
 CECE_API_URI = env("CECE_API_URI", default="http://example.com")
 
+MANCELOT_KVK_NUMMER = env("MANCELOT_KVK_NUMMER")
+MANCELOT_BTW_NUMMER = env("MANCELOT_BTW_NUMMER")
+
 
 ### FileBrowser to tinker with static files at the server
 # http://django-filebrowser.readthedocs.io/en/latest/settings.html
@@ -423,7 +425,7 @@ LOGGING = {
     }
 }
 
-if DEBUG:
+if DEBUG or True:
     PREPEND_WWW = False
 
     INSTALLED_APPS += [

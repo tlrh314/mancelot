@@ -1,0 +1,141 @@
+
+p    {  font-size: 15px; line-height: 1.5; margin-bottom: 1.5em; }
+h1   {  color:#1e5476; font-family: 'tertre'; font-size:26px; font-weight:300; margin:10px 0px; padding:10px 0px;}
+h2   {  color:#1e5476; font-size:18px; font-weight:800; margin:0px 0px 0px 0px;}
+
+.inner-section { width:100%; padding: 0px 20px; text-align: center;}
+
+#intro-deel1 { padding: 30px 0px 0px 0px; }
+  #intro-deel1 p { font-size: 130%; }
+  #intro-deel1 .illustration {
+    position:relative; right:auto; top:auto;
+    background-position:  60% top;
+    background-size: 300px auto;
+    height: 300px; width: 100%;
+    z-index:auto;
+    text-align: center;
+  }
+#intro-deel2 { padding: 30px 0px 100px 0px; }
+  .hmmm { position: relative; margin-top:0px; left:auto; text-align: center;}
+  .line_hmmm {
+    position: absolute; margin-top:0px; left:50%; transform: translateX(-50%);
+    background-image:url('../img/line2.png'); background-size: 3px auto;
+    width: 3px; height:120px;
+  }
+  #intro-deel2 .inner-section { padding-left:20px; }
+  #intro-deel2 h1 { padding-top:120px; }
+  #intro-deel2 p { font-size: 120%; margin-bottom:1.4em; }
+  #intro-deel2 .input_mail{padding:19px; margin-top:0px; float:none; width: 320px; max-width: 90%; margin-right:0px; display:inline-block; 	 }
+  #intro-deel2 .btndark { float:none; clear: both;margin:10px auto; display:block; width: 120px; min-width: 120px;}
+  #intro-deel2 .illustration {
+    position:relative; left:0px; top:20px;
+    background-image:url('../img/2-Help.png'); background-repeat: no-repeat; background-size: contain; background-position: center;
+    height: 400px; width: 100%;
+  }
+  #intro-deel2 .meer { padding: 20px 0; clear: both;}
+  #intro-deel2 .line_meer {  position: absolute; bottom:-110px; left:50%; transform:translateX(-50%);
+      background-image:url('../img/line2.png'); background-repeat: no-repeat; background-size: contain;
+      width: 3px; height:120px;
+}
+
+#hoe-werkt-het { padding: 50px 0px; position: relative; overflow: hidden;}
+
+  #hoe-werkt-het h1 { padding-bottom: 20px;}
+  #hoe-werkt-het ol { list-style: none; counter-reset: my-counter; margin:0px 75px 0px 0px; }
+  #hoe-werkt-het ol li { counter-increment: my-counter; text-align: left;  line-height: 20px; padding: 6px 0px; position: relative; clear: both;}
+  #hoe-werkt-het ol li p { font-size: 15px;}
+  @media all and (max-width: 360px){
+    #hoe-werkt-het ol li p { font-size: 14px;}
+  }
+  @media all and (max-width: 320px){
+    #hoe-werkt-het ol { margin:0px 70px 0px 0px; }
+    #hoe-werkt-het ol li p { font-size: 13px;}
+  }
+  #hoe-werkt-het ol li::after {
+    background-repeat: no-repeat; background-size: contain; background-position: left;
+    position: absolute;
+    display: block;
+    content: "";
+  }
+  #hoe-werkt-het .step1::after {
+    height: 80px; width: 80px;
+    right:-100px;top:5px;
+  }
+  #hoe-werkt-het .step2::after {
+    height: 60px; width: 60px;
+    left:auto;
+    right:-80px;top:5px;
+  }
+  #hoe-werkt-het .step3::after {
+    height: 60px;
+    width: 60px;
+    right:-80px;top:5px;
+  }
+  #hoe-werkt-het .step4::after {
+    height: 50px; width: 50px;
+    left:auto;
+    right:-75px;top:5px;
+  }
+  #hoe-werkt-het ol li::before {
+    content: counter(my-counter) "";
+    background:#fff;
+    color:#172b37;
+    width: 20px; height: 20px;
+    border-radius: 4px;
+    padding: 8px 8px 8px 8px;
+    margin: 3px 15px 70px 0px;
+    text-align: center;
+    font-weight: bold;
+    float:left;
+    font-family: 'tertre'; font-size:26px; font-weight: 800;
+  }
+
+#duurzame-kleding { height: 100px; overflow: hidden;}
+  #duurzame-kleding li img { width: 40px; padding: 25px}
+
+#wat-en-wie { padding: 30px 0px 100px 0px; position: relative;}
+  #wat-en-wie .roman, #wat-en-wie .lorentz {
+    position: absolute;
+    background-repeat: no-repeat; background-size: contain; background-position: bottom;
+    bottom: 0px;
+  }
+  #wat-en-wie .roman   {
+    background-image:url('../img/roman@4x.png');
+    left:calc(55% - 160px);
+    width: 160px;height:220px;
+    }
+  #wat-en-wie .lorentz {
+    background-image:url('../img/lorentz@4x.png');
+    left: calc(45%);
+    width: 145px; height:210px;}
+
+
+/* FOOTER */
+  #contact { position: relative; height: auto;}
+    #contact .partner, #contact .vragen {
+      position: relative;
+      background-repeat: no-repeat; background-size: contain; background-position: bottom;
+      top:0px;
+      text-align: center;
+    }
+    #contact .social_list {
+      text-align: center;
+      width: 100%;
+      padding: 30px 0 30px 0;
+    }
+    #contact .partner   {
+      left:inherit;
+      width: 100%;height:auto;
+      }
+    #contact .vragen {
+      left:inherit;
+      width: 100%;height:auto;
+    }
+    #contact h2  {
+      margin: 0px 0 10px 0px;
+      padding-top: 30px;
+    }
+    #contact .partner a, #contact .vragen a  {
+      margin: 10px 0px;
+      padding: 10px 0px;
+    }
