@@ -177,8 +177,8 @@ LOGIN_URL = "admin:login"
 LOGIN_REDIRECT_URL = "accounts:profile"
 ADMIN_BCC = []
 
-SERVER_EMAIL = "django@mancelot.nl"
-DEFAULT_FROM_EMAIL = "info@mancelot.nl"
+SERVER_EMAIL = "django@mancelot.app"
+DEFAULT_FROM_EMAIL = "info@mancelot.app"
 EMAIL_CONFIG = env.email_url("EMAIL_URL")
 vars().update(EMAIL_CONFIG)
 
@@ -249,8 +249,6 @@ SIMPLE_JWT = {
 # True --> CORS_ORIGIN_WHITELIST not used and all origins will be accepted
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = [
-    "https://mancelot.nl",
-    "https://www.mancelot.nl",
     "https://mancelot.app",
     "https://www.mancelot.app",
     "http://localhost:3000",
