@@ -87,7 +87,7 @@ def call_download_image(logger, url, save_to, instance, field, ctpk, userpk, cmd
             optimize_image(logger, save_to, w="    ")
 
             setattr(instance, field,
-                "https://www.mancelot.nl" + save_to.replace(
+                "https://www.mancelot.app" + save_to.replace(
                     "{0}/".format(settings.STATIC_ROOT), settings.STATIC_URL
             ))
             LogEntry.objects.log_action(
@@ -116,7 +116,7 @@ def call_download_image(logger, url, save_to, instance, field, ctpk, userpk, cmd
             return False
     else:  # logo was in Cece format, but we do have the file --> update logo
         setattr(instance, field,
-                "https://www.mancelot.nl" + save_to.replace(
+                "https://www.mancelot.app" + save_to.replace(
                     "{0}/".format(settings.STATIC_ROOT), settings.STATIC_URL
             )
         )
