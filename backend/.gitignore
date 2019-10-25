@@ -179,7 +179,6 @@ tags
 
 ### Mancelot
 .env
-staticfiles/vendor
 staticfiles/node_modules
 
 
