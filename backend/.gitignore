@@ -179,6 +179,8 @@ tags
 
 ### Mancelot
 .env
+staticfiles/vendor
+staticfiles/node_modules
 
 
 ### Auto-generated items in $HOME
