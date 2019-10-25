@@ -231,7 +231,7 @@ img  { 	max-width:100%; }
 
 
 /* FOOTER */
-  #contact { position: relative; height: 175px;}
+  #contact { position: relative; height: 150px;}
     #contact .partner, #contact .vragen {
       position: absolute;
       background-repeat: no-repeat; background-size: contain; background-position: bottom;
@@ -259,11 +259,6 @@ img  { 	max-width:100%; }
     #contact .partner a, #contact .vragen a  {
       margin: 10px 0px;
       padding: 10px 0px;
-    }
-    #contact .legal {
-      text-align: center;
-      width: 100%;
-      padding: 25px 0 0 0;
     }
 
 
