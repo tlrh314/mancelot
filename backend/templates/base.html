@@ -37,7 +37,8 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/small.css' %}" media="all and (max-width: 999px)">
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/cookieconsent/cookieconsent.min.css' %}" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap" rel="stylesheet" crossorigin="anonymous">
 {% endblock stylesheets %}
 
 {% block topscripts %}
@@ -50,25 +51,75 @@
     
       gtag('config', 'UA-139275191-1');
     </script>
-
-    {# Mandatory cookie consent pop-up #}
-    <script type="text/javascript">
-        window.cookieconsent_options = {
-            "message": "We use temporary cookies to improve functionality of "+
-                "the website. By using this website you accept our Privacy Policy.", 
-            "dismiss":"Accept!", "learnMore": "Learn More", 
-            "link": "{% url 'privacy_policy' %}", "theme": "dark-bottom"
-        };
-    </script>
 {% endblock topscripts %}
 </head>
 
 <body onLoad="setTimeout(function() { showCounter = true; }, 100)">
-    {% block content %}
-    {% endblock content %}
+    <div id="container">  {# container start #}
+        <header>
+            <div id="header">
+                <div id="logo">
+                  <img src="{% static 'img/Mancelot-logo.png' %}" />
+                </div>
+            </div>
+        </header>
+
+        <main id="home_page">
+        {% block content %}
+        {% endblock content %}
+        </main>
+
+        <footer>
+            <section id="contact" class="back_blue pad">
+                <div class="roman"></div>
+                <div class="lorentz"></div>
+                <div id="footer_container">
+
+                    <div class="partner">
+                      <div class="hoofd_roman"></div>
+                      <h2>Partner worden?</h2>
+                      <a href="mailto:roman@mancelot.app">roman@mancelot.app</a><br>
+                      <a href=""><!--010-TODO TODO--></a>
+                    </div>
+
+                    <div class="vragen">
+                      <div class="hoofd_lorentz"></div>
+                      <h2>Vragen & Pers?</h2>
+                      <a href="mailto:lorentz@mancelot.app">lorentz@mancelot.app</a><br>
+                      <a href=""><!--010-TODO TODO--></a>
+                    </div>
+
+                    <div class="social_list">
+                      <a href="https://www.instagram.com/mancelot.app/" target="_blank"><div class="social_insta"></div></a>
+                      <a href="https://www.facebook.com/Mancelot-2227031900720984/" target="_blank"><div class="social_fb"></div></a>
+                    </div>
+                </div>
+            </section>
+        </footer>
+
+    </div> {# container end #}
 
     {% block bottomscripts %}
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.10/cookieconsent.min.js"></script>
+    <script type="text/javascript" src="{% static 'vendor/cookieconsent/cookieconsent.min.js' %}"></script>
+    <script>
+        window.cookieconsent.initialise({
+          "palette": {
+            "popup": {
+              "background": "#000"
+            },
+            "button": {
+              "background": "#1e5476"
+            }
+          },
+          "theme": "classic",
+          "content": {
+            "message": "Deze website maakt gebruik van cookies.",
+            "dismiss": "Ok",
+            "link": "Meer info",
+            "href": "{% url 'privacy_policy' %}"
+          }
+        });
+    </script>
     {% endblock bottomscripts %}
 </body>
 </html>

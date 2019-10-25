@@ -155,7 +155,8 @@ img  { 	max-width:100%; }
   #intro-deel2 .line_meer {  position: absolute; bottom:-120px; left:50%; transform:translateX(-100%);
       background-image:url('../img/line2b.png'); background-repeat: no-repeat; background-size: contain;
       width: 36px; height:130px;
-}
+  }
+  #intro-deel2 #returnmessage { width: 100%; clear: both; display: inline-block;}
 
 #hoe-werkt-het { padding: 50px 0px; position: relative;}
 

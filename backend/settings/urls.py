@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import user_passes_test
 from filebrowser.sites import site
 from rest_framework import routers
 
+from accounts.views import index
 from accounts.urls import router as accounts_router
 from catalogue.urls import router as catalogue_router
 
@@ -47,8 +48,7 @@ urlpatterns = [
     path("admin/silk/", include("silk.urls", namespace="silk")),
     re_path(r"^flower/(?P<path>.*)$", flower_view),
 
-    path("", TemplateView.as_view(template_name="index.html"), name="index"),
-    path("contact/", include('contact_form.urls')),
+    path("", index, name="index"),
     path("", include("accounts.urls")),
     path("api/v1/", include(router.urls)),
     path("api/v1/auth/", include("rest_framework.urls")),

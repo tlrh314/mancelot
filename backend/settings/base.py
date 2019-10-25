@@ -69,6 +69,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "corsheaders.middleware.CorsPostCsrfMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -247,14 +248,15 @@ SIMPLE_JWT = {
 }
 
 # True --> CORS_ORIGIN_WHITELIST not used and all origins will be accepted
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = [
     "https://mancelot.app",
     "https://www.mancelot.app",
+    "http://localhost",
     "http://localhost:3000",
 ]
 CSRF_TRUSTED_ORIGINS = [  # TODO
-    "change.allowed.com",
+    "mancelot.app",
 ]
 CORS_ALLOW_METHODS = [  # Default, but explicitly added to settings
     "DELETE",

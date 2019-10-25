@@ -2,114 +2,79 @@
 {% load static %}
 
 {% block content %}
-    <div id="container">  {# container start #}
-        <header>
-            <div id="header">
-                <div id="logo">
-                  <img src="{% static 'img/Mancelot-logo.png' %}" />
-                </div>
-            </div>
-        </header>
+<section id="intro-deel1" class="section back_white ">
+  <div class="inner-section">
+    <p>Mancelot is een vernieuwende app, waarmee mannen <span class="txt_large">supermakkelijk</span> verantwoorde kleding kunnen kopen.</p>
+    <div class="illustration"></div><!-- 2 varianten maken, aparte image voor mobile -->
+  </div>
+</section>
 
+<section id="intro-deel2" class="section clearfix back_grey  margbotneg">
+  <div class="inner-section">
+    <p class="hmmm">Hmmm... is dat niet duur?</p>
+    <div class="line_hmmm"></div><!-- 2 varianten maken, aparte image voor mobile -->
+    <h1>Welnee!</h1>
+    <p>Je doneert een paar euro per maand om structureel vele levens in de kledingindustrie te verbeteren. Daarmee bouw je tegelijk een tegoed op, waarmee je goede kleding kunt uitkiezen!</p>
+    <h2>Beter voor jou en voor de wereld!</h2>
+    <p class="padtop">Binnenkort is Mancelot beschikbaar! <br>Laat je mailadres achter om de app als eerste te hebben!</p>
+    <form id="signupForm" method="POST">{% csrf_token %}
+        <input type="email" class="input_mail" name="email" required id="id_email">
+        <input class="btndark" id="submit" type="submit" value="Meld je aan!">
+        <div id="returnmessage"></div>
+    </form>
 
-        <main id="home_page">
-          <section id="intro-deel1" class="section back_white ">
-            <div class="inner-section">
-              <p>Mancelot is een vernieuwende app, waarmee mannen <span class="txt_large">supermakkelijk</span> verantwoorde kleding kunnen kopen.</p>
-              <div class="illustration"></div><!-- 2 varianten maken, aparte image voor mobile -->
-            </div>
-          </section>
+    <div class="illustration"></div><!-- 2 varianten maken, aparte image voor mobile -->
+    <p class="meer">Meer weten?</p>
+    <div class="line_meer"></div><!-- 2 varianten maken, aparte image voor mobile -->
+  </div>
+</section>
 
-          <section id="intro-deel2" class="section clearfix back_grey  margbotneg">
-            <div class="inner-section">
-              <p class="hmmm">Hmmm... is dat niet duur?</p>
-              <div class="line_hmmm"></div><!-- 2 varianten maken, aparte image voor mobile -->
-              <h1>Welnee!</h1>
-              <p>Je doneert een paar euro per maand om structureel vele levens in de kledingindustrie te verbeteren. Daarmee bouw je tegelijk een tegoed op, waarmee je goede kleding kunt uitkiezen!</p>
-              <h2>Beter voor jou en voor de wereld!</h2>
-              <p class="padtop">Binnenkort is Mancelot beschikbaar! <br>Laat je mailadres achter om de app als eerste te hebben!</p>
-              <form id="form">
-                <input type="text" class="input_mail" name="email" id="email">
-                <div id="returnmessage"></div>
-                <div class="btndark" id="submit">Meld je aan!</div>
-              </form>
-              <div class="illustration"></div><!-- 2 varianten maken, aparte image voor mobile -->
-              <p class="meer">Meer weten?</p>
-              <div class="line_meer"></div><!-- 2 varianten maken, aparte image voor mobile -->
-            </div>
-          </section>
+<section id="hoe-werkt-het" class="section clearfix back_blue center_txt ">
+  <div class="inner-section">
+  <h1>Hoe werkt het precies?</h1>
+  <ol>
+    <li class="step1">
+      <p>Zoom door het assortiment en swipe t-shirts, ondergoed en sokken die je leuk vindt naar je wishlist. Later volgen meer kledingcategorieën.</p>
+    </li>
+    <li class="step2">
+      <p>Meld je aan als ridder die strijdt voor eerlijkheid in de kledingindustrie en geef minimaal €5,- per maand. Dit stapelt zich op tot jouw tegoed.</p>
+    </li>
+    <li class="step3">
+      <p>4x per jaar bestellen wij voor jou kleding van jouw wishlist. Wij zijn een stichting zonder winstoogmerk, dus wat wij besparen op de inkoop is in jouw voordeel!</p>
+    </li>
+    <li class="step4">
+      <p>Jij krijgt alles gratis thuisbezorgd, je betaald alleen voor retourneren. <br>Je voelt je beter en je hebt vele levens in en rond de kledingindustrie verbeterd!</p>
+    </li>
+  </ol>
+  </div>
+</section>
 
-          <section id="hoe-werkt-het" class="section clearfix back_blue center_txt ">
-            <div class="inner-section">
-            <h1>Hoe werkt het precies?</h1>
-            <ol>
-              <li class="step1">
-                <p>Zoom door het assortiment en swipe t-shirts, ondergoed en sokken die je leuk vindt naar je wishlist. Later volgen meer kledingcategorieën.</p>
-              </li>
-              <li class="step2">
-                <p>Meld je aan als ridder die strijdt voor eerlijkheid in de kledingindustrie en geef minimaal €5,- per maand. Dit stapelt zich op tot jouw tegoed.</p>
-              </li>
-              <li class="step3">
-                <p>4x per jaar bestellen wij voor jou kleding van jouw wishlist. Wij zijn een stichting zonder winstoogmerk, dus wat wij besparen op de inkoop is in jouw voordeel!</p>
-              </li>
-              <li class="step4">
-                <p>Jij krijgt alles gratis thuisbezorgd, je betaald alleen voor retourneren. <br>Je voelt je beter en je hebt vele levens in en rond de kledingindustrie verbeterd!</p>
-              </li>
-            </ol>
-            </div>
-          </section>
+<section id="duurzame-kleding" class="section clearfix back_white center_txt pad">
+  <ul>
+    <li><img src="{% static 'img/kl-sokken-wit@4x.png' %}" /></li>
+    <li><img src="{% static 'img/kl-shirt-blauw@4x.png' %}" /></li>
+    <li><img src="{% static 'img/kl-boxer-oranje@4x.png' %}" /></li>
+    <li><img src="{% static 'img/kl-sokken-groen@4x.png' %}" /></li>
+    <li><img src="{% static 'img/kl-shirt-wit@4x.png' %}" /></li>
+    <li><img src="{% static 'img/kl-sokken-zwart@4x.png' %}" /></li>
+    <li><img src="{% static 'img/kl-boxer-blauw@4x.png' %}" /></li>
+    <li><img src="{% static 'img/kl-shirt-grijs@4x.png' %}" /></li>
+  </ul>
+</section>
 
-          <section id="duurzame-kleding" class="section clearfix back_white center_txt pad">
-            <ul>
-              <li><img src="{% static 'img/kl-sokken-wit@4x.png' %}" /></li>
-              <li><img src="{% static 'img/kl-shirt-blauw@4x.png' %}" /></li>
-              <li><img src="{% static 'img/kl-boxer-oranje@4x.png' %}" /></li>
-              <li><img src="{% static 'img/kl-sokken-groen@4x.png' %}" /></li>
-              <li><img src="{% static 'img/kl-shirt-wit@4x.png' %}" /></li>
-              <li><img src="{% static 'img/kl-sokken-zwart@4x.png' %}" /></li>
-              <li><img src="{% static 'img/kl-boxer-blauw@4x.png' %}" /></li>
-              <li><img src="{% static 'img/kl-shirt-grijs@4x.png' %}" /></li>
-            </ul>
-          </section>
-
-          <section id="wat-en-wie" class="section clearfix back_grey">
-            <div class="inner-section">
-              <h1 class="center_txt">Wat en wie is Mancelot?</h1>
-              <p>Mancelot is een stichting (KvK: {{ mancelot_kvk }}, BTW: {{ mancelot_btw }}), wij hebben geen winstoogmerk, onze winst steken we in groei en geven we door aan klanten om prijzen laag te houden.</p>
-              <p>De data (ook labels en teksten) om kleding in de Mancelot app te tonen is afkomstig van <a href="https://www.projectcece.nl">Project Cece</a>. Uiteraard geven we daarom een klein deel van onze inkomsten door aan hen. Wij hebben geen commerciële banden met andere partijen. Ook Project CeCe heeft geen aandelen of invloed op onze stichting.</p>
-              <p>Mancelot bestaat uit 5 man (4 devs) en is opgericht door 2 vrienden: Roman Markovski en Lorentz Stout. Beiden dertigers hebben jonge kinderen en een eigen bedrijf en wilden iets doen om de wereld van morgen eerlijker te maken en (kinderen van) kleding- arbeiders ook een kans op een mooie toekomst te geven. </p>
-            </div>
-            <div class="roman"></div>
-            <div class="lorentz"></div>
-          </section>
-        </main>
-
-
-        <footer>
-            <section id="contact" class="back_blue pad">
-                <div id="footer_container">
-
-                    <div class="partner">
-                      <div class="hoofd_roman"></div>
-                      <h2>Partner worden?</h2>
-                      <a href="mailto:roman@mancelot.app">roman@mancelot.app</a><br>
-                      <a href=""><!--010-TODO TODO--></a>
-                    </div>
-
-                    <div class="vragen">
-                      <div class="hoofd_lorentz"></div>
-                      <h2>Vragen & Pers?</h2>
-                      <a href="mailto:lorentz@mancelot.app">lorentz@mancelot.app</a><br>
-                      <a href=""><!--010-TODO TODO--></a>
-                    </div>
-
-                    <div class="social_list">
-                      <a href="https://www.instagram.com/mancelot.app/" target="_blank"><div class="social_insta"></div></a>
-                      <a href="https://www.facebook.com/Mancelot-2227031900720984/" target="_blank"><div class="social_fb"></div></a>
-                    </div>
-                </div>
-            </section>
-        </footer>
-
-    </div> {# container end #}
+<section id="wat-en-wie" class="section clearfix back_grey">
+  <div class="inner-section">
+    <h1 class="center_txt">Wat en wie is Mancelot?</h1>
+    <p>Mancelot is een stichting (KvK: {{ mancelot_kvk }}, BTW: {{ mancelot_btw }}), wij hebben geen winstoogmerk, onze winst steken we in groei en geven we door aan klanten om prijzen laag te houden.</p>
+    <p>De data (ook labels en teksten) om kleding in de Mancelot app te tonen is afkomstig van <a href="https://www.projectcece.nl">Project Cece</a>. Uiteraard geven we daarom een klein deel van onze inkomsten door aan hen. Wij hebben geen commerciële banden met andere partijen. Ook Project CeCe heeft geen aandelen of invloed op onze stichting.</p>
+    <p>Mancelot bestaat uit 5 man (4 devs) en is opgericht door 2 vrienden: Roman Markovski en Lorentz Stout. Beiden dertigers hebben jonge kinderen en een eigen bedrijf en wilden iets doen om de wereld van morgen eerlijker te maken en (kinderen van) kleding- arbeiders ook een kans op een mooie toekomst te geven. </p>
+  </div>
+  <div class="roman"></div>
+  <div class="lorentz"></div>
+</section>
 {% endblock content %}
+
+{% block bottomscripts %}{{ block.super }}
+    <script type="text/javascript" src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/base.js' %}"></script>
+{% endblock bottomscripts %}

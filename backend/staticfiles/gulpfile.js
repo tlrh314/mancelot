@@ -35,6 +35,12 @@ gulp.task('vendor', function(cb) {
     ])
     .pipe(gulp.dest('./vendor/cookieconsent'))
 
+  // Sentry
+  gulp.src([
+      './node_modules/@sentry/browser/build/*',
+    ])
+    .pipe(gulp.dest('./vendor/sentry'))
+
   cb();
 
 });
