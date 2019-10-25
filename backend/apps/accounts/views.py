@@ -1,5 +1,7 @@
-from django.http import JsonResponse
 from django.shortcuts import render
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
 from django.contrib.auth.decorators import login_required
 
 
@@ -11,7 +13,13 @@ def profile(request):
 def index(request):
     if request.method == "POST" and request.is_ajax():
         email = request.POST.get("email")
-        print("POST via AJAX on index /w email:", email)
+        subject = "Aanmelding Mancelot"
+        from_email = "info@mancelot.app"
+        text_content = "Welkom bij Mancelot! We laten van ons horen zodra de app online is."
+        html_content = render_to_string("accounts/signup.html")
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [email])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
         return JsonResponse({"email": email}, status=200)
 
     # Default (for GET requests)
