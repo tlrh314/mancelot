@@ -42,7 +42,7 @@ class CeceLabelFactory(factory.DjangoModelFactory):
         model = CeceLabel
         django_get_or_create = ("name",)
 
-    name = factory.LazyAttribute(lambda _: faker.name())
+    name = factory.LazyAttribute(lambda _: "TestLabel " + faker.name())
     info = factory.LazyAttribute(lambda _: faker.text())
 
 
@@ -60,7 +60,7 @@ class CategoryFactory(factory.DjangoModelFactory):
         model = Category
         django_get_or_create = ("name",)
 
-    name = factory.LazyAttribute(lambda _: faker.name())
+    name = factory.LazyAttribute(lambda _: "TestCategory " + faker.name())
     section = 0
 
     @factory.post_generation
@@ -86,7 +86,7 @@ class SubcategoryFactory(factory.DjangoModelFactory):
         model = Subcategory
         django_get_or_create = ("name",)
 
-    name = factory.LazyAttribute(lambda _: faker.name())
+    name = factory.LazyAttribute(lambda _: "TestSubcategory " + faker.name())
 
     # We do not want CategoryFactory.subcategories post_generation to add any
     # subcategories (which it does by default), but we cannot use the extracted
@@ -105,7 +105,7 @@ class PaymentOptionFactory(factory.DjangoModelFactory):
         model = PaymentOption
         django_get_or_create = ("name",)
 
-    name = factory.LazyAttribute(lambda _: faker.name())
+    name = factory.LazyAttribute(lambda _: "TestPaymentOption " + faker.name())
     logo = "/static/img/test/test_logo.png"
 
 
@@ -114,7 +114,7 @@ class StoreFactory(factory.DjangoModelFactory):
         model = Store
         django_get_or_create = ("name",)
 
-    name = factory.LazyAttribute(lambda _: faker.company())
+    name = factory.LazyAttribute(lambda _: "TestStore " + faker.company())
     info = factory.LazyAttribute(lambda _:
         faker.text(max_nb_chars=faker.random_int(min=42, max=1337))
     )
@@ -155,7 +155,7 @@ class BrandFactory(factory.DjangoModelFactory):
         model = Brand
         django_get_or_create = ("name",)
 
-    name = factory.LazyAttribute(lambda _: faker.company())
+    name = factory.LazyAttribute(lambda _: "TestBrand " + faker.company())
     info = factory.LazyAttribute(lambda _:
         faker.text(max_nb_chars=faker.random_int(min=42, max=1337))
     )
@@ -210,7 +210,7 @@ class SizeFactory(factory.DjangoModelFactory):
         django_get_or_create = ("name",)
 
     name = factory.LazyAttribute(lambda _:
-        SIZES[faker.random_int(min=0, max=len(SIZES)-1)]
+        "TestSize " + SIZES[faker.random_int(min=0, max=len(SIZES)-1)]
     )
 
 class ColorFactory(factory.DjangoModelFactory):
@@ -219,7 +219,7 @@ class ColorFactory(factory.DjangoModelFactory):
         django_get_or_create = ("name",)
 
     name = factory.LazyAttribute(lambda _:
-        COLORS[faker.random_int(min=0, max=len(COLORS)-1)]
+        "TestColor " + COLORS[faker.random_int(min=0, max=len(COLORS)-1)]
     )
 
 
@@ -228,7 +228,7 @@ class MaterialFactory(factory.DjangoModelFactory):
         model = Material
         django_get_or_create = ("name",)
 
-    name = factory.LazyAttribute(lambda _: faker.word())
+    name = factory.LazyAttribute(lambda _: "TestMaterial " + faker.word())
 
 
 class ProductFactory(factory.DjangoModelFactory):
@@ -236,7 +236,7 @@ class ProductFactory(factory.DjangoModelFactory):
         model = Product
         django_get_or_create = ("name",)
 
-    name = factory.LazyAttribute(lambda _: faker.name())
+    name = factory.LazyAttribute(lambda _: "TestProduct " + faker.name())
     info = factory.LazyAttribute(lambda _:
         faker.text(max_nb_chars=faker.random_int(min=42, max=1337))
     )
