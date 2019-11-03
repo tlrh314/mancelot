@@ -448,11 +448,13 @@ class Product(models.Model):
 class FavoriteProduct(models.Model):
     product = models.ForeignKey(Product,
         verbose_name=_("product"),
+        related_name="favorites",
         on_delete=models.CASCADE
     )
     user = models.ForeignKey(
         get_user_model(),
         verbose_name=_("user"),
+        related_name="favorites",
         on_delete=models.CASCADE,
     )
     quantity = models.PositiveSmallIntegerField(_("quantity"))

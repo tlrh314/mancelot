@@ -1,7 +1,7 @@
 from django.urls import reverse
 from django.contrib import admin
+from django.db.models import Count
 from django.forms.widgets import Select
-from django.db.models import Count, Sum
 from django.db.models import BooleanField
 from django.utils.html import format_html
 from django.core.validators import validate_email
@@ -502,13 +502,24 @@ class ProductIsOnSaleFilter(admin.SimpleListFilter):
             return queryset
 
 
+class FavoriteProductAdminInlineForProductAdmin(admin.StackedInline):
+    fk_name = "product"
+    model = FavoriteProduct
+    fields = (
+        "product",
+        "user",
+        "quantity",
+    )
+    extra = 0
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
         "name", "_active",
         "get_brand", "get_brand_active", "get_store", "get_store_active",
         "get_categories", "get_sections",
-        "cece_id",
+        "cece_id", "get_favorites_count",
         "date_created", "date_updated",
     )
     list_filter = (
@@ -533,6 +544,7 @@ class ProductAdmin(admin.ModelAdmin):
     actions = (
         "activate", "deactivate",
     )
+    inlines = (FavoriteProductAdminInlineForProductAdmin,)
 
     fieldsets = (
         (None, {"fields": (
@@ -554,6 +566,8 @@ class ProductAdmin(admin.ModelAdmin):
             "brand", "store",
         ).prefetch_related(
             "categories", "subcategories", "colors", "sizes",
+        ).annotate(
+            favorites_count=Count("favorites")
         )
 
     def _active(self, obj):
@@ -624,6 +638,11 @@ class ProductAdmin(admin.ModelAdmin):
         return format_html("<br>".join( c.get_section_display() for c in obj.categories.all() ))
     get_sections.short_description = _("Sections")
     get_sections.admin_order_field = "categories__section"
+
+    def get_favorites_count(self, obj):
+        return obj.favorites_count
+    get_favorites_count.short_description = _("<3")
+    get_favorites_count.admin_order_field = "favorites_count"
 
     def activate(self, request, queryset):
         for instance in queryset:
