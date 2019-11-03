@@ -3,6 +3,7 @@ import factory
 from faker import Factory
 from django.conf import settings
 from django_countries import countries
+from django.contrib.auth import get_user_model
 
 from catalogue.models import (
     CeceLabel,
@@ -15,7 +16,8 @@ from catalogue.models import (
     Size,
     Color,
     Material,
-    Product
+    Product,
+    FavoriteProduct,
 )
 from catalogue.utils import generate_thumbnail
 
@@ -410,3 +412,12 @@ class ProductFactory(factory.DjangoModelFactory):
         all_colors_randomly_ordered = Color.objects.order_by("?")
         for j in range(number_of_colors_to_add):
             self.colors.add(all_colors_randomly_ordered[j])
+
+
+class FavoriteProductFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = FavoriteProduct
+
+    product = factory.LazyAttribute(lambda _: Product.objects.order_by("?").first())
+    user = factory.LazyAttribute(lambda _: get_user_model().objects.order_by("?").first())
+    quantity = factory.LazyAttribute(lambda _: faker.random_int(min=0, max=25))

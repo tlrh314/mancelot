@@ -19,7 +19,8 @@ from catalogue.models import (
     Size,
     Color,
     Material,
-    Product
+    Product,
+    FavoriteProduct,
 )
 from catalogue.filters import ChoiceDropdownFilter
 from catalogue.filters import RelatedDropdownFilter
@@ -650,3 +651,36 @@ class ProductAdmin(admin.ModelAdmin):
             except KeyError:
                 pass
         return s
+
+
+@admin.register(FavoriteProduct)
+class FavoriteProductAdmin(admin.ModelAdmin):
+    list_display = ("product", "user", "quantity")
+    search_fields = (
+        "product__cece_id",
+        "product__name",
+        "product__brand__name",
+        "product__store__name",
+        "user__email", "user__full_name"
+    )
+    ordering = ("user__id", "product__name")
+    readonly_fields = ("date_created", "date_updated", "last_updated_by",)
+
+    fieldsets = (
+        (None, {"fields": ("product", "user", "quantity")}),
+        (_("Meta"), {
+            "classes": ("collapse",),
+            "fields": ("date_created", "date_updated", "last_updated_by")
+        }),
+    )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related(
+            "user", "product",
+        ).prefetch_related(
+            "product__brand", "product__store",
+        )
+
+    def save_model(self, request, obj, form, change):
+        obj.last_updated_by = request.user
+        obj.save()

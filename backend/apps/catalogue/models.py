@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.conf import settings
 from django.utils.text import slugify
+from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 
 from jsonfield import JSONField
@@ -442,3 +443,31 @@ class Product(models.Model):
     # def get_absolute_url(self):
     #     # TODO: reverse the REST endpoint?
     #     return reverse("catalogue:todo", args=[self.pk])
+
+
+class FavoriteProduct(models.Model):
+    product = models.ForeignKey(Product,
+        verbose_name=_("product"),
+        on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        get_user_model(),
+        verbose_name=_("user"),
+        on_delete=models.CASCADE,
+    )
+    quantity = models.PositiveSmallIntegerField(_("quantity"))
+
+    date_created = models.DateTimeField(_("date created"), auto_now_add=True)
+    date_updated = models.DateTimeField(_("date updated"), auto_now=True)
+    last_updated_by = models.ForeignKey("accounts.UserModel",
+        on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="has_changed_favorite",
+        verbose_name=_("last updated by"),
+    )
+
+    class Meta:
+        verbose_name = _("FavoriteProduct")
+        verbose_name_plural = _("FavoriteProducts")
+
+    def __str__(self):
+        return "Product {0} for User: '{1}'".format(self.product.cece_id, self.user)
