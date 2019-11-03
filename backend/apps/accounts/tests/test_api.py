@@ -15,13 +15,15 @@ from catalogue.models import (
     Store,
     Brand,
     Product,
+    FavoriteProduct,
 )
 from catalogue.factories import (
     StoreFactory,
     BrandFactory,
     ProductFactory,
+    FavoriteProductFactory,
 )
-from catalogue.serializers import ProductListSerializer
+from accounts.serializers import UserFavoriteProductListSerializer
 
 
 class UserModelViewSetTest(APITestCase):
@@ -317,15 +319,15 @@ class UserModelViewSetTest(APITestCase):
         )
 
     def test_get_favorites(self):
-        for product in Product.objects.all()[0:5]:
-            self.user.favorites.add(product)
+        for product in Product.objects.order_by("?")[0:5]:
+            fav = FavoriteProductFactory(product=product, user=self.user)
         self.assertEqual(self.user.favorites.count(), 5)
         response = self.client.get(reverse("usermodel-favorites", args=["me"]),
             HTTP_AUTHORIZATION=self.usertoken
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.user.favorites.count(), 5)
-        self.assertEqual(response.data, ProductListSerializer(self.user.favorites.all(), many=True).data)
+        self.assertEqual(response.data, UserFavoriteProductListSerializer(self.user.favorites.all(), many=True).data)
 
     def test_post_favorites(self):
         response = self.client.post(reverse("usermodel-favorites", args=["me"]),
@@ -345,16 +347,17 @@ class UserModelViewSetTest(APITestCase):
         with self.subTest("Product exists"):
             response = self.client.patch(
                 reverse("usermodel-favorites", args=["me"]),
-                {"product_id": product.id},
+                {"product_id": product.id, "quantity": 3},
                 HTTP_AUTHORIZATION=self.usertoken
             )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.assertEqual(response.data["status"], "Favorite added")
             self.assertEqual(self.user.favorites.count(), 1)
+            self.assertEqual(self.user.favorites.first().quantity, 3)
         with self.subTest("Product does not exist"):
             response = self.client.patch(
                 reverse("usermodel-favorites", args=["me"]),
-                {"product_id": -1},
+                {"product_id": -1, "quantity": 3},
                 HTTP_AUTHORIZATION=self.usertoken
             )
             self.assertEqual(response.data["status"], "Product does not exist")
@@ -362,22 +365,25 @@ class UserModelViewSetTest(APITestCase):
         with self.subTest("Incorrect Field"):
             response = self.client.patch(
                 reverse("usermodel-favorites", args=["me"]),
-                {"product": -1},
+                {"product": -1, "quantity": 3},
                 HTTP_AUTHORIZATION=self.usertoken
             )
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         with self.subTest("Incorrect Type in Field"):
             response = self.client.patch(
                 reverse("usermodel-favorites", args=["me"]),
-                {"product": "sjenkie"},
+                {"product": "sjenkie", "quantity": 3},
                 HTTP_AUTHORIZATION=self.usertoken
             )
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_delete_favorite(self):
-        product = Product.objects.first()
-        self.user.favorites.add(product)
+        product = Product.objects.order_by("?").first()
+        fav = FavoriteProduct.objects.create(
+            product=product, user=self.user, quantity=3
+        )
         self.assertEqual(self.user.favorites.count(), 1)
+        self.assertEqual(self.user.favorites.first().quantity, 3)
         with self.subTest("Product exists"):
             response = self.client.delete(
                 reverse("usermodel-favorites", args=["me"]),

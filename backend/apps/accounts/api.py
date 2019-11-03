@@ -9,11 +9,15 @@ from rest_framework.exceptions import NotAuthenticated
 # from mollie.api.client import Client as MollieClient
 
 from catalogue.models import Product
+from catalogue.models import FavoriteProduct
 from accounts.models import UserModel
 from accounts.serializers import UserModelSerializer
-from accounts.serializers import UserFavoriteSerializer
 from accounts.permissions import IsAdminUserOrSelf
-from catalogue.serializers import ProductListSerializer
+from accounts.serializers import (
+    UserFavoriteProductListSerializer,
+    UserFavoritePatchSerializer,
+    UserFavoriteDeleteSerializer,
+)
 
 
 class UserModelViewSet(ModelViewSet):
@@ -21,7 +25,7 @@ class UserModelViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == "favorites":
-            return UserFavoriteSerializer
+            return UserFavoriteProductListSerializer
         return UserModelSerializer
 
     def get_permissions(self):
@@ -60,34 +64,67 @@ class UserModelViewSet(ModelViewSet):
         user = self.get_object()
 
         if self.request.method == "GET":
-            return Response(ProductListSerializer(user.favorites.all(), many=True).data)
+            return Response(UserFavoriteProductListSerializer([
+                fav for fav in user.favorites.all()
+            ], many=True).data)
 
         if self.request.method == "PATCH":
-            serializer = UserFavoriteSerializer(data=request.data)
+            serializer = UserFavoritePatchSerializer(data=request.data)
             if serializer.is_valid():
                 product_id = serializer.data["product_id"]
+                quantity = serializer.data["quantity"]
+
                 try:
                     product = Product.objects.get(id=product_id)
-                    user.favorites.add(product)
                 except Product.DoesNotExist:
                     return Response({"status": "Product does not exist"},
                         status=status.HTTP_400_BAD_REQUEST)
-                return Response({"status": "Favorite added"}, status=status.HTTP_200_OK)
+
+                fav = FavoriteProduct.objects.filter(
+                    product=product, user=user
+                ).first()
+                if fav:
+                    if quantity is 0:
+                        fav.delete()
+                        return Response({"status": "Favorite deleted (b/c quantity is 0)"},
+                            status=status.HTTP_200_OK)
+                    else:
+                        was = fav.quantity
+                        fav.quantity = quantity
+                        fav.save()
+                        return Response({"status": "Favorite quantity updated from {0} to {1}".format(
+                            was, quantity)}, status=status.HTTP_200_OK)
+                else:
+                    fav = FavoriteProduct.objects.create(
+                        product=product, user=user, quantity=quantity
+                    )
+                    user.favorites.add(fav)
+                    return Response({"status": "Favorite added"}, status=status.HTTP_200_OK)
             else:
                 return Response(serializer.errors,
                     status=status.HTTP_400_BAD_REQUEST)
 
         if self.request.method == "DELETE":
-            serializer = UserFavoriteSerializer(data=request.data)
+            serializer = UserFavoriteDeleteSerializer(data=request.data)
             if serializer.is_valid():
                 product_id = serializer.data["product_id"]
+
                 try:
                     product = Product.objects.get(id=product_id)
-                    user.favorites.remove(product)
                 except Product.DoesNotExist:
                     return Response({"status": "Product does not exist"},
                         status=status.HTTP_400_BAD_REQUEST)
-                return Response({"status": "Favorite deleted"}, status=status.HTTP_200_OK)
+
+                fav = FavoriteProduct.objects.filter(
+                    product=product, user=user
+                ).first()
+                if fav:
+                    fav.delete()
+                    return Response({"status": "Favorite deleted"},
+                        status=status.HTTP_200_OK)
+                else:
+                    return Response({"status": "Favorite does not exist"},
+                        status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response(serializer.errors,
                     status=status.HTTP_400_BAD_REQUEST)

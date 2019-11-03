@@ -3,6 +3,7 @@ from rest_framework import serializers
 from django_countries.serializers import CountryFieldMixin
 
 from accounts.models import UserModel
+from catalogue.serializers import ProductListSerializer
 
 
 class UserModelSerializer(CountryFieldMixin, serializers.ModelSerializer):
@@ -21,7 +22,7 @@ class UserModelSerializer(CountryFieldMixin, serializers.ModelSerializer):
     class Meta:
         model = UserModel
         fields = (
-            "email", "full_name", "password",
+            "id", "email", "full_name", "password",
             "address", "zip_code", "country",
             "balance", "monthly_top_up", "payment_preference"
         )
@@ -57,5 +58,15 @@ class UserModelSerializer(CountryFieldMixin, serializers.ModelSerializer):
         return instance
 
 
-class UserFavoriteSerializer(serializers.Serializer):
+class UserFavoriteProductListSerializer(serializers.Serializer):
+    product = ProductListSerializer()
+    quantity = serializers.IntegerField()
+
+
+class UserFavoritePatchSerializer(serializers.Serializer):
+    product_id = serializers.IntegerField()
+    quantity = serializers.IntegerField()
+
+
+class UserFavoriteDeleteSerializer(serializers.Serializer):
     product_id = serializers.IntegerField()
