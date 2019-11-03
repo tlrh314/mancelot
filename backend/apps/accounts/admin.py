@@ -20,7 +20,7 @@ class UserModelAdmin(UserAdmin):
     search_fields = ("email", "full_name")
     ordering = ("-date_created",)
     readonly_fields = ("last_login", "date_created", "last_updated_by",)
-    filter_horizontal = ("groups", "user_permissions", "favorites",)
+    filter_horizontal = ("groups", "user_permissions",)
     actions = ("send_password_reset",)
 
     fieldsets = (
@@ -30,7 +30,7 @@ class UserModelAdmin(UserAdmin):
         }),
         (_("Permissions"), {"fields": ("is_active", "is_staff", "is_superuser",
             "groups", "user_permissions")}),
-        (_("Content interaction"), {"fields": ("favorites",)}),
+        # (_("Content interaction"), {"fields": ("get_favorites",)}),
         (_("Subscription"), {"fields": ("balance", "monthly_top_up", "payment_preference")}),
         (_("Meta"), {
             "classes": ("collapse",),

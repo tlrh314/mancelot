@@ -23,10 +23,6 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     city = models.CharField(_("city"), max_length=42, null=True, blank=True)
     country = CountryField(_("country"), default="NL", null=True, blank=True)
 
-    # Support for UserModel interactions with items in our catalogue
-    favorites = models.ManyToManyField("catalogue.Product", verbose_name=_("favorites"),
-        related_name="saved_by_users", blank=True)
-
     # Support for monthly subscriptions
     PAYMENT_OPTIONS = (
        (0, _("Bank Transfer")),
