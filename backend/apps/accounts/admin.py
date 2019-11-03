@@ -46,7 +46,7 @@ class UserModelAdmin(UserAdmin):
         }),
         (_("Permissions"), {"fields": ("is_active", "is_staff", "is_superuser",
             "groups", "user_permissions")}),
-        (_("Subscription"), {"fields": ("balance", "monthly_top_up", "payment_preference")}),
+        (_("Subscription"), {"fields": ("balance", "monthly_top_up", "payment_preference", "iban",)}),
         (_("Meta"), {
             "classes": ("collapse",),
             "fields": ("last_login", "date_created", "last_updated_by")

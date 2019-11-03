@@ -25,6 +25,7 @@ class UserModelFactory(factory.DjangoModelFactory):
     # country = factory.LazyAttribute(lambda _:
     #     list(countries)[faker.random_int(min=0, max=len(countries)-1)][0]  # ('NL', 'Nederland')
     # )
+    iban = factory.LazyAttribute(lambda _: faker.iban())
 
     is_active = True
     is_staff = False

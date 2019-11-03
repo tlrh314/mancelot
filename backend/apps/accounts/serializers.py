@@ -24,7 +24,7 @@ class UserModelSerializer(CountryFieldMixin, serializers.ModelSerializer):
         fields = (
             "id", "email", "full_name", "password",
             "address", "zip_code", "country",
-            "balance", "monthly_top_up", "payment_preference"
+            "balance", "monthly_top_up", "payment_preference", "iban",
         )
         read_only_fields = ("balance",)
 

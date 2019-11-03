@@ -29,6 +29,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
        (1, _("Ideal")),
        (2, _("Paypal")),
     )
+    iban = models.CharField(_("iban"), max_length=42, null=True, blank=True)
     balance = MoneyField(_("balance"), null=True, blank=True,
         max_digits=19, decimal_places=4, default_currency="EUR",
     )
