@@ -36,7 +36,7 @@ fi
 echo "\nGenerating migrations, then migrating my default database"
 python manage.py migrate
 python manage.py compilemessages
-python manage.py collectstatic --noinput
+python manage.py collectstatic --noinput -i node_modules -i gulpfile.js -i package.json -i package-lock.json
 
 # To kill 404
 sed -i -e 's/\/\*# sourceMappingURL=bootstrap.min.css.map \*\///g' \
