@@ -5,6 +5,7 @@ from rest_framework import (
     filters,
     generics,
     viewsets,
+    pagination,
     permissions,
 )
 from rest_framework.response import Response
@@ -141,6 +142,8 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         "brand", "brand__labels", "brand__certificates", "store",
         "colors", "sizes",  # "materials",
     ]
+    pagination.PageNumberPagination.max_page_size = 1000
+    pagination.PageNumberPagination.page_size_query_param = "page_size"
 
     def get_serializer_class(self):
         if self.action == "list":
