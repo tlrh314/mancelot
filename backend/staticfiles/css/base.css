@@ -56,7 +56,7 @@ img  { 	max-width:100%; }
 .back_blue  h1, .back_blue h2 { color:#fff; }
 
 
-.btndark,.btnlight,.btnwhite, .btnorange, .btngreen 	{	text-align:center; width:auto;	padding:16px; text-decoration:none!important; transition: all .5 ease-in-out; -moz-transition: all .5s ease-in-out; -webkit-transition: all .5s ease-in-out;	 }
+.btndark,.btnlight,.btnwhite, .btnorange, .btngreen 	{	text-align:center; width:auto;	padding:16px; text-decoration:none!important; transition: all .5 ease-in-out; -moz-transition: all .5s ease-in-out; -webkit-transition: all .5s ease-in-out; cursor: pointer;	 }
 .btndark            { color:#fff; background:#1e5476; display:inline-block; min-width: 150px; font-size: 140%	}
 .btndark:hover, .btndark.active { background:#172b37; }
 .btndark.active a { color:#1e5476; }

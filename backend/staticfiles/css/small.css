@@ -26,7 +26,7 @@ h2   {  color:#1e5476; font-size:18px; font-weight:800; margin:0px 0px 0px 0px;}
   #intro-deel2 h1 { padding-top:120px; }
   #intro-deel2 p { font-size: 120%; margin-bottom:1.4em; }
   #intro-deel2 .input_mail{padding:19px; margin-top:0px; float:none; width: 320px; max-width: 90%; margin-right:0px; display:inline-block; 	 }
-  #intro-deel2 .btndark { float:none; clear: both;margin:10px auto; display:block; width: 120px; min-width: 120px;}
+  #intro-deel2 .btndark { float:none; clear: both;margin:10px auto; display:block; width: 120px; min-width: 120px; cursor: pointer;}
   #intro-deel2 .illustration {
     position:relative; left:0px; top:20px;
     background-image:url('../img/2-Help.png'); background-repeat: no-repeat; background-size: contain; background-position: center;
