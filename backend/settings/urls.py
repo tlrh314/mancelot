@@ -20,13 +20,9 @@ from catalogue.urls import router as catalogue_router
 @user_passes_test(lambda u: u.is_staff and u.is_superuser)
 def flower_view(request, path):
     '''passes the request back up to nginx for internal routing'''
-    import logging; logger = logging.getLogger("console")
-    logger.error("The function argument is {0}".format(path))
     response = HttpResponse()
     path = request.get_full_path()
-    logger.error("The bloody path was: {0}".format(path))
     path = path.replace("flower", "flower-internal", 1)
-    logger.error("The bloody path is: {0}".format(path))
     response["X-Accel-Redirect"] = path
     return response
 
