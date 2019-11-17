@@ -42,7 +42,7 @@ nginx-log:  ## Continously monitor log of nginx
 
 
 django:  ## Build container for Django (backend)
-	docker build -f backend/Dockerfile -t mancelot-django backend
+	docker build -f backend/Dockerfile -t mancelot_django backend
 
 django-start:  ## Start Django
 	docker-compose -p mancelot -f backend/docker-compose.yml up --build -d
@@ -85,7 +85,7 @@ django-sqldump:  ## sql dump of the database (e.g. for backups)
 dev-db-update:  ## download and load sql dump
 	@if [[ $$HOSTNAME == "ChezTimo15"* ]]; then  \
 		TODAY=$$(date "+%Y%m%d"); \
-		rsync -auHxv --progress mancelot:~/DevOps/data/sqldumps/ $${MANCELOT_DATA_PATH-./data/}sqldumps/; \
+		rsync -auHxv --progress mancelot:~/production/data/sqldumps/ $${MANCELOT_DATA_PATH-./data/}sqldumps/; \
 		\
 		DB_HOST=$$(docker exec mancelot_django_1 python manage.py shell -c \
 			"from django.conf import settings; print(settings.DATABASES['default']['HOST'])"); \
@@ -102,6 +102,25 @@ dev-db-update:  ## download and load sql dump
 	else  \
 		echo "For safety not implemented for hostname on $$HOSTNAME"; \
 	fi
+
+
+staging:  ## Build container for Django/staging (backend)
+	DOCKERIMAGE=mancelot_staging
+	docker build -f ../staging/backend/Dockerfile -t mancelot_staging ../staging/backend
+
+staging-start:  ## Start Django/staging
+	docker-compose -p mancelot -f ../staging/backend/docker-compose.yml up --build -d
+
+staging-stop:  ## Stop Django/staging
+	docker-compose -p mancelot -f ../staging/backend/docker-compose.yml stop django celery celery_beat celery_flower
+	docker-compose -p mancelot -f ../staging/backend/docker-compose.yml rm -f django celery celery_beat celery_flower
+
+staging-restart:  ## Restart Django
+	git pull
+	make staging
+	make staging-stop
+	make staging-start
+	docker image prune -f
 
 mattermost:  ## Build container for mattermost
 	docker-compose -f mattermost/docker-compose.yml build

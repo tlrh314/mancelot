@@ -1,6 +1,7 @@
 version: "3.7"
 
 x-defaults: &defaults
+  image: ${DOCKERIMAGE-mancelot_django}
   environment:
     DJANGO_SETTINGS_MODULE: settings
     DJANGO_ENV_FILE: .env
@@ -31,7 +32,6 @@ services:
 
   django:
     <<: *defaults
-    image: mancelot-django
     depends_on:
       - "redis"
       - "mariadb"
@@ -40,7 +40,6 @@ services:
   # Celery is a Distributed Task Queue
   celery:
     <<: *defaults
-    image: mancelot-django
     depends_on:
       - "redis"
       - "celery_beat"
@@ -50,7 +49,6 @@ services:
   # are then executed by available worker nodes in the cluster.
   celery_beat:
     <<: *defaults
-    image: mancelot-django
     entrypoint: "celery -A settings beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
     healthcheck:
       disable: true
@@ -58,7 +56,6 @@ services:
   # Flower to monitor Celery
   celery_flower:
     <<: *defaults
-    image: mancelot-django
     volumes:
       - .:/mancelot
       - ./settings/.env:/mancelot/settings/.env:ro
