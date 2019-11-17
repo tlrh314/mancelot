@@ -80,13 +80,13 @@ class BrandSerializer(serializers.ModelSerializer):
 class SizeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Size
-        fields = ("id", "name", "slug")
+        fields = ("id", "name")
 
 
 class ColorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Color
-        fields = ("id", "name", "slug")
+        fields = ("id", "name")
 
 
 class MaterialSerializer(serializers.ModelSerializer):
