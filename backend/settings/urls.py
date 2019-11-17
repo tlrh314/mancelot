@@ -7,6 +7,7 @@ from django.conf.urls import include
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import user_passes_test
 
 from filebrowser.sites import site
@@ -18,6 +19,7 @@ from catalogue.urls import router as catalogue_router
 
 
 @user_passes_test(lambda u: u.is_staff and u.is_superuser)
+@csrf_exempt
 def flower_view(request, path):
     '''passes the request back up to nginx for internal routing'''
     response = HttpResponse()

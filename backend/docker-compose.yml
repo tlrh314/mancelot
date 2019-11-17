@@ -59,7 +59,11 @@ services:
   celery_flower:
     <<: *defaults
     image: mancelot-django
-    entrypoint: "flower -A settings --port=5555 --logging=debug --url_prefix=flower"
+    volumes:
+      - .:/mancelot
+      - ./settings/.env:/mancelot/settings/.env:ro
+      - ./flower.js:/usr/local/lib/python3.7/site-packages/flower/static/js/flower.js
+    entrypoint: "flower -A settings --port=5555 --logging=debug"
     healthcheck:
       disable: true
 

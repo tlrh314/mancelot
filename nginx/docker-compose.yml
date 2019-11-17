@@ -12,7 +12,6 @@ services:
       - ${MANCELOT_DATA_PATH-../data/}certbot/www:/var/www/certbot
       - ${MANCELOT_DATA_PATH-../data/}django/media:/var/www/mancelot/media
       - ${MANCELOT_DATA_PATH-../data/}django/static:/var/www/mancelot/static
-      - ${MANCELOT_DATA_PATH-../data/}flower:/var/www/flower
       - ../frontend/build:/var/www/mancelot/root
     ports:
       - "80:80"

@@ -185,6 +185,7 @@ staticfiles/node_modules
 ### Auto-generated items in $HOME
 .ipython/profile_default
 .bash_history
+.config
 .mysql_history
 .cache
 .viminfo
