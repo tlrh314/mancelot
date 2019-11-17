@@ -46,7 +46,7 @@ class SubcategorySerializer(serializers.ModelSerializer):
 class PaymentOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentOption
-        fields = ("id", "name", "slug", "logo")
+        fields = ("id", "name", "logo")
 
 
 class StoreSerializer(serializers.ModelSerializer):
