@@ -27,6 +27,7 @@ def set_meta_tags(request):
         "og_image": og_image,
         "og_title": og_title,
         "twitter_card": twitter_card,
+        "twitter_site": twitter_site,
         "twitter_title": twitter_title,
         "twitter_description": twitter_description,
         "twitter_image": twitter_image,
