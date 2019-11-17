@@ -1,6 +1,6 @@
 FROM nginx:1.17-alpine
 
-LABEL maintainer="Timo Halbesma <timo@mancelot.nl>"
+LABEL maintainer="Timo Halbesma <timo@mancelot.app>"
 
 # Remove the default configuration files
 RUN set -ex \
@@ -13,4 +13,4 @@ COPY conf/*.conf /etc/nginx/conf.d/
 COPY apps/*.conf /etc/nginx/apps/
 
 HEALTHCHECK --interval=2m --timeout=3s \
-    CMD curl -I -k --fail -H "Host: mancelot.nl" -k https://localhost || exit 1
+    CMD curl -I -k --fail -H "Host: mancelot.app" -k https://localhost || exit 1

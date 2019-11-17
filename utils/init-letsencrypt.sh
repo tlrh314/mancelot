@@ -91,6 +91,7 @@ declare -a DOMAINS=(
     "mancelot.app"
         "api.mancelot.app"
         "mm.mancelot.app"
+        "staging.mancelot.app"
     "mancelot.be"
     "mancelot.com"
     "mancelot.co.uk"
@@ -108,7 +109,7 @@ do
         # This means that at least our self-signed certificate is there
         echo "  Success: privkey.pem exists. Could be self-signed or Let's Encrypt."
         if [ "$PRODUCTION" = false ]; then
-        echo -e "  This is production. We're done here.\n"
+        echo -e "  This is development. We're done here.\n"
             continue
         fi
     fi
@@ -146,9 +147,6 @@ do
         DOMAIN_ARGS="-d ${DOMAIN}"
     else
         DOMAIN_ARGS="-d ${DOMAIN} -d www.${DOMAIN}"
-        if [[ $DOMAIN =~ "mancelot.nl" ]]; then
-            DOMAIN_ARGS="${DOMAIN_ARGS} -d staging.${DOMAIN}"
-        fi
     fi
 
     if [ "$PRODUCTION" = false ]; then
