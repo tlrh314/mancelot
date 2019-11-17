@@ -113,7 +113,7 @@ class SizeViewSet(viewsets.ReadOnlyModelViewSet):
 
 class ColorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Color.objects.order_by("id")
-    serializer_class = SizeSerializer
+    serializer_class = ColorSerializer
     permission_classes = [permissions.IsAuthenticated,]
 
 
