@@ -103,6 +103,23 @@ dev-db-update:  ## download and load sql dump
 		echo "For safety not implemented for hostname on $$HOSTNAME"; \
 	fi
 
+mattermost:  ## Build container for mattermost
+	docker-compose -f mattermost/docker-compose.yml build
+
+mattermost-start:  ## Start mattermost
+	docker-compose -f mattermost/docker-compose.yml up --build -d
+
+mattermost-stop:  ## Stop mattermost
+	docker-compose -f mattermost/docker-compose.yml stop app db
+	docker-compose -f mattermost/docker-compose.yml rm -f app db
+
+mattermost-restart:  ## Restart mattermost
+	git pull
+	make mattermost
+	make mattermost-stop
+	make mattermost-start
+	docker image prune -f
+
 
 preact:  ## Build Preact (frontend)
 	@cd frontend; \
