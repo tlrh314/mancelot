@@ -13,7 +13,7 @@ def set_meta_tags(request):
     og_image = page_image
     og_title = page_title
     twitter_card = ""
-    twitter_site = "mancelot.app"  # Twitter Handle!
+    twitter_site = "@MancelotApp"  # Twitter Handle!
     twitter_title = page_title
     twitter_description = page_description
     twitter_image = page_image
