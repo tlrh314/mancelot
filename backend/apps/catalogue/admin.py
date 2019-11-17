@@ -47,7 +47,7 @@ class CeceLabelAdmin(admin.ModelAdmin):
         return super().get_queryset(request)
 
     def get_count(self, obj):
-        return Product.objects.filter(brand__in=obj.brands.all()).count()
+        return Product.objects.filter(brand__in=obj.brands.all()).distinct().count()
     get_count.short_description = _("# Products")
     # get_count.admin_order_field = "count"
 
@@ -77,7 +77,7 @@ class CertificateAdmin(admin.ModelAdmin):
         return super().get_queryset(request)
 
     def get_count(self, obj):
-        return Product.objects.filter(brand__in=obj.brands.all()).count()
+        return Product.objects.filter(brand__in=obj.brands.all()).distinct().count()
     get_count.short_description = _("# Products")
     # get_count.admin_order_field = "count"
 
@@ -495,9 +495,9 @@ class ProductIsOnSaleFilter(admin.SimpleListFilter):
 
     def queryset(self, request, queryset):
         if self.value() == "True":
-            return queryset.filter(from_price__isnull=False)
+            return queryset.filter(from_price__isnull=False).distinct()
         elif self.value() == "False":
-            return queryset.filter(from_price__isnull=True)
+            return queryset.filter(from_price__isnull=True).distinct()
         else:
             return queryset
 

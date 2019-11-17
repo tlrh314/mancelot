@@ -54,7 +54,7 @@ class CertificateViewSet(viewsets.ReadOnlyModelViewSet):
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.filter(active=True).prefetch_related(
-        "subcategories").order_by("name")
+        "subcategories").order_by("name").distinct()
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
@@ -65,7 +65,7 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
 
 class SubcategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Subcategory.objects.filter(active=True).select_related(
-        "category").order_by("name")
+        "category").order_by("name").distinct()
     serializer_class = SubcategorySerializer
     permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
@@ -82,7 +82,7 @@ class PaymentOptionViewSet(viewsets.ReadOnlyModelViewSet):
 
 class StoreViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Store.objects.filter(active=True).prefetch_related(
-        "payment_options").order_by("id")
+        "payment_options").order_by("id").distinct()
     serializer_class = StoreSerializer
     permission_classes = [permissions.IsAuthenticated,]
     filter_backends = [
@@ -95,7 +95,7 @@ class BrandViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Brand.objects.filter(active=True).order_by("id").prefetch_related(
         "labels",
         "certificates",
-    )
+    ).distinct()
 
     serializer_class = BrandSerializer
     permission_classes = [permissions.IsAuthenticated,]
@@ -132,7 +132,7 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     ).prefetch_related(
         "categories", "subcategories", "sizes", "colors",  # "materials",
         "brand__labels", "brand__certificates"
-    )
+    ).distinct()
     permission_classes = [permissions.IsAuthenticated,]  # 1 query to usermodel
     filter_backends = [
         DjangoFilterBackend,
