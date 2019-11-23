@@ -109,11 +109,11 @@ staging:  ## Build container for Django/staging (backend)
 	docker build -f ../staging/backend/Dockerfile -t mancelot_staging ../staging/backend
 
 staging-start:  ## Start Django/staging
-	docker-compose -p mancelot -f ../staging/backend/docker-compose.yml up --build -d
+	docker-compose -p staging -f ../staging/backend/docker-compose.yml up --build -d
 
 staging-stop:  ## Stop Django/staging
-	docker-compose -p mancelot -f ../staging/backend/docker-compose.yml stop django celery celery_beat celery_flower
-	docker-compose -p mancelot -f ../staging/backend/docker-compose.yml rm -f django celery celery_beat celery_flower
+	docker-compose -p staging -f ../staging/backend/docker-compose.yml stop django celery celery_beat celery_flower
+	docker-compose -p staging -f ../staging/backend/docker-compose.yml rm -f django celery celery_beat celery_flower
 
 staging-restart:  ## Restart Django
 	git pull
