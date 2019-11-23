@@ -15,8 +15,8 @@
 - `docker-compose up --build -d`
 
 ### Dependencies
-- Docker version 19.03.4, build 9013bf583a
-- docker-compose version 1.24.1, build 4667896b
+- Docker version 19.03.5, build 633a0ea838
+- docker-compose version 1.25.0, build 0a186604
 
 ## Mattermost
 - Fetched from: `https://github.com/mattermost/mattermost-docker`
