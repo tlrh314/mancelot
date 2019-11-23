@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
-from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
@@ -70,14 +71,22 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return "{0} ({1})".format(self.full_name, self.email)
 
-    def email_user(self, subject, message, from_email=settings.DEFAULT_FROM_EMAIL, **kwargs):
-        """ Sends an email to this User. Caution, from_email must contain domain
-            name in production! """
+    def email_user(self, subject, text_content, html_content,
+            from_email=settings.DEFAULT_FROM_EMAIL, **kwargs):
 
-        EmailMessage(
+        msg = EmailMultiAlternatives(
             subject=subject,
-            body=message,
+            body=text_content,
             from_email=from_email,
             to=[self.email],
             bcc=settings.ADMIN_BCC,
-        ).send(fail_silently=False)
+        )
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+
+    def send_welcome_email(self):
+        subject = "Welkom bij Mancelot"
+        text_content = "Welkom bij Mancelot!"
+        html_content = render_to_string("accounts/welcome.html")
+        self.email_user(subject, text_content, html_content)
+
