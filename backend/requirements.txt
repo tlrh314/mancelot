@@ -1,6 +1,6 @@
 celery==4.3.0
 coverage==5.0
-Django==2.2.8
+Django==3.0
 django-celery-beat==1.5.0
 django-celery-results==1.1.2
 django-contact-form==1.7
