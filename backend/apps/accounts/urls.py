@@ -9,6 +9,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from accounts.api import UserModelViewSet
+from accounts.views import tmp_signup_email  # TODO: remove
 
 router = routers.SimpleRouter()
 router.register("users", UserModelViewSet)
@@ -19,4 +20,5 @@ urlpatterns = [
     path("api/v1/auth/jwtoken/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/v1/auth/jwtoken/verify/", TokenVerifyView.as_view(), name="token_verify"),
     path("accounts/profile/", TemplateView.as_view(template_name="accounts/profile.html"), name="profile"),
+    path("accounts/signupemail/", tmp_signup_email, name="tmp_signup_email"),  # # TODO: remove
 ]

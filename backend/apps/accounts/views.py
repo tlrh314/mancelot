@@ -24,3 +24,9 @@ def index(request):
 
     # Default (for GET requests)
     return render(request, "index.html")
+
+
+def tmp_signup_email(request):  # TODO: remove
+    from django.contrib.auth import get_user_model
+    timo = get_user_model().objects.filter(email="timo@halbesma.com").first()
+    return render(request, "accounts/signup.html", {"user": timo})
