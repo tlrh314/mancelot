@@ -50,7 +50,7 @@ in the `BrowsableAPI` root.  Details can intuitively be explored there. NB, all
 ## **Django admin**
 - [https://www.mancelot.app/admin/](https://www.mancelot.app/admin/)
 
-## **Installation for development, e.g. using a virtualenv**
+## **Installation for development, e.g. using a virtualenv, optie 1**
 - Create virtualenvironment: `virtualenv venv`
 - Activate virtualenv: `source venv/bin/activate`
 
@@ -67,11 +67,14 @@ in the `BrowsableAPI` root.  Details can intuitively be explored there. NB, all
 - `python manage.py shell -c 'from django.contrib.sites.models import Site; Site.objects.all().delete(); Site.objects.create(id=1, name="localhost:8000", domain="localhost:8000")'`
 
 ## **Running with Docker**
+### Optie 2a
 - Build the image: `docker build -t mancelot_django .`
 
 - Run the built-in Django development server: `docker run --rm -it -v "$(pwd)":/mancelot -p 8000:1337 --name runserver mancelot_django bash -c "python manage.py runserver 0.0.0.0:1337"`
 - In a new terminal, one can attach to the `runserver` container in an interactive session: `docker exec -it runserver bash`
 - Website runs on http://localhost:8000 
+
+### Optie 2b
 - Or to run with nginx + uwsgi
   - in the `../nginx` folder: `docker-compose -p mancelot up --build -d nginx`
   - in this folder: `docker-compose -p mancelot up -d django` (or omit `django` to start all services, e.g. to develop tasks)
