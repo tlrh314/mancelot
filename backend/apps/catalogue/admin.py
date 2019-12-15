@@ -508,6 +508,7 @@ class FavoriteProductAdminInlineForProductAdmin(admin.StackedInline):
     fields = (
         "product",
         "user",
+        "size",
         "quantity",
     )
     extra = 0
@@ -674,7 +675,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(FavoriteProduct)
 class FavoriteProductAdmin(admin.ModelAdmin):
-    list_display = ("product", "user", "quantity")
+    list_display = ("product", "user", "size", "quantity")
     search_fields = (
         "product__cece_id",
         "product__name",
@@ -686,7 +687,7 @@ class FavoriteProductAdmin(admin.ModelAdmin):
     readonly_fields = ("date_created", "date_updated", "last_updated_by",)
 
     fieldsets = (
-        (None, {"fields": ("product", "user", "quantity")}),
+        (None, {"fields": ("product", "user", "size", "quantity")}),
         (_("Meta"), {
             "classes": ("collapse",),
             "fields": ("date_created", "date_updated", "last_updated_by")
