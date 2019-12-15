@@ -45,6 +45,7 @@ django:  ## Build container for Django (backend)
 	docker build -f backend/Dockerfile -t mancelot_django backend
 
 django-start:  ## Start Django
+	if [ -f backend/celerybeat.pid ]; then rm -f backend/celerybeat.pid; fi;
 	docker-compose -p mancelot -f backend/docker-compose.yml up --build -d
 
 django-stop:  ## Stop Django
