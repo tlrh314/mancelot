@@ -3,6 +3,7 @@ from rest_framework import serializers
 from django_countries.serializers import CountryFieldMixin
 
 from accounts.models import UserModel
+from catalogue.serializers import SizeSerializer
 from catalogue.serializers import ProductListSerializer
 
 
@@ -61,13 +62,18 @@ class UserModelSerializer(CountryFieldMixin, serializers.ModelSerializer):
 
 class UserFavoriteProductListSerializer(serializers.Serializer):
     product = ProductListSerializer()
+    size = SizeSerializer()
     quantity = serializers.IntegerField()
 
 
 class UserFavoritePatchSerializer(serializers.Serializer):
     product_id = serializers.IntegerField()
+    # TODO: Optional for MancelotAlpha0-9, but mandatory in later versions
+    size_id = serializers.IntegerField(required=False)
     quantity = serializers.IntegerField()
 
 
 class UserFavoriteDeleteSerializer(serializers.Serializer):
     product_id = serializers.IntegerField()
+    # TODO: Optional for MancelotAlpha0-9, but mandatory in later versions
+    size_id = serializers.IntegerField(required=False)

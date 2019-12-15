@@ -457,6 +457,12 @@ class FavoriteProduct(models.Model):
         related_name="favorites",
         on_delete=models.CASCADE,
     )
+    size = models.ForeignKey(Size,
+        verbose_name=_("size"),
+        related_name="favorites",
+        on_delete=models.SET_NULL,
+        null=True,  # size is optional for MancelotAlpha0-9, but mandatory in later versions
+    )
     quantity = models.PositiveSmallIntegerField(_("quantity"))
 
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)

@@ -12,12 +12,14 @@ from accounts.factories import (
     AdminFactory,
 )
 from catalogue.models import (
+    Size,
     Store,
     Brand,
     Product,
     FavoriteProduct,
 )
 from catalogue.factories import (
+    SizeFactory,
     StoreFactory,
     BrandFactory,
     ProductFactory,
@@ -28,7 +30,9 @@ from accounts.serializers import UserFavoriteProductListSerializer
 
 class UserModelViewSetTest(APITestCase):
     @classmethod
-    def setUpTestData(cls, nstores=1, nbrands=1, nproducts=5):
+    def setUpTestData(cls, nsizes=5, nstores=1, nbrands=1, nproducts=5):
+        if Size.objects.count() < nstores:
+            SizeFactory.create_batch(nsizes - Size.objects.count())
         if Store.objects.count() < nstores:
             StoreFactory.create_batch(nstores - Store.objects.count())
         if Brand.objects.count() < nbrands:
@@ -184,6 +188,9 @@ class UserModelViewSetTest(APITestCase):
         user = UserModel.objects.filter(email=self.post_data["email"]).first()
         self.assertIsNotNone(user)  # user should now exist
         for k, v in self.post_data.items():
+            if k == "id":
+                # id is None in post_data b/c factory create does not save, so instance has no id yet
+                continue
             if k == "password":  # b/c hashed
                 self.assertNotEqual(getattr(user, k), v); continue
             self.assertEqual(getattr(user, k), v)
@@ -267,6 +274,7 @@ class UserModelViewSetTest(APITestCase):
         # Now check that fields in testuser_to_change are equal to fields in put_data
         testuser_to_change = UserModel.objects.get(email=self.testuser_to_change.email)
         for k, v in self.put_data.items():
+            if k == "id":  continue  # b/c id is None in put_data
             if k == "password" or k == "country": continue
             self.assertEqual(getattr(testuser_to_change, k), v)
 
@@ -320,7 +328,10 @@ class UserModelViewSetTest(APITestCase):
 
     def test_get_favorites(self):
         for product in Product.objects.order_by("?")[0:5]:
-            fav = FavoriteProductFactory(product=product, user=self.user)
+            fav = FavoriteProductFactory(
+                product=product, user=self.user, size=product.sizes.order_by("?").first()
+
+            )
         self.assertEqual(self.user.favorites.count(), 5)
         response = self.client.get(reverse("usermodel-favorites", args=["me"]),
             HTTP_AUTHORIZATION=self.usertoken
@@ -343,8 +354,9 @@ class UserModelViewSetTest(APITestCase):
 
     def test_add_favorite(self):
         product = Product.objects.first()
+        size = product.sizes.order_by("?").first()
         self.assertEqual(self.user.favorites.count(), 0)
-        with self.subTest("Product exists"):
+        with self.subTest("Product exists MancelotAlpha0-9"):
             response = self.client.patch(
                 reverse("usermodel-favorites", args=["me"]),
                 {"product_id": product.id, "quantity": 3},
@@ -354,7 +366,17 @@ class UserModelViewSetTest(APITestCase):
             self.assertEqual(response.data["status"], "Favorite added")
             self.assertEqual(self.user.favorites.count(), 1)
             self.assertEqual(self.user.favorites.first().quantity, 3)
-        with self.subTest("Product does not exist"):
+        with self.subTest("Product exists post-MancelotAlpha0-9: size_id given"):
+            response = self.client.patch(
+                reverse("usermodel-favorites", args=["me"]),
+                {"product_id": product.id, "size_id": size.id, "quantity": 3},
+                HTTP_AUTHORIZATION=self.usertoken
+            )
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["status"], "Favorite added")
+            self.assertEqual(self.user.favorites.count(), 1)
+            self.assertEqual(self.user.favorites.first().quantity, 3)
+        with self.subTest("Product does not exist MancelotAlpha0-9"):
             response = self.client.patch(
                 reverse("usermodel-favorites", args=["me"]),
                 {"product_id": -1, "quantity": 3},
@@ -362,16 +384,26 @@ class UserModelViewSetTest(APITestCase):
             )
             self.assertEqual(response.data["status"], "Product does not exist")
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        with self.subTest("Incorrect Field"):
+        with self.subTest("Product does not exist post-MancelotAlpha0-9: size_id given"):
             response = self.client.patch(
                 reverse("usermodel-favorites", args=["me"]),
+                {"product_id": -1, "size_id": size.id, "quantity": 3},
+                HTTP_AUTHORIZATION=self.usertoken
+            )
+            self.assertEqual(response.data["status"], "Product does not exist")
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        with self.subTest("Incorrect Field MancelotAlpha0-9"):
+            response = self.client.patch(
+                reverse("usermodel-favorites", args=["me"]),
+                # TODO: add size_id once it is required
                 {"product": -1, "quantity": 3},
                 HTTP_AUTHORIZATION=self.usertoken
             )
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        with self.subTest("Incorrect Type in Field"):
+        with self.subTest("Incorrect Type in Field MancelotAlpha0-9"):
             response = self.client.patch(
                 reverse("usermodel-favorites", args=["me"]),
+                # TODO: add size_id  once it is required
                 {"product": "sjenkie", "quantity": 3},
                 HTTP_AUTHORIZATION=self.usertoken
             )

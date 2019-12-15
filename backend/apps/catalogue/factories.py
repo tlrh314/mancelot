@@ -389,7 +389,7 @@ class ProductFactory(factory.DjangoModelFactory):
         if Size.objects.count() < 25:
             SizeFactory.create_batch(25 - Size.objects.count())
 
-        number_of_sizes_to_add = faker.random_int(min=0, max=Size.objects.count()-1)
+        number_of_sizes_to_add = faker.random_int(min=1, max=Size.objects.count()-1)
         all_sizes_randomly_ordered = Size.objects.order_by("?")
         for j in range(number_of_sizes_to_add):
             self.sizes.add(all_sizes_randomly_ordered[j])
@@ -408,7 +408,7 @@ class ProductFactory(factory.DjangoModelFactory):
         if Color.objects.count() < 25:
             ColorFactory.create_batch(25 - Color.objects.count())
 
-        number_of_colors_to_add = faker.random_int(min=0, max=Color.objects.count()-1)
+        number_of_colors_to_add = faker.random_int(min=1, max=Color.objects.count()-1)
         all_colors_randomly_ordered = Color.objects.order_by("?")
         for j in range(number_of_colors_to_add):
             self.colors.add(all_colors_randomly_ordered[j])
@@ -421,3 +421,7 @@ class FavoriteProductFactory(factory.DjangoModelFactory):
     product = factory.LazyAttribute(lambda _: Product.objects.order_by("?").first())
     user = factory.LazyAttribute(lambda _: get_user_model().objects.order_by("?").first())
     quantity = factory.LazyAttribute(lambda _: faker.random_int(min=0, max=25))
+
+    @factory.post_generation
+    def size(self, create, extracted, **kwargs):
+        self.size = self.product.sizes.order_by("?").first()

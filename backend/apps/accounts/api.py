@@ -8,8 +8,11 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.exceptions import NotAuthenticated
 # from mollie.api.client import Client as MollieClient
 
-from catalogue.models import Product
-from catalogue.models import FavoriteProduct
+from catalogue.models import (
+    Size,
+    Product,
+    FavoriteProduct,
+)
 from accounts.models import UserModel
 from accounts.serializers import UserModelSerializer
 from accounts.permissions import IsAdminUserOrSelf
@@ -72,16 +75,32 @@ class UserModelViewSet(ModelViewSet):
             serializer = UserFavoritePatchSerializer(data=request.data)
             if serializer.is_valid():
                 product_id = serializer.data["product_id"]
-                quantity = serializer.data["quantity"]
-
                 try:
                     product = Product.objects.get(id=product_id)
                 except Product.DoesNotExist:
                     return Response({"status": "Product does not exist"},
                         status=status.HTTP_400_BAD_REQUEST)
 
+                # TODO: Optional for MancelotAlpha0-9, but mandatory in later versions
+                size_id = serializer.data.get("size_id", None)
+                try:
+                    size = Size.objects.get(id=size_id)
+                except Size.DoesNotExist:
+                    return Response({"status": "Size does not exist"},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+                # Check that the desired Size is available for the particular
+                # Product instance. Note, however, that this could change any
+                # time the data are updated from Cece API...
+                if size not in product.sizes.all():
+                    status_str = "Size not available for this Product. Choose id from: {0}"
+                    status_str = status_str.format([p.id for p in product.sizes.all()])
+                    return Response({"status": status_str},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+                quantity = serializer.data["quantity"]
                 fav = FavoriteProduct.objects.filter(
-                    product=product, user=user
+                    product=product, user=user, size=size
                 ).first()
                 if fav:
                     if quantity is 0:
@@ -108,15 +127,22 @@ class UserModelViewSet(ModelViewSet):
             serializer = UserFavoriteDeleteSerializer(data=request.data)
             if serializer.is_valid():
                 product_id = serializer.data["product_id"]
-
                 try:
                     product = Product.objects.get(id=product_id)
                 except Product.DoesNotExist:
                     return Response({"status": "Product does not exist"},
                         status=status.HTTP_400_BAD_REQUEST)
 
+                # TODO: Optional for MancelotAlpha0-9, but mandatory in later versions
+                size_id = serializer.data.get("size_id", None)
+                try:
+                    size = Size.objects.get(id=size_id)
+                except Size.DoesNotExist:
+                    return Response({"status": "Size does not exist"},
+                        status=status.HTTP_400_BAD_REQUEST)
+
                 fav = FavoriteProduct.objects.filter(
-                    product=product, user=user
+                    product=product, user=user, size=size,
                 ).first()
                 if fav:
                     fav.delete()
