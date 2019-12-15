@@ -1,6 +1,6 @@
 ## **Dependencies**
 - Python 3.7.4
-- Django 2.2.7
+- Django 2.2.9. LTS /w end of mainstream support: Dec 2, 2019; end of extended support: April 2022
 - See and install `requirements.txt` for full dependencies
 
 ## **Database schema**
@@ -91,3 +91,22 @@ in the `BrowsableAPI` root.  Details can intuitively be explored there. NB, all
   - when used, please add/commit/push to repository
 - Run migrations: `python manage.py migrate` (also lives in `entrypoint.sh`)
 - Collect static: `python manage.py collectstatic --noinput` (also lives in `entrypoint.sh`)
+
+## Interaction with the API
+
+- Create new user
+
+```bash
+new_user=$(curl -s -k -X POST -H 'Content-Type: application/json' -d '{"email": "timo@halbesma.com", "password": "secret123"}' "https://localhost/api/v1/users")
+echo $new_user | jq
+
+```
+
+- Retrieve favorites
+
+```bash
+token=$(curl -s -k -X POST -H 'Content-Type: application/json' -d '{"email": "timo@halbesma.com", "password": "secret123"}' "https://localhost/api/v1/auth/jwtoken/" | jq -r '.access')
+favorites=$(curl -s -H "Authorization: Bearer ${token}" -k -X GET https://localhost/api/v1/users/me/favorites)
+echo $favorites | jq
+```
+

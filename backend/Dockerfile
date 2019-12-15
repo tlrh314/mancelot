@@ -3,7 +3,7 @@ ENV PYTHONUNBUFFERED 1
 
 LABEL maintainer="Timo Halbesma <timo@mancelot.nl>"
 
-# Install Alpine system packages
+# Install Debian system packages
 WORKDIR /mancelot
 RUN set -ex \
     && apt-get update \
