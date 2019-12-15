@@ -549,7 +549,7 @@ class ProductAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {"fields": (
             "name", "cece_id", "url", "price", "from_price",
-            "main_image", "thumbnail", "extra_images",
+            "main_image", "thumbnail", "extra_images", "chosen_image",
             "info", "extra_info",
             "brand", "store", "categories",
             "colors", "sizes", "materials",
