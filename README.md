@@ -16,7 +16,7 @@
 
 ### Dependencies
 - Docker version 19.03.5, build 633a0ea838
-- docker-compose version 1.25.0, build 0a186604
+- docker-compose version 1.25.4, build 8d51620a
 
 ## Mattermost
 - Fetched from: `https://github.com/mattermost/mattermost-docker`
