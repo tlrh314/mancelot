@@ -1,6 +1,6 @@
 ## **Dependencies**
-- Python 3.7.4
-- Django 2.2.9. LTS /w end of mainstream support: Dec 2, 2019; end of extended support: April 2022
+- Python 3.8.2
+- Django 2.2.11. LTS /w end of mainstream support: Dec 2, 2019; end of extended support: April 2022
 - See and install `requirements.txt` for full dependencies
 
 ## **Database schema**
