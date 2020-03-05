@@ -9,7 +9,7 @@ help: ## This help.
 
 
 docker-pull:  ## Pull the latest Docker images from Dockerhub
-	docker pull python:3.7-slim-buster
+	docker pull python:3.8-slim-buster
 	docker pull certbot/certbot:latest
 	docker pull redis:alpine
 	docker pull nginx:1.17-alpine
