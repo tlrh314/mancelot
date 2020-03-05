@@ -84,7 +84,7 @@ django-sqldump:  ## sql dump of the database (e.g. for backups)
 	ls -lah $${MANCELOT_DATA_PATH-./data/}sqldumps/$$TODAY/$${DB_NAME}_$${TODAY}.sql; \
 
 dev-db-update:  ## download and load sql dump
-	@if [[ $$HOSTNAME == "ChezTimo15"* ]]; then  \
+	@if [[ $$HOSTNAME == "ChezTimo15"* || $$HOSTNAME == "SurfacePro3" ]]; then  \
 		TODAY=$$(date "+%Y%m%d"); \
 		rsync -auHxv --progress mancelot:~/production/data/sqldumps/ $${MANCELOT_DATA_PATH-./data/}sqldumps/; \
 		\
@@ -153,7 +153,7 @@ stop: ## Stop and remove a running container, given its name.
 
 # NEVER EXECUTE THIS COMMAND IN PRODUCTION
 quit: ## Stop and remove all running containers.
-	@if [[ $$HOSTNAME == "ChezTimo15"* ]]; then  \
+	@if [[ $$HOSTNAME == "ChezTimo15"* || $$HOSTNAME == "SurfacePro3"  ]]; then  \
 		docker stop $$(docker ps -a -q); docker rm $$(docker ps -a -q); \
 	else  \
 		echo "For safety not implemented for hostname on $$HOSTNAME"; \
