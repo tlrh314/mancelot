@@ -424,6 +424,8 @@ def create_or_update_products(logger, cmd_name, client, recursive=True):
                 fname = os.path.basename(urlparse(img_url).path)
                 logger.debug("  Fetch '{0}' from Cece".format(img_url))
                 if "cece" not in img_url:
+                    if img_url.startswith("//"):
+                        img_url = img_url.replace("//", "https://")
                     headers = { "user-agent": "Mancelot Bot v1.3.3.7" }
                     response = requests.head(img_url, headers=headers)
                     if response.status_code != 200:
