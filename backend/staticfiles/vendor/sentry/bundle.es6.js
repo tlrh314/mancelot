@@ -61,6 +61,92 @@ var Sentry = (function (exports) {
       Severity.fromString = fromString;
   })(exports.Severity || (exports.Severity = {}));
 
+  /** The status of an Span. */
+  var SpanStatus;
+  (function (SpanStatus) {
+      /** The operation completed successfully. */
+      SpanStatus["Ok"] = "ok";
+      /** Deadline expired before operation could complete. */
+      SpanStatus["DeadlineExceeded"] = "deadline_exceeded";
+      /** 401 Unauthorized (actually does mean unauthenticated according to RFC 7235) */
+      SpanStatus["Unauthenticated"] = "unauthenticated";
+      /** 403 Forbidden */
+      SpanStatus["PermissionDenied"] = "permission_denied";
+      /** 404 Not Found. Some requested entity (file or directory) was not found. */
+      SpanStatus["NotFound"] = "not_found";
+      /** 429 Too Many Requests */
+      SpanStatus["ResourceExhausted"] = "resource_exhausted";
+      /** Client specified an invalid argument. 4xx. */
+      SpanStatus["InvalidArgument"] = "invalid_argument";
+      /** 501 Not Implemented */
+      SpanStatus["Unimplemented"] = "unimplemented";
+      /** 503 Service Unavailable */
+      SpanStatus["Unavailable"] = "unavailable";
+      /** Other/generic 5xx. */
+      SpanStatus["InternalError"] = "internal_error";
+      /** Unknown. Any non-standard HTTP status code. */
+      SpanStatus["UnknownError"] = "unknown_error";
+      /** The operation was cancelled (typically by the user). */
+      SpanStatus["Cancelled"] = "cancelled";
+      /** Already exists (409) */
+      SpanStatus["AlreadyExists"] = "already_exists";
+      /** Operation was rejected because the system is not in a state required for the operation's */
+      SpanStatus["FailedPrecondition"] = "failed_precondition";
+      /** The operation was aborted, typically due to a concurrency issue. */
+      SpanStatus["Aborted"] = "aborted";
+      /** Operation was attempted past the valid range. */
+      SpanStatus["OutOfRange"] = "out_of_range";
+      /** Unrecoverable data loss or corruption */
+      SpanStatus["DataLoss"] = "data_loss";
+  })(SpanStatus || (SpanStatus = {}));
+  // tslint:disable:no-unnecessary-qualifier no-namespace
+  (function (SpanStatus) {
+      /**
+       * Converts a HTTP status code into a {@link SpanStatus}.
+       *
+       * @param httpStatus The HTTP response status code.
+       * @returns The span status or {@link SpanStatus.UnknownError}.
+       */
+      // tslint:disable-next-line:completed-docs
+      function fromHttpCode(httpStatus) {
+          if (httpStatus < 400) {
+              return SpanStatus.Ok;
+          }
+          if (httpStatus >= 400 && httpStatus < 500) {
+              switch (httpStatus) {
+                  case 401:
+                      return SpanStatus.Unauthenticated;
+                  case 403:
+                      return SpanStatus.PermissionDenied;
+                  case 404:
+                      return SpanStatus.NotFound;
+                  case 409:
+                      return SpanStatus.AlreadyExists;
+                  case 413:
+                      return SpanStatus.FailedPrecondition;
+                  case 429:
+                      return SpanStatus.ResourceExhausted;
+                  default:
+                      return SpanStatus.InvalidArgument;
+              }
+          }
+          if (httpStatus >= 500 && httpStatus < 600) {
+              switch (httpStatus) {
+                  case 501:
+                      return SpanStatus.Unimplemented;
+                  case 503:
+                      return SpanStatus.Unavailable;
+                  case 504:
+                      return SpanStatus.DeadlineExceeded;
+                  default:
+                      return SpanStatus.InternalError;
+              }
+          }
+          return SpanStatus.UnknownError;
+      }
+      SpanStatus.fromHttpCode = fromHttpCode;
+  })(SpanStatus || (SpanStatus = {}));
+
   /** The status of an event. */
   (function (Status) {
       /** The status could not be determined. */
@@ -141,7 +227,6 @@ var Sentry = (function (exports) {
       }
   }
 
-  /// <reference lib="dom" />
   /**
    * Checks whether given value's type is one of a few Error or Error-like
    * {@link isError}.
@@ -158,7 +243,7 @@ var Sentry = (function (exports) {
           case '[object DOMException]':
               return true;
           default:
-              return wat instanceof Error;
+              return isInstanceOf(wat, Error);
       }
   }
   /**
@@ -230,7 +315,7 @@ var Sentry = (function (exports) {
    */
   function isEvent(wat) {
       // tslint:disable-next-line:strict-type-predicates
-      return typeof Event !== 'undefined' && wat instanceof Event;
+      return typeof Event !== 'undefined' && isInstanceOf(wat, Event);
   }
   /**
    * Checks whether given value's type is an Element instance
@@ -241,7 +326,7 @@ var Sentry = (function (exports) {
    */
   function isElement(wat) {
       // tslint:disable-next-line:strict-type-predicates
-      return typeof Element !== 'undefined' && wat instanceof Element;
+      return typeof Element !== 'undefined' && isInstanceOf(wat, Element);
   }
   /**
    * Checks whether given value's type is an regexp
@@ -273,10 +358,78 @@ var Sentry = (function (exports) {
       // tslint:disable-next-line:no-unsafe-any
       return isPlainObject(wat) && 'nativeEvent' in wat && 'preventDefault' in wat && 'stopPropagation' in wat;
   }
-
-  /// <reference lib="dom" />
   /**
-   * Requires a module which is protected _against bundler minification.
+   * Checks whether given value's type is an instance of provided constructor.
+   * {@link isInstanceOf}.
+   *
+   * @param wat A value to be checked.
+   * @param base A constructor to be used in a check.
+   * @returns A boolean representing the result.
+   */
+  function isInstanceOf(wat, base) {
+      try {
+          // tslint:disable-next-line:no-unsafe-any
+          return wat instanceof base;
+      }
+      catch (_e) {
+          return false;
+      }
+  }
+
+  /**
+   * Truncates given string to the maximum characters count
+   *
+   * @param str An object that contains serializable values
+   * @param max Maximum number of characters in truncated string
+   * @returns string Encoded
+   */
+  function truncate(str, max = 0) {
+      // tslint:disable-next-line:strict-type-predicates
+      if (typeof str !== 'string' || max === 0) {
+          return str;
+      }
+      return str.length <= max ? str : `${str.substr(0, max)}...`;
+  }
+  /**
+   * Join values in array
+   * @param input array of values to be joined together
+   * @param delimiter string to be placed in-between values
+   * @returns Joined values
+   */
+  function safeJoin(input, delimiter) {
+      if (!Array.isArray(input)) {
+          return '';
+      }
+      const output = [];
+      // tslint:disable-next-line:prefer-for-of
+      for (let i = 0; i < input.length; i++) {
+          const value = input[i];
+          try {
+              output.push(String(value));
+          }
+          catch (e) {
+              output.push('[value cannot be serialized]');
+          }
+      }
+      return output.join(delimiter);
+  }
+  /**
+   * Checks if the value matches a regex or includes the string
+   * @param value The string value to be checked against
+   * @param pattern Either a regex or a string that must be contained in value
+   */
+  function isMatchingPattern(value, pattern) {
+      if (isRegExp(pattern)) {
+          return pattern.test(value);
+      }
+      if (typeof pattern === 'string') {
+          return value.indexOf(pattern) !== -1;
+      }
+      return false;
+  }
+
+  /**
+   * Requires a module which is protected against bundler minification.
    *
    * @param request The module path to resolve
    */
@@ -397,8 +550,8 @@ var Sentry = (function (exports) {
       const wrappedLevels = {};
       // Restore all wrapped console methods
       levels.forEach(level => {
-          if (level in global.console && originalConsole[level].__sentry__) {
-              wrappedLevels[level] = originalConsole[level].__sentry_wrapped__;
+          if (level in global.console && originalConsole[level].__sentry_original__) {
+              wrappedLevels[level] = originalConsole[level];
               originalConsole[level] = originalConsole[level].__sentry_original__;
           }
       });
@@ -501,7 +654,8 @@ var Sentry = (function (exports) {
    * e.g. [HTMLElement] => input#foo.btn[name=baz]
    * @returns generated DOM path
    */
-  function _htmlElementAsString(elem) {
+  function _htmlElementAsString(el) {
+      const elem = el;
       const out = [];
       let className;
       let classes;
@@ -531,6 +685,88 @@ var Sentry = (function (exports) {
           }
       }
       return out.join('');
+  }
+  const INITIAL_TIME = Date.now();
+  let prevNow = 0;
+  const performanceFallback = {
+      now() {
+          let now = Date.now() - INITIAL_TIME;
+          if (now < prevNow) {
+              now = prevNow;
+          }
+          prevNow = now;
+          return now;
+      },
+      timeOrigin: INITIAL_TIME,
+  };
+  const crossPlatformPerformance = (() => {
+      if (isNodeEnv()) {
+          try {
+              const perfHooks = dynamicRequire(module, 'perf_hooks');
+              return perfHooks.performance;
+          }
+          catch (_) {
+              return performanceFallback;
+          }
+      }
+      if (getGlobalObject().performance) {
+          // Polyfill for performance.timeOrigin.
+          //
+          // While performance.timing.navigationStart is deprecated in favor of performance.timeOrigin, performance.timeOrigin
+          // is not as widely supported. Namely, performance.timeOrigin is undefined in Safari as of writing.
+          // tslint:disable-next-line:strict-type-predicates
+          if (performance.timeOrigin === undefined) {
+              // As of writing, performance.timing is not available in Web Workers in mainstream browsers, so it is not always a
+              // valid fallback. In the absence of a initial time provided by the browser, fallback to INITIAL_TIME.
+              // @ts-ignore
+              // tslint:disable-next-line:deprecation
+              performance.timeOrigin = (performance.timing && performance.timing.navigationStart) || INITIAL_TIME;
+          }
+      }
+      return getGlobalObject().performance || performanceFallback;
+  })();
+  /**
+   * Returns a timestamp in seconds with milliseconds precision since the UNIX epoch calculated with the monotonic clock.
+   */
+  function timestampWithMs() {
+      return (crossPlatformPerformance.timeOrigin + crossPlatformPerformance.now()) / 1000;
+  }
+  const defaultRetryAfter = 60 * 1000; // 60 seconds
+  /**
+   * Extracts Retry-After value from the request header or returns default value
+   * @param now current unix timestamp
+   * @param header string representation of 'Retry-After' header
+   */
+  function parseRetryAfterHeader(now, header) {
+      if (!header) {
+          return defaultRetryAfter;
+      }
+      const headerDelay = parseInt(`${header}`, 10);
+      if (!isNaN(headerDelay)) {
+          return headerDelay * 1000;
+      }
+      const headerDate = Date.parse(`${header}`);
+      if (!isNaN(headerDate)) {
+          return headerDate - now;
+      }
+      return defaultRetryAfter;
+  }
+  const defaultFunctionName = '<anonymous>';
+  /**
+   * Safely extract function name from itself
+   */
+  function getFunctionName(fn) {
+      try {
+          if (!fn || typeof fn !== 'function') {
+              return defaultFunctionName;
+          }
+          return fn.name || defaultFunctionName;
+      }
+      catch (e) {
+          // Just accessing custom props in some Selenium environments
+          // can cause a "Permission denied" exception (see raven-js#495).
+          return defaultFunctionName;
+      }
   }
 
   // TODO: Implement different loggers for different environments
@@ -635,58 +871,6 @@ var Sentry = (function (exports) {
   }
 
   /**
-   * Truncates given string to the maximum characters count
-   *
-   * @param str An object that contains serializable values
-   * @param max Maximum number of characters in truncated string
-   * @returns string Encoded
-   */
-  function truncate(str, max = 0) {
-      // tslint:disable-next-line:strict-type-predicates
-      if (typeof str !== 'string' || max === 0) {
-          return str;
-      }
-      return str.length <= max ? str : `${str.substr(0, max)}...`;
-  }
-  /**
-   * Join values in array
-   * @param input array of values to be joined together
-   * @param delimiter string to be placed in-between values
-   * @returns Joined values
-   */
-  function safeJoin(input, delimiter) {
-      if (!Array.isArray(input)) {
-          return '';
-      }
-      const output = [];
-      // tslint:disable-next-line:prefer-for-of
-      for (let i = 0; i < input.length; i++) {
-          const value = input[i];
-          try {
-              output.push(String(value));
-          }
-          catch (e) {
-              output.push('[value cannot be serialized]');
-          }
-      }
-      return output.join(delimiter);
-  }
-  /**
-   * Checks if the value matches a regex or includes the string
-   * @param value The string value to be checked against
-   * @param pattern Either a regex or a string that must be contained in value
-   */
-  function isMatchingPattern(value, pattern) {
-      if (isRegExp(pattern)) {
-          return pattern.test(value);
-      }
-      if (typeof pattern === 'string') {
-          return value.indexOf(pattern) !== -1;
-      }
-      return false;
-  }
-
-  /**
    * Wrap a given object method with a higher-order function
    *
    * @param source An object that contains a method to be wrapped.
@@ -707,17 +891,9 @@ var Sentry = (function (exports) {
           try {
               wrapped.prototype = wrapped.prototype || {};
               Object.defineProperties(wrapped, {
-                  __sentry__: {
-                      enumerable: false,
-                      value: true,
-                  },
                   __sentry_original__: {
                       enumerable: false,
                       value: original,
-                  },
-                  __sentry_wrapped__: {
-                      enumerable: false,
-                      value: wrapped,
                   },
               });
           }
@@ -763,32 +939,33 @@ var Sentry = (function (exports) {
           return err;
       }
       if (isEvent(value)) {
+          const event = value;
           const source = {};
-          source.type = value.type;
+          source.type = event.type;
           // Accessing event.target can throw (see getsentry/raven-js#838, #768)
           try {
-              source.target = isElement(value.target)
-                  ? htmlTreeAsString(value.target)
-                  : Object.prototype.toString.call(value.target);
+              source.target = isElement(event.target)
+                  ? htmlTreeAsString(event.target)
+                  : Object.prototype.toString.call(event.target);
           }
           catch (_oO) {
               source.target = '<unknown>';
           }
           try {
-              source.currentTarget = isElement(value.currentTarget)
-                  ? htmlTreeAsString(value.currentTarget)
-                  : Object.prototype.toString.call(value.currentTarget);
+              source.currentTarget = isElement(event.currentTarget)
+                  ? htmlTreeAsString(event.currentTarget)
+                  : Object.prototype.toString.call(event.currentTarget);
           }
           catch (_oO) {
               source.currentTarget = '<unknown>';
           }
           // tslint:disable-next-line:strict-type-predicates
-          if (typeof CustomEvent !== 'undefined' && value instanceof CustomEvent) {
-              source.detail = value.detail;
+          if (typeof CustomEvent !== 'undefined' && isInstanceOf(value, CustomEvent)) {
+              source.detail = event.detail;
           }
-          for (const i in value) {
-              if (Object.prototype.hasOwnProperty.call(value, i)) {
-                  source[i] = value[i];
+          for (const i in event) {
+              if (Object.prototype.hasOwnProperty.call(event, i)) {
+                  source[i] = event;
               }
           }
           return source;
@@ -843,7 +1020,7 @@ var Sentry = (function (exports) {
    */
   // tslint:disable-next-line:cyclomatic-complexity
   function normalizeValue(value, key) {
-      if (key === 'domain' && typeof value === 'object' && value._events) {
+      if (key === 'domain' && value && typeof value === 'object' && value._events) {
           return '[Domain]';
       }
       if (key === 'domainEmitter') {
@@ -870,7 +1047,7 @@ var Sentry = (function (exports) {
           return '[undefined]';
       }
       if (typeof value === 'function') {
-          return `[Function: ${value.name || '<unknown-function-name>'}]`;
+          return `[Function: ${getFunctionName(value)}]`;
       }
       return value;
   }
@@ -1021,22 +1198,24 @@ var Sentry = (function (exports) {
               if (this._state === States.PENDING) {
                   return;
               }
-              if (this._state === States.REJECTED) {
-                  this._handlers.forEach(handler => {
+              const cachedHandlers = this._handlers.slice();
+              this._handlers = [];
+              cachedHandlers.forEach(handler => {
+                  if (handler.done) {
+                      return;
+                  }
+                  if (this._state === States.RESOLVED) {
+                      if (handler.onfulfilled) {
+                          handler.onfulfilled(this._value);
+                      }
+                  }
+                  if (this._state === States.REJECTED) {
                       if (handler.onrejected) {
                           handler.onrejected(this._value);
                       }
-                  });
-              }
-              else {
-                  this._handlers.forEach(handler => {
-                      if (handler.onfulfilled) {
-                          // tslint:disable-next-line:no-unsafe-any
-                          handler.onfulfilled(this._value);
-                      }
-                  });
-              }
-              this._handlers = [];
+                  }
+                  handler.done = true;
+              });
           };
           try {
               executor(this._resolve, this._reject);
@@ -1092,6 +1271,7 @@ var Sentry = (function (exports) {
       then(onfulfilled, onrejected) {
           return new SyncPromise((resolve, reject) => {
               this._attachHandler({
+                  done: false,
                   onfulfilled: result => {
                       if (!onfulfilled) {
                           // TODO: ¯\_(ツ)_/¯
@@ -1151,7 +1331,6 @@ var Sentry = (function (exports) {
                       reject(val);
                       return;
                   }
-                  // tslint:disable-next-line:no-unsafe-any
                   resolve(val);
               });
           });
@@ -1257,6 +1436,12 @@ var Sentry = (function (exports) {
       }
   }
   /**
+   * isNativeFetch checks if the given function is a native implementation of fetch()
+   */
+  function isNativeFetch(func) {
+      return func && /^function fetch\(\)\s+\{\s+\[native code\]\s+\}$/.test(func.toString());
+  }
+  /**
    * Tells whether current environment supports Fetch API natively
    * {@link supportsNativeFetch}.
    *
@@ -1266,28 +1451,31 @@ var Sentry = (function (exports) {
       if (!supportsFetch()) {
           return false;
       }
-      const isNativeFunc = (func) => func.toString().indexOf('native') !== -1;
       const global = getGlobalObject();
-      let result = null;
+      // Fast path to avoid DOM I/O
+      // tslint:disable-next-line:no-unbound-method
+      if (isNativeFetch(global.fetch)) {
+          return true;
+      }
+      // window.fetch is implemented, but is polyfilled or already wrapped (e.g: by a chrome extension)
+      // so create a "pure" iframe to see if that has native fetch
+      let result = false;
       const doc = global.document;
-      if (doc) {
-          const sandbox = doc.createElement('iframe');
-          sandbox.hidden = true;
+      // tslint:disable-next-line:no-unbound-method deprecation
+      if (doc && typeof doc.createElement === `function`) {
           try {
+              const sandbox = doc.createElement('iframe');
+              sandbox.hidden = true;
               doc.head.appendChild(sandbox);
               if (sandbox.contentWindow && sandbox.contentWindow.fetch) {
-                  // tslint:disable-next-line no-unbound-method
-                  result = isNativeFunc(sandbox.contentWindow.fetch);
+                  // tslint:disable-next-line:no-unbound-method
+                  result = isNativeFetch(sandbox.contentWindow.fetch);
               }
               doc.head.removeChild(sandbox);
           }
           catch (err) {
               logger.warn('Could not create sandbox iframe for pure fetch check, bailing to window.fetch: ', err);
           }
-      }
-      if (result === null) {
-          // tslint:disable-next-line no-unbound-method
-          result = isNativeFunc(global.fetch);
       }
       return result;
   }
@@ -1334,73 +1522,472 @@ var Sentry = (function (exports) {
       return !isChromePackagedApp && hasHistoryApi;
   }
 
-  const TRACEPARENT_REGEXP = /^[ \t]*([0-9a-f]{32})?-?([0-9a-f]{16})?-?([01])?[ \t]*$/;
+  /* tslint:disable:only-arrow-functions no-unsafe-any */
+  const global$2 = getGlobalObject();
   /**
-   * Span containg all data about a span
+   * Instrument native APIs to call handlers that can be used to create breadcrumbs, APM spans etc.
+   *  - Console API
+   *  - Fetch API
+   *  - XHR API
+   *  - History API
+   *  - DOM API (click/typing)
+   *  - Error API
+   *  - UnhandledRejection API
    */
-  class Span {
-      constructor(_traceId = uuid4(), _spanId = uuid4().substring(16), _sampled, _parent) {
-          this._traceId = _traceId;
-          this._spanId = _spanId;
-          this._sampled = _sampled;
-          this._parent = _parent;
+  const handlers = {};
+  const instrumented = {};
+  /** Instruments given API */
+  function instrument(type) {
+      if (instrumented[type]) {
+          return;
       }
-      /**
-       * Setter for parent
-       */
-      setParent(parent) {
-          this._parent = parent;
-          return this;
+      instrumented[type] = true;
+      switch (type) {
+          case 'console':
+              instrumentConsole();
+              break;
+          case 'dom':
+              instrumentDOM();
+              break;
+          case 'xhr':
+              instrumentXHR();
+              break;
+          case 'fetch':
+              instrumentFetch();
+              break;
+          case 'history':
+              instrumentHistory();
+              break;
+          case 'error':
+              instrumentError();
+              break;
+          case 'unhandledrejection':
+              instrumentUnhandledRejection();
+              break;
+          default:
+              logger.warn('unknown instrumentation type:', type);
       }
-      /**
-       * Setter for sampled
-       */
-      setSampled(sampled) {
-          this._sampled = sampled;
-          return this;
+  }
+  /**
+   * Add handler that will be called when given type of instrumentation triggers.
+   * Use at your own risk, this might break without changelog notice, only used internally.
+   * @hidden
+   */
+  function addInstrumentationHandler(handler) {
+      // tslint:disable-next-line:strict-type-predicates
+      if (!handler || typeof handler.type !== 'string' || typeof handler.callback !== 'function') {
+          return;
       }
-      /**
-       * Continues a trace
-       * @param traceparent Traceparent string
-       */
-      static fromTraceparent(traceparent) {
-          const matches = traceparent.match(TRACEPARENT_REGEXP);
-          if (matches) {
-              let sampled;
-              if (matches[3] === '1') {
-                  sampled = true;
-              }
-              else if (matches[3] === '0') {
-                  sampled = false;
-              }
-              const parent = new Span(matches[1], matches[2], sampled);
-              return new Span(matches[1], undefined, sampled, parent);
+      handlers[handler.type] = handlers[handler.type] || [];
+      handlers[handler.type].push(handler.callback);
+      instrument(handler.type);
+  }
+  /** JSDoc */
+  function triggerHandlers(type, data) {
+      if (!type || !handlers[type]) {
+          return;
+      }
+      for (const handler of handlers[type] || []) {
+          try {
+              handler(data);
           }
-          return undefined;
-      }
-      /**
-       * @inheritDoc
-       */
-      toTraceparent() {
-          let sampled = '';
-          if (this._sampled === true) {
-              sampled = '-1';
+          catch (e) {
+              logger.error(`Error while triggering instrumentation handler.\nType: ${type}\nName: ${getFunctionName(handler)}\nError: ${e}`);
           }
-          else if (this._sampled === false) {
-              sampled = '-0';
-          }
-          return `${this._traceId}-${this._spanId}${sampled}`;
       }
-      /**
-       * @inheritDoc
-       */
-      toJSON() {
-          return {
-              parent: (this._parent && this._parent.toJSON()) || undefined,
-              sampled: this._sampled,
-              span_id: this._spanId,
-              trace_id: this._traceId,
+  }
+  /** JSDoc */
+  function instrumentConsole() {
+      if (!('console' in global$2)) {
+          return;
+      }
+      ['debug', 'info', 'warn', 'error', 'log', 'assert'].forEach(function (level) {
+          if (!(level in global$2.console)) {
+              return;
+          }
+          fill(global$2.console, level, function (originalConsoleLevel) {
+              return function (...args) {
+                  triggerHandlers('console', { args, level });
+                  // this fails for some browsers. :(
+                  if (originalConsoleLevel) {
+                      Function.prototype.apply.call(originalConsoleLevel, global$2.console, args);
+                  }
+              };
+          });
+      });
+  }
+  /** JSDoc */
+  function instrumentFetch() {
+      if (!supportsNativeFetch()) {
+          return;
+      }
+      fill(global$2, 'fetch', function (originalFetch) {
+          return function (...args) {
+              const commonHandlerData = {
+                  args,
+                  fetchData: {
+                      method: getFetchMethod(args),
+                      url: getFetchUrl(args),
+                  },
+                  startTimestamp: Date.now(),
+              };
+              triggerHandlers('fetch', Object.assign({}, commonHandlerData));
+              return originalFetch.apply(global$2, args).then((response) => {
+                  triggerHandlers('fetch', Object.assign({}, commonHandlerData, { endTimestamp: Date.now(), response }));
+                  return response;
+              }, (error) => {
+                  triggerHandlers('fetch', Object.assign({}, commonHandlerData, { endTimestamp: Date.now(), error }));
+                  throw error;
+              });
           };
+      });
+  }
+  /** Extract `method` from fetch call arguments */
+  function getFetchMethod(fetchArgs = []) {
+      if ('Request' in global$2 && isInstanceOf(fetchArgs[0], Request) && fetchArgs[0].method) {
+          return String(fetchArgs[0].method).toUpperCase();
+      }
+      if (fetchArgs[1] && fetchArgs[1].method) {
+          return String(fetchArgs[1].method).toUpperCase();
+      }
+      return 'GET';
+  }
+  /** Extract `url` from fetch call arguments */
+  function getFetchUrl(fetchArgs = []) {
+      if (typeof fetchArgs[0] === 'string') {
+          return fetchArgs[0];
+      }
+      if ('Request' in global$2 && isInstanceOf(fetchArgs[0], Request)) {
+          return fetchArgs[0].url;
+      }
+      return String(fetchArgs[0]);
+  }
+  /** JSDoc */
+  function instrumentXHR() {
+      if (!('XMLHttpRequest' in global$2)) {
+          return;
+      }
+      const xhrproto = XMLHttpRequest.prototype;
+      fill(xhrproto, 'open', function (originalOpen) {
+          return function (...args) {
+              const url = args[1];
+              this.__sentry_xhr__ = {
+                  method: isString(args[0]) ? args[0].toUpperCase() : args[0],
+                  url: args[1],
+              };
+              // if Sentry key appears in URL, don't capture it as a request
+              if (isString(url) && this.__sentry_xhr__.method === 'POST' && url.match(/sentry_key/)) {
+                  this.__sentry_own_request__ = true;
+              }
+              return originalOpen.apply(this, args);
+          };
+      });
+      fill(xhrproto, 'send', function (originalSend) {
+          return function (...args) {
+              const xhr = this; // tslint:disable-line:no-this-assignment
+              const commonHandlerData = {
+                  args,
+                  startTimestamp: Date.now(),
+                  xhr,
+              };
+              triggerHandlers('xhr', Object.assign({}, commonHandlerData));
+              xhr.addEventListener('readystatechange', function () {
+                  if (xhr.readyState === 4) {
+                      try {
+                          // touching statusCode in some platforms throws
+                          // an exception
+                          if (xhr.__sentry_xhr__) {
+                              xhr.__sentry_xhr__.status_code = xhr.status;
+                          }
+                      }
+                      catch (e) {
+                          /* do nothing */
+                      }
+                      triggerHandlers('xhr', Object.assign({}, commonHandlerData, { endTimestamp: Date.now() }));
+                  }
+              });
+              return originalSend.apply(this, args);
+          };
+      });
+  }
+  let lastHref;
+  /** JSDoc */
+  function instrumentHistory() {
+      if (!supportsHistory()) {
+          return;
+      }
+      const oldOnPopState = global$2.onpopstate;
+      global$2.onpopstate = function (...args) {
+          const to = global$2.location.href;
+          // keep track of the current URL state, as we always receive only the updated state
+          const from = lastHref;
+          lastHref = to;
+          triggerHandlers('history', {
+              from,
+              to,
+          });
+          if (oldOnPopState) {
+              return oldOnPopState.apply(this, args);
+          }
+      };
+      /** @hidden */
+      function historyReplacementFunction(originalHistoryFunction) {
+          return function (...args) {
+              const url = args.length > 2 ? args[2] : undefined;
+              if (url) {
+                  // coerce to string (this is what pushState does)
+                  const from = lastHref;
+                  const to = String(url);
+                  // keep track of the current URL state, as we always receive only the updated state
+                  lastHref = to;
+                  triggerHandlers('history', {
+                      from,
+                      to,
+                  });
+              }
+              return originalHistoryFunction.apply(this, args);
+          };
+      }
+      fill(global$2.history, 'pushState', historyReplacementFunction);
+      fill(global$2.history, 'replaceState', historyReplacementFunction);
+  }
+  /** JSDoc */
+  function instrumentDOM() {
+      if (!('document' in global$2)) {
+          return;
+      }
+      // Capture breadcrumbs from any click that is unhandled / bubbled up all the way
+      // to the document. Do this before we instrument addEventListener.
+      global$2.document.addEventListener('click', domEventHandler('click', triggerHandlers.bind(null, 'dom')), false);
+      global$2.document.addEventListener('keypress', keypressEventHandler(triggerHandlers.bind(null, 'dom')), false);
+      // After hooking into document bubbled up click and keypresses events, we also hook into user handled click & keypresses.
+      ['EventTarget', 'Node'].forEach((target) => {
+          const proto = global$2[target] && global$2[target].prototype;
+          if (!proto || !proto.hasOwnProperty || !proto.hasOwnProperty('addEventListener')) {
+              return;
+          }
+          fill(proto, 'addEventListener', function (original) {
+              return function (eventName, fn, options) {
+                  if (fn && fn.handleEvent) {
+                      if (eventName === 'click') {
+                          fill(fn, 'handleEvent', function (innerOriginal) {
+                              return function (event) {
+                                  domEventHandler('click', triggerHandlers.bind(null, 'dom'))(event);
+                                  return innerOriginal.call(this, event);
+                              };
+                          });
+                      }
+                      if (eventName === 'keypress') {
+                          fill(fn, 'handleEvent', function (innerOriginal) {
+                              return function (event) {
+                                  keypressEventHandler(triggerHandlers.bind(null, 'dom'))(event);
+                                  return innerOriginal.call(this, event);
+                              };
+                          });
+                      }
+                  }
+                  else {
+                      if (eventName === 'click') {
+                          domEventHandler('click', triggerHandlers.bind(null, 'dom'), true)(this);
+                      }
+                      if (eventName === 'keypress') {
+                          keypressEventHandler(triggerHandlers.bind(null, 'dom'))(this);
+                      }
+                  }
+                  return original.call(this, eventName, fn, options);
+              };
+          });
+          fill(proto, 'removeEventListener', function (original) {
+              return function (eventName, fn, options) {
+                  let callback = fn;
+                  try {
+                      callback = callback && (callback.__sentry_wrapped__ || callback);
+                  }
+                  catch (e) {
+                      // ignore, accessing __sentry_wrapped__ will throw in some Selenium environments
+                  }
+                  return original.call(this, eventName, callback, options);
+              };
+          });
+      });
+  }
+  const debounceDuration = 1000;
+  let debounceTimer = 0;
+  let keypressTimeout;
+  let lastCapturedEvent;
+  /**
+   * Wraps addEventListener to capture UI breadcrumbs
+   * @param name the event name (e.g. "click")
+   * @param handler function that will be triggered
+   * @param debounce decides whether it should wait till another event loop
+   * @returns wrapped breadcrumb events handler
+   * @hidden
+   */
+  function domEventHandler(name, handler, debounce = false) {
+      return (event) => {
+          // reset keypress timeout; e.g. triggering a 'click' after
+          // a 'keypress' will reset the keypress debounce so that a new
+          // set of keypresses can be recorded
+          keypressTimeout = undefined;
+          // It's possible this handler might trigger multiple times for the same
+          // event (e.g. event propagation through node ancestors). Ignore if we've
+          // already captured the event.
+          if (!event || lastCapturedEvent === event) {
+              return;
+          }
+          lastCapturedEvent = event;
+          if (debounceTimer) {
+              clearTimeout(debounceTimer);
+          }
+          if (debounce) {
+              debounceTimer = setTimeout(() => {
+                  handler({ event, name });
+              });
+          }
+          else {
+              handler({ event, name });
+          }
+      };
+  }
+  /**
+   * Wraps addEventListener to capture keypress UI events
+   * @param handler function that will be triggered
+   * @returns wrapped keypress events handler
+   * @hidden
+   */
+  function keypressEventHandler(handler) {
+      // TODO: if somehow user switches keypress target before
+      //       debounce timeout is triggered, we will only capture
+      //       a single breadcrumb from the FIRST target (acceptable?)
+      return (event) => {
+          let target;
+          try {
+              target = event.target;
+          }
+          catch (e) {
+              // just accessing event properties can throw an exception in some rare circumstances
+              // see: https://github.com/getsentry/raven-js/issues/838
+              return;
+          }
+          const tagName = target && target.tagName;
+          // only consider keypress events on actual input elements
+          // this will disregard keypresses targeting body (e.g. tabbing
+          // through elements, hotkeys, etc)
+          if (!tagName || (tagName !== 'INPUT' && tagName !== 'TEXTAREA' && !target.isContentEditable)) {
+              return;
+          }
+          // record first keypress in a series, but ignore subsequent
+          // keypresses until debounce clears
+          if (!keypressTimeout) {
+              domEventHandler('input', handler)(event);
+          }
+          clearTimeout(keypressTimeout);
+          keypressTimeout = setTimeout(() => {
+              keypressTimeout = undefined;
+          }, debounceDuration);
+      };
+  }
+  let _oldOnErrorHandler = null;
+  /** JSDoc */
+  function instrumentError() {
+      _oldOnErrorHandler = global$2.onerror;
+      global$2.onerror = function (msg, url, line, column, error) {
+          triggerHandlers('error', {
+              column,
+              error,
+              line,
+              msg,
+              url,
+          });
+          if (_oldOnErrorHandler) {
+              return _oldOnErrorHandler.apply(this, arguments);
+          }
+          return false;
+      };
+  }
+  let _oldOnUnhandledRejectionHandler = null;
+  /** JSDoc */
+  function instrumentUnhandledRejection() {
+      _oldOnUnhandledRejectionHandler = global$2.onunhandledrejection;
+      global$2.onunhandledrejection = function (e) {
+          triggerHandlers('unhandledrejection', e);
+          if (_oldOnUnhandledRejectionHandler) {
+              return _oldOnUnhandledRejectionHandler.apply(this, arguments);
+          }
+          return true;
+      };
+  }
+
+  /** Regular expression used to parse a Dsn. */
+  const DSN_REGEX = /^(?:(\w+):)\/\/(?:(\w+)(?::(\w+))?@)([\w\.-]+)(?::(\d+))?\/(.+)/;
+  /** Error message */
+  const ERROR_MESSAGE = 'Invalid Dsn';
+  /** The Sentry Dsn, identifying a Sentry instance and project. */
+  class Dsn {
+      /** Creates a new Dsn component */
+      constructor(from) {
+          if (typeof from === 'string') {
+              this._fromString(from);
+          }
+          else {
+              this._fromComponents(from);
+          }
+          this._validate();
+      }
+      /**
+       * Renders the string representation of this Dsn.
+       *
+       * By default, this will render the public representation without the password
+       * component. To get the deprecated private representation, set `withPassword`
+       * to true.
+       *
+       * @param withPassword When set to true, the password will be included.
+       */
+      toString(withPassword = false) {
+          // tslint:disable-next-line:no-this-assignment
+          const { host, path, pass, port, projectId, protocol, user } = this;
+          return (`${protocol}://${user}${withPassword && pass ? `:${pass}` : ''}` +
+              `@${host}${port ? `:${port}` : ''}/${path ? `${path}/` : path}${projectId}`);
+      }
+      /** Parses a string into this Dsn. */
+      _fromString(str) {
+          const match = DSN_REGEX.exec(str);
+          if (!match) {
+              throw new SentryError(ERROR_MESSAGE);
+          }
+          const [protocol, user, pass = '', host, port = '', lastPath] = match.slice(1);
+          let path = '';
+          let projectId = lastPath;
+          const split = projectId.split('/');
+          if (split.length > 1) {
+              path = split.slice(0, -1).join('/');
+              projectId = split.pop();
+          }
+          this._fromComponents({ host, pass, path, projectId, port, protocol: protocol, user });
+      }
+      /** Maps Dsn components into this instance. */
+      _fromComponents(components) {
+          this.protocol = components.protocol;
+          this.user = components.user;
+          this.pass = components.pass || '';
+          this.host = components.host;
+          this.port = components.port || '';
+          this.path = components.path || '';
+          this.projectId = components.projectId;
+      }
+      /** Validates this Dsn and throws on error. */
+      _validate() {
+          ['protocol', 'user', 'host', 'projectId'].forEach(component => {
+              if (!this[component]) {
+                  throw new SentryError(ERROR_MESSAGE);
+              }
+          });
+          if (this.protocol !== 'http' && this.protocol !== 'https') {
+              throw new SentryError(ERROR_MESSAGE);
+          }
+          if (this.port && isNaN(parseInt(this.port, 10))) {
+              throw new SentryError(ERROR_MESSAGE);
+          }
       }
   }
 
@@ -1484,7 +2071,7 @@ var Sentry = (function (exports) {
        * @inheritDoc
        */
       setUser(user) {
-          this._user = normalize(user);
+          this._user = user || {};
           this._notifyScopeListeners();
           return this;
       }
@@ -1492,7 +2079,7 @@ var Sentry = (function (exports) {
        * @inheritDoc
        */
       setTags(tags) {
-          this._tags = Object.assign({}, this._tags, normalize(tags));
+          this._tags = Object.assign({}, this._tags, tags);
           this._notifyScopeListeners();
           return this;
       }
@@ -1500,15 +2087,15 @@ var Sentry = (function (exports) {
        * @inheritDoc
        */
       setTag(key, value) {
-          this._tags = Object.assign({}, this._tags, { [key]: normalize(value) });
+          this._tags = Object.assign({}, this._tags, { [key]: value });
           this._notifyScopeListeners();
           return this;
       }
       /**
        * @inheritDoc
        */
-      setExtras(extra) {
-          this._extra = Object.assign({}, this._extra, normalize(extra));
+      setExtras(extras) {
+          this._extra = Object.assign({}, this._extra, extras);
           this._notifyScopeListeners();
           return this;
       }
@@ -1516,7 +2103,7 @@ var Sentry = (function (exports) {
        * @inheritDoc
        */
       setExtra(key, extra) {
-          this._extra = Object.assign({}, this._extra, { [key]: normalize(extra) });
+          this._extra = Object.assign({}, this._extra, { [key]: extra });
           this._notifyScopeListeners();
           return this;
       }
@@ -1524,7 +2111,7 @@ var Sentry = (function (exports) {
        * @inheritDoc
        */
       setFingerprint(fingerprint) {
-          this._fingerprint = normalize(fingerprint);
+          this._fingerprint = fingerprint;
           this._notifyScopeListeners();
           return this;
       }
@@ -1532,7 +2119,7 @@ var Sentry = (function (exports) {
        * @inheritDoc
        */
       setLevel(level) {
-          this._level = normalize(level);
+          this._level = level;
           this._notifyScopeListeners();
           return this;
       }
@@ -1541,14 +2128,17 @@ var Sentry = (function (exports) {
        */
       setTransaction(transaction) {
           this._transaction = transaction;
+          if (this._span) {
+              this._span.transaction = transaction;
+          }
           this._notifyScopeListeners();
           return this;
       }
       /**
        * @inheritDoc
        */
-      setContext(name, context) {
-          this._context[name] = context ? normalize(context) : undefined;
+      setContext(key, context) {
+          this._context = Object.assign({}, this._context, { [key]: context });
           this._notifyScopeListeners();
           return this;
       }
@@ -1559,15 +2149,6 @@ var Sentry = (function (exports) {
           this._span = span;
           this._notifyScopeListeners();
           return this;
-      }
-      /**
-       * @inheritDoc
-       */
-      startSpan(parentSpan) {
-          const span = new Span();
-          span.setParent(parentSpan);
-          this.setSpan(span);
-          return span;
       }
       /**
        * Internal getter for Span, used in Hub.
@@ -1616,12 +2197,11 @@ var Sentry = (function (exports) {
        * @inheritDoc
        */
       addBreadcrumb(breadcrumb, maxBreadcrumbs) {
-          const timestamp = new Date().getTime() / 1000;
-          const mergedBreadcrumb = Object.assign({ timestamp }, breadcrumb);
+          const mergedBreadcrumb = Object.assign({ timestamp: timestampWithMs() }, breadcrumb);
           this._breadcrumbs =
               maxBreadcrumbs !== undefined && maxBreadcrumbs >= 0
-                  ? [...this._breadcrumbs, normalize(mergedBreadcrumb)].slice(-maxBreadcrumbs)
-                  : [...this._breadcrumbs, normalize(mergedBreadcrumb)];
+                  ? [...this._breadcrumbs, mergedBreadcrumb].slice(-maxBreadcrumbs)
+                  : [...this._breadcrumbs, mergedBreadcrumb];
           this._notifyScopeListeners();
           return this;
       }
@@ -1681,8 +2261,7 @@ var Sentry = (function (exports) {
               event.transaction = this._transaction;
           }
           if (this._span) {
-              event.contexts = event.contexts || {};
-              event.contexts.trace = this._span;
+              event.contexts = Object.assign({ trace: this._span.getTraceContext() }, event.contexts);
           }
           this._applyFingerprint(event);
           event.breadcrumbs = [...(event.breadcrumbs || []), ...this._breadcrumbs];
@@ -1720,7 +2299,7 @@ var Sentry = (function (exports) {
    * Default maximum number of breadcrumbs added to an event. Can be overwritten
    * with {@link Options.maxBreadcrumbs}.
    */
-  const DEFAULT_BREADCRUMBS = 30;
+  const DEFAULT_BREADCRUMBS = 100;
   /**
    * Absolute maximum number of breadcrumbs added to an event. The
    * `maxBreadcrumbs` option cannot be higher than this value.
@@ -1768,6 +2347,9 @@ var Sentry = (function (exports) {
       bindClient(client) {
           const top = this.getStackTop();
           top.client = client;
+          if (client && client.setupIntegrations) {
+              client.setupIntegrations();
+          }
       }
       /**
        * @inheritDoc
@@ -1897,7 +2479,7 @@ var Sentry = (function (exports) {
           if (maxBreadcrumbs <= 0) {
               return;
           }
-          const timestamp = new Date().getTime() / 1000;
+          const timestamp = timestampWithMs();
           const mergedBreadcrumb = Object.assign({ timestamp }, breadcrumb);
           const finalBreadcrumb = beforeBreadcrumb
               ? consoleSandbox(() => beforeBreadcrumb(mergedBreadcrumb, hint))
@@ -2007,23 +2589,34 @@ var Sentry = (function (exports) {
       /**
        * @inheritDoc
        */
+      startSpan(spanOrSpanContext, forceNoChild = false) {
+          return this._callExtensionMethod('startSpan', spanOrSpanContext, forceNoChild);
+      }
+      /**
+       * @inheritDoc
+       */
       traceHeaders() {
-          const top = this.getStackTop();
-          if (top.scope && top.client) {
-              const span = top.scope.getSpan();
-              if (span) {
-                  return {
-                      'sentry-trace': span.toTraceparent(),
-                  };
-              }
+          return this._callExtensionMethod('traceHeaders');
+      }
+      /**
+       * Calls global extension method and binding current instance to the function call
+       */
+      // @ts-ignore
+      _callExtensionMethod(method, ...args) {
+          const carrier = getMainCarrier();
+          const sentry = carrier.__SENTRY__;
+          // tslint:disable-next-line: strict-type-predicates
+          if (sentry && sentry.extensions && typeof sentry.extensions[method] === 'function') {
+              return sentry.extensions[method].apply(this, args);
           }
-          return {};
+          logger.warn(`Extension method ${method} couldn't be found, doing nothing.`);
       }
   }
   /** Returns the global shim registry. */
   function getMainCarrier() {
       const carrier = getGlobalObject();
       carrier.__SENTRY__ = carrier.__SENTRY__ || {
+          extensions: {},
           hub: undefined,
       };
       return carrier;
@@ -2066,10 +2659,14 @@ var Sentry = (function (exports) {
    */
   function getHubFromActiveDomain(registry) {
       try {
-          // We need to use `dynamicRequire` because `require` on it's own will be optimized by webpack.
-          // We do not want this to happen, we need to try to `require` the domain node module and fail if we are in browser
-          // for example so we do not have to shim it and use `getCurrentHub` universally.
-          const domain = dynamicRequire(module, 'domain');
+          const property = 'domain';
+          const carrier = getMainCarrier();
+          const sentry = carrier.__SENTRY__;
+          // tslint:disable-next-line: strict-type-predicates
+          if (!sentry || !sentry.extensions || !sentry.extensions[property]) {
+              return getHubFromCarrier(registry);
+          }
+          const domain = sentry.extensions[property];
           const activeDomain = domain.active;
           // If there no active domain, just return global hub
           if (!activeDomain) {
@@ -2268,79 +2865,6 @@ var Sentry = (function (exports) {
       callOnHub('withScope', callback);
   }
 
-  /** Regular expression used to parse a Dsn. */
-  const DSN_REGEX = /^(?:(\w+):)\/\/(?:(\w+)(?::(\w+))?@)([\w\.-]+)(?::(\d+))?\/(.+)/;
-  /** Error message */
-  const ERROR_MESSAGE = 'Invalid Dsn';
-  /** The Sentry Dsn, identifying a Sentry instance and project. */
-  class Dsn {
-      /** Creates a new Dsn component */
-      constructor(from) {
-          if (typeof from === 'string') {
-              this._fromString(from);
-          }
-          else {
-              this._fromComponents(from);
-          }
-          this._validate();
-      }
-      /**
-       * Renders the string representation of this Dsn.
-       *
-       * By default, this will render the public representation without the password
-       * component. To get the deprecated private _representation, set `withPassword`
-       * to true.
-       *
-       * @param withPassword When set to true, the password will be included.
-       */
-      toString(withPassword = false) {
-          // tslint:disable-next-line:no-this-assignment
-          const { host, path, pass, port, projectId, protocol, user } = this;
-          return (`${protocol}://${user}${withPassword && pass ? `:${pass}` : ''}` +
-              `@${host}${port ? `:${port}` : ''}/${path ? `${path}/` : path}${projectId}`);
-      }
-      /** Parses a string into this Dsn. */
-      _fromString(str) {
-          const match = DSN_REGEX.exec(str);
-          if (!match) {
-              throw new SentryError(ERROR_MESSAGE);
-          }
-          const [protocol, user, pass = '', host, port = '', lastPath] = match.slice(1);
-          let path = '';
-          let projectId = lastPath;
-          const split = projectId.split('/');
-          if (split.length > 1) {
-              path = split.slice(0, -1).join('/');
-              projectId = split.pop();
-          }
-          this._fromComponents({ host, pass, path, projectId, port, protocol: protocol, user });
-      }
-      /** Maps Dsn components into this instance. */
-      _fromComponents(components) {
-          this.protocol = components.protocol;
-          this.user = components.user;
-          this.pass = components.pass || '';
-          this.host = components.host;
-          this.port = components.port || '';
-          this.path = components.path || '';
-          this.projectId = components.projectId;
-      }
-      /** Validates this Dsn and throws on error. */
-      _validate() {
-          ['protocol', 'user', 'host', 'projectId'].forEach(component => {
-              if (!this[component]) {
-                  throw new SentryError(ERROR_MESSAGE);
-              }
-          });
-          if (this.protocol !== 'http' && this.protocol !== 'https') {
-              throw new SentryError(ERROR_MESSAGE);
-          }
-          if (this.port && isNaN(parseInt(this.port, 10))) {
-              throw new SentryError(ERROR_MESSAGE);
-          }
-      }
-  }
-
   const SENTRY_API_VERSION = '7';
   /** Helper class to provide urls to different Sentry endpoints. */
   class API {
@@ -2384,7 +2908,6 @@ var Sentry = (function (exports) {
       getRequestHeaders(clientName, clientVersion) {
           const dsn = this._dsnObject;
           const header = [`Sentry sentry_version=${SENTRY_API_VERSION}`];
-          header.push(`sentry_timestamp=${new Date().getTime()}`);
           header.push(`sentry_client=${clientName}/${clientVersion}`);
           header.push(`sentry_key=${dsn.user}`);
           if (dsn.pass) {
@@ -2454,7 +2977,13 @@ var Sentry = (function (exports) {
           integrations = Array.isArray(integrations) ? integrations : [integrations];
       }
       else {
-          return [...defaultIntegrations];
+          integrations = [...defaultIntegrations];
+      }
+      // Make sure that if present, `Debug` integration will always run last
+      const integrationsNames = integrations.map(i => i.name);
+      const alwaysLastToRun = 'Debug';
+      if (integrationsNames.indexOf(alwaysLastToRun) !== -1) {
+          integrations.push(...integrations.splice(integrationsNames.indexOf(alwaysLastToRun), 1));
       }
       return integrations;
   }
@@ -2530,9 +3059,6 @@ var Sentry = (function (exports) {
           this._options = options;
           if (options.dsn) {
               this._dsn = new Dsn(options.dsn);
-          }
-          if (this._isEnabled()) {
-              this._integrations = setupIntegrations(this._options);
           }
       }
       /**
@@ -2629,10 +3155,12 @@ var Sentry = (function (exports) {
           });
       }
       /**
-       * @inheritDoc
+       * Sets up the integrations
        */
-      getIntegrations() {
-          return this._integrations || {};
+      setupIntegrations() {
+          if (this._isEnabled()) {
+              this._integrations = setupIntegrations(this._options);
+          }
       }
       /**
        * @inheritDoc
@@ -2695,7 +3223,7 @@ var Sentry = (function (exports) {
        * @returns A new event with more information.
        */
       _prepareEvent(event, scope, hint) {
-          const { environment, release, dist, maxValueLength = 250 } = this.getOptions();
+          const { environment, release, dist, maxValueLength = 250, normalizeDepth = 3 } = this.getOptions();
           const prepared = Object.assign({}, event);
           if (prepared.environment === undefined && environment !== undefined) {
               prepared.environment = environment;
@@ -2718,7 +3246,7 @@ var Sentry = (function (exports) {
               request.url = truncate(request.url, maxValueLength);
           }
           if (prepared.event_id === undefined) {
-              prepared.event_id = uuid4();
+              prepared.event_id = hint && hint.event_id ? hint.event_id : uuid4();
           }
           this._addIntegrations(prepared.sdk);
           // We prepare the result here with a resolved Event.
@@ -2729,7 +3257,40 @@ var Sentry = (function (exports) {
               // In case we have a hub we reassign it.
               result = scope.applyToEvent(prepared, hint);
           }
-          return result;
+          return result.then(evt => {
+              // tslint:disable-next-line:strict-type-predicates
+              if (typeof normalizeDepth === 'number' && normalizeDepth > 0) {
+                  return this._normalizeEvent(evt, normalizeDepth);
+              }
+              return evt;
+          });
+      }
+      /**
+       * Applies `normalize` function on necessary `Event` attributes to make them safe for serialization.
+       * Normalized keys:
+       * - `breadcrumbs.data`
+       * - `user`
+       * - `contexts`
+       * - `extra`
+       * @param event Event
+       * @returns Normalized event
+       */
+      _normalizeEvent(event, depth) {
+          if (!event) {
+              return null;
+          }
+          // tslint:disable:no-unsafe-any
+          return Object.assign({}, event, (event.breadcrumbs && {
+              breadcrumbs: event.breadcrumbs.map(b => (Object.assign({}, b, (b.data && {
+                  data: normalize(b.data, depth),
+              })))),
+          }), (event.user && {
+              user: normalize(event.user, depth),
+          }), (event.contexts && {
+              contexts: normalize(event.contexts, depth),
+          }), (event.extra && {
+              extra: normalize(event.extra, depth),
+          }));
       }
       /**
        * This function adds all used integrations to the SDK info in the event.
@@ -2772,44 +3333,40 @@ var Sentry = (function (exports) {
                       return;
                   }
                   let finalEvent = prepared;
-                  try {
-                      const isInternalException = hint && hint.data && hint.data.__sentry__ === true;
-                      if (isInternalException || !beforeSend) {
-                          this._getBackend().sendEvent(finalEvent);
-                          resolve(finalEvent);
+                  const isInternalException = hint && hint.data && hint.data.__sentry__ === true;
+                  if (isInternalException || !beforeSend) {
+                      this._getBackend().sendEvent(finalEvent);
+                      resolve(finalEvent);
+                      return;
+                  }
+                  const beforeSendResult = beforeSend(prepared, hint);
+                  // tslint:disable-next-line:strict-type-predicates
+                  if (typeof beforeSendResult === 'undefined') {
+                      logger.error('`beforeSend` method has to return `null` or a valid event.');
+                  }
+                  else if (isThenable(beforeSendResult)) {
+                      this._handleAsyncBeforeSend(beforeSendResult, resolve, reject);
+                  }
+                  else {
+                      finalEvent = beforeSendResult;
+                      if (finalEvent === null) {
+                          logger.log('`beforeSend` returned `null`, will not send event.');
+                          resolve(null);
                           return;
                       }
-                      const beforeSendResult = beforeSend(prepared, hint);
-                      if (typeof beforeSendResult === 'undefined') {
-                          logger.error('`beforeSend` method has to return `null` or a valid event.');
-                      }
-                      else if (isThenable(beforeSendResult)) {
-                          this._handleAsyncBeforeSend(beforeSendResult, resolve, reject);
-                      }
-                      else {
-                          finalEvent = beforeSendResult;
-                          if (finalEvent === null) {
-                              logger.log('`beforeSend` returned `null`, will not send event.');
-                              resolve(null);
-                              return;
-                          }
-                          // From here on we are really async
-                          this._getBackend().sendEvent(finalEvent);
-                          resolve(finalEvent);
-                      }
-                  }
-                  catch (exception) {
-                      this.captureException(exception, {
-                          data: {
-                              __sentry__: true,
-                          },
-                          originalException: exception,
-                      });
-                      reject('`beforeSend` threw an error, will not send event.');
+                      // From here on we are really async
+                      this._getBackend().sendEvent(finalEvent);
+                      resolve(finalEvent);
                   }
               })
-                  .then(null, () => {
-                  reject('`beforeSend` threw an error, will not send event.');
+                  .then(null, reason => {
+                  this.captureException(reason, {
+                      data: {
+                          __sentry__: true,
+                      },
+                      originalException: reason,
+                  });
+                  reject(`Event processing pipeline threw an error, original event will not be sent. Details have been sent as a new event.\nReason: ${reason}`);
               });
           });
       }
@@ -2910,7 +3467,9 @@ var Sentry = (function (exports) {
       if (options.debug === true) {
           logger.enable();
       }
-      getCurrentHub().bindClient(new clientClass(options));
+      const hub = getCurrentHub();
+      const client = new clientClass(options);
+      hub.bindClient(client);
   }
 
   let originalFunctionToString;
@@ -2928,7 +3487,7 @@ var Sentry = (function (exports) {
       setupOnce() {
           originalFunctionToString = Function.prototype.toString;
           Function.prototype.toString = function (...args) {
-              const context = this.__sentry__ ? this.__sentry_original__ : this;
+              const context = this.__sentry_original__ || this;
               // tslint:disable-next-line:no-unsafe-any
               return originalFunctionToString.apply(context, args);
           };
@@ -2998,8 +3557,12 @@ var Sentry = (function (exports) {
               return false;
           }
           try {
-              // tslint:disable-next-line:no-unsafe-any
-              return event.exception.values[0].type === 'SentryError';
+              return ((event &&
+                  event.exception &&
+                  event.exception.values &&
+                  event.exception.values[0] &&
+                  event.exception.values[0].type === 'SentryError') ||
+                  false);
           }
           catch (_oO) {
               return false;
@@ -3052,8 +3615,7 @@ var Sentry = (function (exports) {
           }
           if (event.exception) {
               try {
-                  // tslint:disable-next-line:no-unsafe-any
-                  const { type, value } = event.exception.values[0];
+                  const { type = '', value = '' } = (event.exception.values && event.exception.values[0]) || {};
                   return [`${value}`, `${type}: ${value}`];
               }
               catch (oO) {
@@ -3067,14 +3629,12 @@ var Sentry = (function (exports) {
       _getEventFilterUrl(event) {
           try {
               if (event.stacktrace) {
-                  // tslint:disable:no-unsafe-any
                   const frames = event.stacktrace.frames;
-                  return frames[frames.length - 1].filename;
+                  return (frames && frames[frames.length - 1].filename) || null;
               }
               if (event.exception) {
-                  // tslint:disable:no-unsafe-any
-                  const frames = event.exception.values[0].stacktrace.frames;
-                  return frames[frames.length - 1].filename;
+                  const frames = event.exception.values && event.exception.values[0].stacktrace && event.exception.values[0].stacktrace.frames;
+                  return (frames && frames[frames.length - 1].filename) || null;
               }
               return null;
           }
@@ -3100,7 +3660,7 @@ var Sentry = (function (exports) {
   // global reference to slice
   const UNKNOWN_FUNCTION = '?';
   // Chromium based browsers: Chrome, Brave, new Opera, new Edge
-  const chrome = /^\s*at (?:(.*?) ?\()?((?:file|https?|blob|chrome-extension|native|eval|webpack|<anonymous>|[-a-z]+:|\/).*?)(?::(\d+))?(?::(\d+))?\)?\s*$/i;
+  const chrome = /^\s*at (?:(.*?) ?\()?((?:file|https?|blob|chrome-extension|address|native|eval|webpack|<anonymous>|[-a-z]+:|.*bundle|\/).*?)(?::(\d+))?(?::(\d+))?\)?\s*$/i;
   // gecko regex: `(?:bundle|\d+\.js)`: `bundle` is for react native, `\d+\.js` also but specifically for ram bundles because it
   // generates filenames without a prefix like `file://` the filenames in the stacktrace are just 42.js
   // We need this specific case for now because we want no other regex to match.
@@ -3165,7 +3725,9 @@ var Sentry = (function (exports) {
                   parts[4] = submatch[3]; // column
               }
               element = {
-                  url: parts[2],
+                  // working with the regexp above is super painful. it is quite a hack, but just stripping the `address at `
+                  // prefix here seems like the quickest solution for now.
+                  url: parts[2] && parts[2].indexOf('address at ') === 0 ? parts[2].substr('address at '.length) : parts[2],
                   func: parts[1] || UNKNOWN_FUNCTION,
                   args: isNative ? [parts[2]] : [],
                   line: parts[3] ? +parts[3] : null,
@@ -3479,13 +4041,25 @@ var Sentry = (function (exports) {
       }
   }
 
-  const global$2 = getGlobalObject();
+  const global$3 = getGlobalObject();
   /** `fetch` based transport */
   class FetchTransport extends BaseTransport {
+      constructor() {
+          super(...arguments);
+          /** Locks transport after receiving 429 response */
+          this._disabledUntil = new Date(Date.now());
+      }
       /**
        * @inheritDoc
        */
       sendEvent(event) {
+          if (new Date(Date.now()) < this._disabledUntil) {
+              return Promise.reject({
+                  event,
+                  reason: `Transport locked till ${this._disabledUntil} due to too many requests.`,
+                  status: 429,
+              });
+          }
           const defaultOptions = {
               body: JSON.stringify(event),
               method: 'POST',
@@ -3495,32 +4069,72 @@ var Sentry = (function (exports) {
               // REF: https://github.com/getsentry/raven-js/issues/1233
               referrerPolicy: (supportsReferrerPolicy() ? 'origin' : ''),
           };
-          return this._buffer.add(global$2.fetch(this.url, defaultOptions).then(response => ({
-              status: exports.Status.fromHttpCode(response.status),
-          })));
+          if (this.options.headers !== undefined) {
+              defaultOptions.headers = this.options.headers;
+          }
+          return this._buffer.add(new SyncPromise((resolve, reject) => {
+              global$3
+                  .fetch(this.url, defaultOptions)
+                  .then(response => {
+                  const status = exports.Status.fromHttpCode(response.status);
+                  if (status === exports.Status.Success) {
+                      resolve({ status });
+                      return;
+                  }
+                  if (status === exports.Status.RateLimit) {
+                      const now = Date.now();
+                      this._disabledUntil = new Date(now + parseRetryAfterHeader(now, response.headers.get('Retry-After')));
+                      logger.warn(`Too many requests, backing off till: ${this._disabledUntil}`);
+                  }
+                  reject(response);
+              })
+                  .catch(reject);
+          }));
       }
   }
 
   /** `XHR` based transport */
   class XHRTransport extends BaseTransport {
+      constructor() {
+          super(...arguments);
+          /** Locks transport after receiving 429 response */
+          this._disabledUntil = new Date(Date.now());
+      }
       /**
        * @inheritDoc
        */
       sendEvent(event) {
+          if (new Date(Date.now()) < this._disabledUntil) {
+              return Promise.reject({
+                  event,
+                  reason: `Transport locked till ${this._disabledUntil} due to too many requests.`,
+                  status: 429,
+              });
+          }
           return this._buffer.add(new SyncPromise((resolve, reject) => {
               const request = new XMLHttpRequest();
               request.onreadystatechange = () => {
                   if (request.readyState !== 4) {
                       return;
                   }
-                  if (request.status === 200) {
-                      resolve({
-                          status: exports.Status.fromHttpCode(request.status),
-                      });
+                  const status = exports.Status.fromHttpCode(request.status);
+                  if (status === exports.Status.Success) {
+                      resolve({ status });
+                      return;
+                  }
+                  if (status === exports.Status.RateLimit) {
+                      const now = Date.now();
+                      this._disabledUntil = new Date(now + parseRetryAfterHeader(now, request.getResponseHeader('Retry-After')));
+                      logger.warn(`Too many requests, backing off till: ${this._disabledUntil}`);
                   }
                   reject(request);
               };
               request.open('POST', this.url);
+              for (const header in this.options.headers) {
+                  if (this.options.headers.hasOwnProperty(header)) {
+                      request.setRequestHeader(header, this.options.headers[header]);
+                  }
+              }
               request.send(JSON.stringify(event));
           }));
       }
@@ -3591,7 +4205,7 @@ var Sentry = (function (exports) {
   }
 
   const SDK_NAME = 'sentry.javascript.browser';
-  const SDK_VERSION = '5.7.1';
+  const SDK_VERSION = '5.15.4';
 
   /**
    * The Sentry Browser SDK Client.
@@ -3656,9 +4270,6 @@ var Sentry = (function (exports) {
       }
   }
 
-  const debounceDuration = 1000;
-  let keypressTimeout;
-  let lastCapturedEvent;
   let ignoreOnError = 0;
   /**
    * @hidden
@@ -3706,13 +4317,13 @@ var Sentry = (function (exports) {
           return fn;
       }
       const sentryWrapped = function () {
-          // tslint:disable-next-line:strict-type-predicates
-          if (before && typeof before === 'function') {
-              before.apply(this, arguments);
-          }
           const args = Array.prototype.slice.call(arguments);
           // tslint:disable:no-unsafe-any
           try {
+              // tslint:disable-next-line:strict-type-predicates
+              if (before && typeof before === 'function') {
+                  before.apply(this, arguments);
+              }
               const wrappedArguments = args.map((arg) => wrap(arg, options));
               if (fn.handleEvent) {
                   // Attempt to invoke user-land function
@@ -3730,14 +4341,14 @@ var Sentry = (function (exports) {
           }
           catch (ex) {
               ignoreNextOnError();
-              withScope(scope => {
+              withScope((scope) => {
                   scope.addEventProcessor((event) => {
                       const processedEvent = Object.assign({}, event);
                       if (options.mechanism) {
                           addExceptionTypeValue(processedEvent, undefined, undefined);
                           addExceptionMechanism(processedEvent, options.mechanism);
                       }
-                      processedEvent.extra = Object.assign({}, processedEvent.extra, { arguments: normalize(args, 3) });
+                      processedEvent.extra = Object.assign({}, processedEvent.extra, { arguments: args });
                       return processedEvent;
                   });
                   captureException(ex);
@@ -3789,94 +4400,6 @@ var Sentry = (function (exports) {
       }
       return sentryWrapped;
   }
-  let debounceTimer = 0;
-  /**
-   * Wraps addEventListener to capture UI breadcrumbs
-   * @param eventName the event name (e.g. "click")
-   * @returns wrapped breadcrumb events handler
-   * @hidden
-   */
-  function breadcrumbEventHandler(eventName, debounce = false) {
-      return (event) => {
-          // reset keypress timeout; e.g. triggering a 'click' after
-          // a 'keypress' will reset the keypress debounce so that a new
-          // set of keypresses can be recorded
-          keypressTimeout = undefined;
-          // It's possible this handler might trigger multiple times for the same
-          // event (e.g. event propagation through node ancestors). Ignore if we've
-          // already captured the event.
-          if (!event || lastCapturedEvent === event) {
-              return;
-          }
-          lastCapturedEvent = event;
-          const captureBreadcrumb = () => {
-              let target;
-              // Accessing event.target can throw (see getsentry/raven-js#838, #768)
-              try {
-                  target = event.target ? htmlTreeAsString(event.target) : htmlTreeAsString(event);
-              }
-              catch (e) {
-                  target = '<unknown>';
-              }
-              if (target.length === 0) {
-                  return;
-              }
-              getCurrentHub().addBreadcrumb({
-                  category: `ui.${eventName}`,
-                  message: target,
-              }, {
-                  event,
-                  name: eventName,
-              });
-          };
-          if (debounceTimer) {
-              clearTimeout(debounceTimer);
-          }
-          if (debounce) {
-              debounceTimer = setTimeout(captureBreadcrumb);
-          }
-          else {
-              captureBreadcrumb();
-          }
-      };
-  }
-  /**
-   * Wraps addEventListener to capture keypress UI events
-   * @returns wrapped keypress events handler
-   * @hidden
-   */
-  function keypressEventHandler() {
-      // TODO: if somehow user switches keypress target before
-      //       debounce timeout is triggered, we will only capture
-      //       a single breadcrumb from the FIRST target (acceptable?)
-      return (event) => {
-          let target;
-          try {
-              target = event.target;
-          }
-          catch (e) {
-              // just accessing event properties can throw an exception in some rare circumstances
-              // see: https://github.com/getsentry/raven-js/issues/838
-              return;
-          }
-          const tagName = target && target.tagName;
-          // only consider keypress events on actual input elements
-          // this will disregard keypresses targeting body (e.g. tabbing
-          // through elements, hotkeys, etc)
-          if (!tagName || (tagName !== 'INPUT' && tagName !== 'TEXTAREA' && !target.isContentEditable)) {
-              return;
-          }
-          // record first keypress in a series, but ignore subsequent
-          // keypresses until debounce clears
-          if (!keypressTimeout) {
-              breadcrumbEventHandler('input')(event);
-          }
-          clearTimeout(keypressTimeout);
-          keypressTimeout = setTimeout(() => {
-              keypressTimeout = undefined;
-          }, debounceDuration);
-      };
-  }
 
   /** Global handlers */
   class GlobalHandlers {
@@ -3886,12 +4409,6 @@ var Sentry = (function (exports) {
            * @inheritDoc
            */
           this.name = GlobalHandlers.id;
-          /** JSDoc */
-          this._global = getGlobalObject();
-          /** JSDoc */
-          this._oldOnErrorHandler = null;
-          /** JSDoc */
-          this._oldOnUnhandledRejectionHandler = null;
           /** JSDoc */
           this._onErrorHandlerInstalled = false;
           /** JSDoc */
@@ -3917,37 +4434,32 @@ var Sentry = (function (exports) {
           if (this._onErrorHandlerInstalled) {
               return;
           }
-          const self = this; // tslint:disable-line:no-this-assignment
-          this._oldOnErrorHandler = this._global.onerror;
-          this._global.onerror = function (msg, url, line, column, error) {
-              const currentHub = getCurrentHub();
-              const hasIntegration = currentHub.getIntegration(GlobalHandlers);
-              const isFailedOwnDelivery = error && error.__sentry_own_request__ === true;
-              if (!hasIntegration || shouldIgnoreOnError() || isFailedOwnDelivery) {
-                  if (self._oldOnErrorHandler) {
-                      return self._oldOnErrorHandler.apply(this, arguments);
+          addInstrumentationHandler({
+              callback: (data) => {
+                  const error = data.error;
+                  const currentHub = getCurrentHub();
+                  const hasIntegration = currentHub.getIntegration(GlobalHandlers);
+                  const isFailedOwnDelivery = error && error.__sentry_own_request__ === true;
+                  if (!hasIntegration || shouldIgnoreOnError() || isFailedOwnDelivery) {
+                      return;
                   }
-                  return false;
-              }
-              const client = currentHub.getClient();
-              const event = isPrimitive(error)
-                  ? self._eventFromIncompleteOnError(msg, url, line, column)
-                  : self._enhanceEventWithInitialFrame(eventFromUnknownInput(error, undefined, {
-                      attachStacktrace: client && client.getOptions().attachStacktrace,
-                      rejection: false,
-                  }), url, line, column);
-              addExceptionMechanism(event, {
-                  handled: false,
-                  type: 'onerror',
-              });
-              currentHub.captureEvent(event, {
-                  originalException: error,
-              });
-              if (self._oldOnErrorHandler) {
-                  return self._oldOnErrorHandler.apply(this, arguments);
-              }
-              return false;
-          };
+                  const client = currentHub.getClient();
+                  const event = isPrimitive(error)
+                      ? this._eventFromIncompleteOnError(data.msg, data.url, data.line, data.column)
+                      : this._enhanceEventWithInitialFrame(eventFromUnknownInput(error, undefined, {
+                          attachStacktrace: client && client.getOptions().attachStacktrace,
+                          rejection: false,
+                      }), data.url, data.line, data.column);
+                  addExceptionMechanism(event, {
+                      handled: false,
+                      type: 'onerror',
+                  });
+                  currentHub.captureEvent(event, {
+                      originalException: error,
+                  });
+              },
+              type: 'error',
+          });
           this._onErrorHandlerInstalled = true;
       }
       /** JSDoc */
@@ -3955,45 +4467,53 @@ var Sentry = (function (exports) {
           if (this._onUnhandledRejectionHandlerInstalled) {
               return;
           }
-          const self = this; // tslint:disable-line:no-this-assignment
-          this._oldOnUnhandledRejectionHandler = this._global.onunhandledrejection;
-          this._global.onunhandledrejection = function (e) {
-              let error = e;
-              try {
-                  error = e && 'reason' in e ? e.reason : e;
-              }
-              catch (_oO) {
-                  // no-empty
-              }
-              const currentHub = getCurrentHub();
-              const hasIntegration = currentHub.getIntegration(GlobalHandlers);
-              const isFailedOwnDelivery = error && error.__sentry_own_request__ === true;
-              if (!hasIntegration || shouldIgnoreOnError() || isFailedOwnDelivery) {
-                  if (self._oldOnUnhandledRejectionHandler) {
-                      return self._oldOnUnhandledRejectionHandler.apply(this, arguments);
+          addInstrumentationHandler({
+              callback: (e) => {
+                  let error = e;
+                  // dig the object of the rejection out of known event types
+                  try {
+                      // PromiseRejectionEvents store the object of the rejection under 'reason'
+                      // see https://developer.mozilla.org/en-US/docs/Web/API/PromiseRejectionEvent
+                      if ('reason' in e) {
+                          error = e.reason;
+                      }
+                      // something, somewhere, (likely a browser extension) effectively casts PromiseRejectionEvents
+                      // to CustomEvents, moving the `promise` and `reason` attributes of the PRE into
+                      // the CustomEvent's `detail` attribute, since they're not part of CustomEvent's spec
+                      // see https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent and
+                      // https://github.com/getsentry/sentry-javascript/issues/2380
+                      else if ('detail' in e && 'reason' in e.detail) {
+                          error = e.detail.reason;
+                      }
                   }
-                  return false;
-              }
-              const client = currentHub.getClient();
-              const event = isPrimitive(error)
-                  ? self._eventFromIncompleteRejection(error)
-                  : eventFromUnknownInput(error, undefined, {
-                      attachStacktrace: client && client.getOptions().attachStacktrace,
-                      rejection: true,
+                  catch (_oO) {
+                      // no-empty
+                  }
+                  const currentHub = getCurrentHub();
+                  const hasIntegration = currentHub.getIntegration(GlobalHandlers);
+                  const isFailedOwnDelivery = error && error.__sentry_own_request__ === true;
+                  if (!hasIntegration || shouldIgnoreOnError() || isFailedOwnDelivery) {
+                      return true;
+                  }
+                  const client = currentHub.getClient();
+                  const event = isPrimitive(error)
+                      ? this._eventFromIncompleteRejection(error)
+                      : eventFromUnknownInput(error, undefined, {
+                          attachStacktrace: client && client.getOptions().attachStacktrace,
+                          rejection: true,
+                      });
+                  event.level = exports.Severity.Error;
+                  addExceptionMechanism(event, {
+                      handled: false,
+                      type: 'onunhandledrejection',
                   });
-              event.level = exports.Severity.Error;
-              addExceptionMechanism(event, {
-                  handled: false,
-                  type: 'onunhandledrejection',
-              });
-              currentHub.captureEvent(event, {
-                  originalException: error,
-              });
-              if (self._oldOnUnhandledRejectionHandler) {
-                  return self._oldOnUnhandledRejectionHandler.apply(this, arguments);
-              }
-              return false;
-          };
+                  currentHub.captureEvent(event, {
+                      originalException: error,
+                  });
+                  return;
+              },
+              type: 'unhandledrejection',
+          });
           this._onUnhandledRejectionHandlerInstalled = true;
       }
       /**
@@ -4045,13 +4565,16 @@ var Sentry = (function (exports) {
           event.exception.values[0] = event.exception.values[0] || {};
           event.exception.values[0].stacktrace = event.exception.values[0].stacktrace || {};
           event.exception.values[0].stacktrace.frames = event.exception.values[0].stacktrace.frames || [];
+          const colno = isNaN(parseInt(column, 10)) ? undefined : column;
+          const lineno = isNaN(parseInt(line, 10)) ? undefined : line;
+          const filename = isString(url) && url.length > 0 ? url : getLocationHref();
           if (event.exception.values[0].stacktrace.frames.length === 0) {
               event.exception.values[0].stacktrace.frames.push({
-                  colno: column,
-                  filename: url || getLocationHref(),
+                  colno,
+                  filename,
                   function: '?',
                   in_app: true,
-                  lineno: line,
+                  lineno,
               });
           }
           return event;
@@ -4155,6 +4678,36 @@ var Sentry = (function (exports) {
               };
           });
       }
+      /** JSDoc */
+      _wrapXHR(originalSend) {
+          return function (...args) {
+              const xhr = this; // tslint:disable-line:no-this-assignment
+              const xmlHttpRequestProps = ['onload', 'onerror', 'onprogress', 'onreadystatechange'];
+              xmlHttpRequestProps.forEach(prop => {
+                  if (prop in xhr && typeof xhr[prop] === 'function') {
+                      fill(xhr, prop, function (original) {
+                          const wrapOptions = {
+                              mechanism: {
+                                  data: {
+                                      function: prop,
+                                      handler: getFunctionName(original),
+                                  },
+                                  handled: true,
+                                  type: 'instrument',
+                              },
+                          };
+                          // If Instrument integration has been called before TryCatch, get the name of original function
+                          if (original.__sentry_original__) {
+                              wrapOptions.mechanism.data.handler = getFunctionName(original.__sentry_original__);
+                          }
+                          // Otherwise wrap directly
+                          return wrap(original, wrapOptions);
+                      });
+                  }
+              });
+              return originalSend.apply(this, args);
+          };
+      }
       /**
        * Wrap timer functions and event targets to catch errors
        * and provide better metadata.
@@ -4165,6 +4718,9 @@ var Sentry = (function (exports) {
           fill(global, 'setTimeout', this._wrapTimeFunction.bind(this));
           fill(global, 'setInterval', this._wrapTimeFunction.bind(this));
           fill(global, 'requestAnimationFrame', this._wrapRAF.bind(this));
+          if ('XMLHttpRequest' in global) {
+              fill(XMLHttpRequest.prototype, 'send', this._wrapXHR.bind(this));
+          }
           [
               'EventTarget',
               'Window',
@@ -4202,23 +4758,11 @@ var Sentry = (function (exports) {
    * @inheritDoc
    */
   TryCatch.id = 'TryCatch';
-  /**
-   * Safely extract function name from itself
-   */
-  function getFunctionName(fn) {
-      try {
-          return (fn && fn.name) || '<anonymous>';
-      }
-      catch (e) {
-          // Just accessing custom props in some Selenium environments
-          // can cause a "Permission denied" exception (see raven-js#495).
-          return '<anonymous>';
-      }
-  }
 
-  const global$3 = getGlobalObject();
-  let lastHref;
-  /** Default Breadcrumbs instrumentations */
+  /**
+   * Default Breadcrumbs instrumentations
+   * TODO: Deprecated - with v6, this will be renamed to `Instrument`
+   */
   class Breadcrumbs {
       /**
        * @inheritDoc
@@ -4230,354 +4774,158 @@ var Sentry = (function (exports) {
           this.name = Breadcrumbs.id;
           this._options = Object.assign({ console: true, dom: true, fetch: true, history: true, sentry: true, xhr: true }, options);
       }
-      /** JSDoc */
-      _instrumentConsole() {
-          if (!('console' in global$3)) {
-              return;
-          }
-          ['debug', 'info', 'warn', 'error', 'log', 'assert'].forEach(function (level) {
-              if (!(level in global$3.console)) {
-                  return;
-              }
-              fill(global$3.console, level, function (originalConsoleLevel) {
-                  return function (...args) {
-                      const breadcrumbData = {
-                          category: 'console',
-                          data: {
-                              extra: {
-                                  arguments: normalize(args, 3),
-                              },
-                              logger: 'console',
-                          },
-                          level: exports.Severity.fromString(level),
-                          message: safeJoin(args, ' '),
-                      };
-                      if (level === 'assert') {
-                          if (args[0] === false) {
-                              breadcrumbData.message = `Assertion failed: ${safeJoin(args.slice(1), ' ') || 'console.assert'}`;
-                              breadcrumbData.data.extra.arguments = normalize(args.slice(1), 3);
-                              Breadcrumbs.addBreadcrumb(breadcrumbData, {
-                                  input: args,
-                                  level,
-                              });
-                          }
-                      }
-                      else {
-                          Breadcrumbs.addBreadcrumb(breadcrumbData, {
-                              input: args,
-                              level,
-                          });
-                      }
-                      // this fails for some browsers. :(
-                      if (originalConsoleLevel) {
-                          Function.prototype.apply.call(originalConsoleLevel, global$3.console, args);
-                      }
-                  };
-              });
-          });
-      }
-      /** JSDoc */
-      _instrumentDOM() {
-          if (!('document' in global$3)) {
-              return;
-          }
-          // Capture breadcrumbs from any click that is unhandled / bubbled up all the way
-          // to the document. Do this before we instrument addEventListener.
-          global$3.document.addEventListener('click', breadcrumbEventHandler('click'), false);
-          global$3.document.addEventListener('keypress', keypressEventHandler(), false);
-          // After hooking into document bubbled up click and keypresses events, we also hook into user handled click & keypresses.
-          ['EventTarget', 'Node'].forEach((target) => {
-              const proto = global$3[target] && global$3[target].prototype;
-              if (!proto || !proto.hasOwnProperty || !proto.hasOwnProperty('addEventListener')) {
-                  return;
-              }
-              fill(proto, 'addEventListener', function (original) {
-                  return function (eventName, fn, options) {
-                      if (fn && fn.handleEvent) {
-                          if (eventName === 'click') {
-                              fill(fn, 'handleEvent', function (innerOriginal) {
-                                  return function (event) {
-                                      breadcrumbEventHandler('click')(event);
-                                      return innerOriginal.call(this, event);
-                                  };
-                              });
-                          }
-                          if (eventName === 'keypress') {
-                              fill(fn, 'handleEvent', function (innerOriginal) {
-                                  return function (event) {
-                                      keypressEventHandler()(event);
-                                      return innerOriginal.call(this, event);
-                                  };
-                              });
-                          }
-                      }
-                      else {
-                          if (eventName === 'click') {
-                              breadcrumbEventHandler('click', true)(this);
-                          }
-                          if (eventName === 'keypress') {
-                              keypressEventHandler()(this);
-                          }
-                      }
-                      return original.call(this, eventName, fn, options);
-                  };
-              });
-              fill(proto, 'removeEventListener', function (original) {
-                  return function (eventName, fn, options) {
-                      let callback = fn;
-                      try {
-                          callback = callback && (callback.__sentry_wrapped__ || callback);
-                      }
-                      catch (e) {
-                          // ignore, accessing __sentry_wrapped__ will throw in some Selenium environments
-                      }
-                      return original.call(this, eventName, callback, options);
-                  };
-              });
-          });
-      }
-      /** JSDoc */
-      _instrumentFetch() {
-          if (!supportsNativeFetch()) {
-              return;
-          }
-          fill(global$3, 'fetch', function (originalFetch) {
-              return function (...args) {
-                  const fetchInput = args[0];
-                  let method = 'GET';
-                  let url;
-                  if (typeof fetchInput === 'string') {
-                      url = fetchInput;
-                  }
-                  else if ('Request' in global$3 && fetchInput instanceof Request) {
-                      url = fetchInput.url;
-                      if (fetchInput.method) {
-                          method = fetchInput.method;
-                      }
-                  }
-                  else {
-                      url = String(fetchInput);
-                  }
-                  if (args[1] && args[1].method) {
-                      method = args[1].method;
-                  }
-                  const client = getCurrentHub().getClient();
-                  const dsn = client && client.getDsn();
-                  if (dsn) {
-                      const filterUrl = new API(dsn).getStoreEndpoint();
-                      // if Sentry key appears in URL, don't capture it as a request
-                      // but rather as our own 'sentry' type breadcrumb
-                      if (filterUrl && url.indexOf(filterUrl) !== -1) {
-                          if (method === 'POST' && args[1] && args[1].body) {
-                              addSentryBreadcrumb(args[1].body);
-                          }
-                          return originalFetch.apply(global$3, args);
-                      }
-                  }
-                  const fetchData = {
-                      method: isString(method) ? method.toUpperCase() : method,
-                      url,
-                  };
-                  return originalFetch
-                      .apply(global$3, args)
-                      .then((response) => {
-                      fetchData.status_code = response.status;
-                      Breadcrumbs.addBreadcrumb({
-                          category: 'fetch',
-                          data: fetchData,
-                          type: 'http',
-                      }, {
-                          input: args,
-                          response,
-                      });
-                      return response;
-                  })
-                      .then(null, (error) => {
-                      Breadcrumbs.addBreadcrumb({
-                          category: 'fetch',
-                          data: fetchData,
-                          level: exports.Severity.Error,
-                          type: 'http',
-                      }, {
-                          error,
-                          input: args,
-                      });
-                      throw error;
-                  });
-              };
-          });
-      }
-      /** JSDoc */
-      _instrumentHistory() {
-          if (!supportsHistory()) {
-              return;
-          }
-          const captureUrlChange = (from, to) => {
-              const parsedLoc = parseUrl(global$3.location.href);
-              const parsedTo = parseUrl(to);
-              let parsedFrom = parseUrl(from);
-              // Initial pushState doesn't provide `from` information
-              if (!parsedFrom.path) {
-                  parsedFrom = parsedLoc;
-              }
-              // because onpopstate only tells you the "new" (to) value of location.href, and
-              // not the previous (from) value, we need to track the value of the current URL
-              // state ourselves
-              lastHref = to;
-              // Use only the path component of the URL if the URL matches the current
-              // document (almost all the time when using pushState)
-              if (parsedLoc.protocol === parsedTo.protocol && parsedLoc.host === parsedTo.host) {
-                  // tslint:disable-next-line:no-parameter-reassignment
-                  to = parsedTo.relative;
-              }
-              if (parsedLoc.protocol === parsedFrom.protocol && parsedLoc.host === parsedFrom.host) {
-                  // tslint:disable-next-line:no-parameter-reassignment
-                  from = parsedFrom.relative;
-              }
-              Breadcrumbs.addBreadcrumb({
-                  category: 'navigation',
-                  data: {
-                      from,
-                      to,
-                  },
-              });
+      /**
+       * Creates breadcrumbs from console API calls
+       */
+      _consoleBreadcrumb(handlerData) {
+          const breadcrumb = {
+              category: 'console',
+              data: {
+                  arguments: handlerData.args,
+                  logger: 'console',
+              },
+              level: exports.Severity.fromString(handlerData.level),
+              message: safeJoin(handlerData.args, ' '),
           };
-          // record navigation (URL) changes
-          const oldOnPopState = global$3.onpopstate;
-          global$3.onpopstate = (...args) => {
-              const currentHref = global$3.location.href;
-              captureUrlChange(lastHref, currentHref);
-              if (oldOnPopState) {
-                  return oldOnPopState.apply(this, args);
-              }
-          };
-          /**
-           * @hidden
-           */
-          function historyReplacementFunction(originalHistoryFunction) {
-              // note history.pushState.length is 0; intentionally not declaring
-              // params to preserve 0 arity
-              return function (...args) {
-                  const url = args.length > 2 ? args[2] : undefined;
-                  // url argument is optional
-                  if (url) {
-                      // coerce to string (this is what pushState does)
-                      captureUrlChange(lastHref, String(url));
-                  }
-                  return originalHistoryFunction.apply(this, args);
-              };
-          }
-          fill(global$3.history, 'pushState', historyReplacementFunction);
-          fill(global$3.history, 'replaceState', historyReplacementFunction);
-      }
-      /** JSDoc */
-      _instrumentXHR() {
-          if (!('XMLHttpRequest' in global$3)) {
-              return;
-          }
-          /**
-           * @hidden
-           */
-          function wrapProp(prop, xhr) {
-              if (prop in xhr && typeof xhr[prop] === 'function') {
-                  fill(xhr, prop, original => wrap(original, {
-                      mechanism: {
-                          data: {
-                              function: prop,
-                              handler: (original && original.name) || '<anonymous>',
-                          },
-                          handled: true,
-                          type: 'instrument',
-                      },
-                  }));
-              }
-          }
-          const xhrproto = XMLHttpRequest.prototype;
-          fill(xhrproto, 'open', originalOpen => function (...args) {
-              const url = args[1];
-              this.__sentry_xhr__ = {
-                  method: isString(args[0]) ? args[0].toUpperCase() : args[0],
-                  url: args[1],
-              };
-              const client = getCurrentHub().getClient();
-              const dsn = client && client.getDsn();
-              if (dsn) {
-                  const filterUrl = new API(dsn).getStoreEndpoint();
-                  // if Sentry key appears in URL, don't capture it as a request
-                  // but rather as our own 'sentry' type breadcrumb
-                  if (isString(url) && (filterUrl && url.indexOf(filterUrl) !== -1)) {
-                      this.__sentry_own_request__ = true;
-                  }
-              }
-              return originalOpen.apply(this, args);
-          });
-          fill(xhrproto, 'send', originalSend => function (...args) {
-              const xhr = this; // tslint:disable-line:no-this-assignment
-              if (xhr.__sentry_own_request__) {
-                  addSentryBreadcrumb(args[0]);
-              }
-              /**
-               * @hidden
-               */
-              function onreadystatechangeHandler() {
-                  if (xhr.readyState === 4) {
-                      if (xhr.__sentry_own_request__) {
-                          return;
-                      }
-                      try {
-                          // touching statusCode in some platforms throws
-                          // an exception
-                          if (xhr.__sentry_xhr__) {
-                              xhr.__sentry_xhr__.status_code = xhr.status;
-                          }
-                      }
-                      catch (e) {
-                          /* do nothing */
-                      }
-                      Breadcrumbs.addBreadcrumb({
-                          category: 'xhr',
-                          data: xhr.__sentry_xhr__,
-                          type: 'http',
-                      }, {
-                          xhr,
-                      });
-                  }
-              }
-              const xmlHttpRequestProps = ['onload', 'onerror', 'onprogress'];
-              xmlHttpRequestProps.forEach(prop => {
-                  wrapProp(prop, xhr);
-              });
-              if ('onreadystatechange' in xhr && typeof xhr.onreadystatechange === 'function') {
-                  fill(xhr, 'onreadystatechange', function (original) {
-                      return wrap(original, {
-                          mechanism: {
-                              data: {
-                                  function: 'onreadystatechange',
-                                  handler: (original && original.name) || '<anonymous>',
-                              },
-                              handled: true,
-                              type: 'instrument',
-                          },
-                      }, onreadystatechangeHandler);
-                  });
+          if (handlerData.level === 'assert') {
+              if (handlerData.args[0] === false) {
+                  breadcrumb.message = `Assertion failed: ${safeJoin(handlerData.args.slice(1), ' ') || 'console.assert'}`;
+                  breadcrumb.data.arguments = handlerData.args.slice(1);
               }
               else {
-                  // if onreadystatechange wasn't actually set by the page on this xhr, we
-                  // are free to set our own and capture the breadcrumb
-                  xhr.onreadystatechange = onreadystatechangeHandler;
+                  // Don't capture a breadcrumb for passed assertions
+                  return;
               }
-              return originalSend.apply(this, args);
+          }
+          getCurrentHub().addBreadcrumb(breadcrumb, {
+              input: handlerData.args,
+              level: handlerData.level,
           });
       }
       /**
-       * Helper that checks if integration is enabled on the client.
-       * @param breadcrumb Breadcrumb
-       * @param hint BreadcrumbHint
+       * Creates breadcrumbs from DOM API calls
        */
-      static addBreadcrumb(breadcrumb, hint) {
-          if (getCurrentHub().getIntegration(Breadcrumbs)) {
-              getCurrentHub().addBreadcrumb(breadcrumb, hint);
+      _domBreadcrumb(handlerData) {
+          let target;
+          // Accessing event.target can throw (see getsentry/raven-js#838, #768)
+          try {
+              target = handlerData.event.target
+                  ? htmlTreeAsString(handlerData.event.target)
+                  : htmlTreeAsString(handlerData.event);
           }
+          catch (e) {
+              target = '<unknown>';
+          }
+          if (target.length === 0) {
+              return;
+          }
+          getCurrentHub().addBreadcrumb({
+              category: `ui.${handlerData.name}`,
+              message: target,
+          }, {
+              event: handlerData.event,
+              name: handlerData.name,
+          });
+      }
+      /**
+       * Creates breadcrumbs from XHR API calls
+       */
+      _xhrBreadcrumb(handlerData) {
+          if (handlerData.endTimestamp) {
+              // We only capture complete, non-sentry requests
+              if (handlerData.xhr.__sentry_own_request__) {
+                  return;
+              }
+              getCurrentHub().addBreadcrumb({
+                  category: 'xhr',
+                  data: handlerData.xhr.__sentry_xhr__,
+                  type: 'http',
+              }, {
+                  xhr: handlerData.xhr,
+              });
+              return;
+          }
+          // We only capture issued sentry requests
+          if (this._options.sentry && handlerData.xhr.__sentry_own_request__) {
+              addSentryBreadcrumb(handlerData.args[0]);
+          }
+      }
+      /**
+       * Creates breadcrumbs from fetch API calls
+       */
+      _fetchBreadcrumb(handlerData) {
+          // We only capture complete fetch requests
+          if (!handlerData.endTimestamp) {
+              return;
+          }
+          const client = getCurrentHub().getClient();
+          const dsn = client && client.getDsn();
+          if (this._options.sentry && dsn) {
+              const filterUrl = new API(dsn).getStoreEndpoint();
+              // if Sentry key appears in URL, don't capture it as a request
+              // but rather as our own 'sentry' type breadcrumb
+              if (filterUrl &&
+                  handlerData.fetchData.url.indexOf(filterUrl) !== -1 &&
+                  handlerData.fetchData.method === 'POST' &&
+                  handlerData.args[1] &&
+                  handlerData.args[1].body) {
+                  addSentryBreadcrumb(handlerData.args[1].body);
+                  return;
+              }
+          }
+          if (handlerData.error) {
+              getCurrentHub().addBreadcrumb({
+                  category: 'fetch',
+                  data: Object.assign({}, handlerData.fetchData, { status_code: handlerData.response.status }),
+                  level: exports.Severity.Error,
+                  type: 'http',
+              }, {
+                  data: handlerData.error,
+                  input: handlerData.args,
+              });
+          }
+          else {
+              getCurrentHub().addBreadcrumb({
+                  category: 'fetch',
+                  data: Object.assign({}, handlerData.fetchData, { status_code: handlerData.response.status }),
+                  type: 'http',
+              }, {
+                  input: handlerData.args,
+                  response: handlerData.response,
+              });
+          }
+      }
+      /**
+       * Creates breadcrumbs from history API calls
+       */
+      _historyBreadcrumb(handlerData) {
+          const global = getGlobalObject();
+          let from = handlerData.from;
+          let to = handlerData.to;
+          const parsedLoc = parseUrl(global.location.href);
+          let parsedFrom = parseUrl(from);
+          const parsedTo = parseUrl(to);
+          // Initial pushState doesn't provide `from` information
+          if (!parsedFrom.path) {
+              parsedFrom = parsedLoc;
+          }
+          // Use only the path component of the URL if the URL matches the current
+          // document (almost all the time when using pushState)
+          if (parsedLoc.protocol === parsedTo.protocol && parsedLoc.host === parsedTo.host) {
+              // tslint:disable-next-line:no-parameter-reassignment
+              to = parsedTo.relative;
+          }
+          if (parsedLoc.protocol === parsedFrom.protocol && parsedLoc.host === parsedFrom.host) {
+              // tslint:disable-next-line:no-parameter-reassignment
+              from = parsedFrom.relative;
+          }
+          getCurrentHub().addBreadcrumb({
+              category: 'navigation',
+              data: {
+                  from,
+                  to,
+              },
+          });
       }
       /**
        * Instrument browser built-ins w/ breadcrumb capturing
@@ -4589,19 +4937,44 @@ var Sentry = (function (exports) {
        */
       setupOnce() {
           if (this._options.console) {
-              this._instrumentConsole();
+              addInstrumentationHandler({
+                  callback: (...args) => {
+                      this._consoleBreadcrumb(...args);
+                  },
+                  type: 'console',
+              });
           }
           if (this._options.dom) {
-              this._instrumentDOM();
+              addInstrumentationHandler({
+                  callback: (...args) => {
+                      this._domBreadcrumb(...args);
+                  },
+                  type: 'dom',
+              });
           }
           if (this._options.xhr) {
-              this._instrumentXHR();
+              addInstrumentationHandler({
+                  callback: (...args) => {
+                      this._xhrBreadcrumb(...args);
+                  },
+                  type: 'xhr',
+              });
           }
           if (this._options.fetch) {
-              this._instrumentFetch();
+              addInstrumentationHandler({
+                  callback: (...args) => {
+                      this._fetchBreadcrumb(...args);
+                  },
+                  type: 'fetch',
+              });
           }
           if (this._options.history) {
-              this._instrumentHistory();
+              addInstrumentationHandler({
+                  callback: (...args) => {
+                      this._historyBreadcrumb(...args);
+                  },
+                  type: 'history',
+              });
           }
       }
   }
@@ -4609,13 +4982,15 @@ var Sentry = (function (exports) {
    * @inheritDoc
    */
   Breadcrumbs.id = 'Breadcrumbs';
-  /** JSDoc */
+  /**
+   * Create a breadcrumb of `sentry` from the events themselves
+   */
   function addSentryBreadcrumb(serializedData) {
       // There's always something that can go wrong with deserialization...
       try {
           const event = JSON.parse(serializedData);
-          Breadcrumbs.addBreadcrumb({
-              category: 'sentry',
+          getCurrentHub().addBreadcrumb({
+              category: `sentry.${event.type === 'transaction' ? 'transaction' : 'event'}`,
               event_id: event.event_id,
               level: event.level || exports.Severity.fromString('error'),
               message: getEventDescription(event),
@@ -4659,7 +5034,7 @@ var Sentry = (function (exports) {
        * @inheritDoc
        */
       _handler(event, hint) {
-          if (!event.exception || !event.exception.values || !hint || !(hint.originalException instanceof Error)) {
+          if (!event.exception || !event.exception.values || !hint || !isInstanceOf(hint.originalException, Error)) {
               return event;
           }
           const linkedErrors = this._walkErrorTree(hint.originalException, this._key);
@@ -4670,7 +5045,7 @@ var Sentry = (function (exports) {
        * @inheritDoc
        */
       _walkErrorTree(error, key, stack = []) {
-          if (!(error[key] instanceof Error) || stack.length + 1 >= this._limit) {
+          if (!isInstanceOf(error[key], Error) || stack.length + 1 >= this._limit) {
               return stack;
           }
           const stacktrace = computeStackTrace(error[key]);
@@ -4876,8 +5251,7 @@ var Sentry = (function (exports) {
    * @returns The result of wrapped function call.
    */
   function wrap$1(fn) {
-      // tslint:disable-next-line: no-unsafe-any
-      return wrap(fn)();
+      return wrap(fn)(); // tslint:disable-line:no-unsafe-any
   }
 
   let windowIntegrations = {};
@@ -4896,7 +5270,6 @@ var Sentry = (function (exports) {
   exports.SDK_NAME = SDK_NAME;
   exports.SDK_VERSION = SDK_VERSION;
   exports.Scope = Scope;
-  exports.Span = Span;
   exports.Transports = index;
   exports.addBreadcrumb = addBreadcrumb;
   exports.addGlobalEventProcessor = addGlobalEventProcessor;
