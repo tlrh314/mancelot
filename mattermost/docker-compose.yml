@@ -4,7 +4,7 @@ services:
 
   db:
     build: db
-    image: mattermost-db:v5.22.2
+    image: mattermost-db:v5.23.0
     read_only: true
     restart: unless-stopped
     volumes:
@@ -23,7 +23,7 @@ services:
         - edition=team
         - PUID=1000
         - PGID=1000
-    image: mattermost-app:v5.22.2
+    image: mattermost-app:v5.23.0
     restart: unless-stopped
     volumes:
       - ${MANCELOT_DATA_PATH}mattermost/config:/mattermost/config:rw
@@ -32,6 +32,9 @@ services:
       - ${MANCELOT_DATA_PATH}mattermost/plugins:/mattermost/plugins:rw
       - ${MANCELOT_DATA_PATH}mattermost/client-plugins:/mattermost/client/plugins:rw
       - /etc/localtime:/etc/localtime:ro
+      # When you want to use SSO with GitLab, you have to add the cert pki chain of GitLab inside Alpine
+      # to avoid Token request failed: certificate signed by unknown authority (link: https://github.com/mattermost/mattermost-server/issues/13059)
+      # - <path_to_your_gitlab_pki>/pki_chain.pem:/etc/ssl/certs/pki_chain.pem:ro
     environment:
       - MM_USERNAME=mmuser
       - MM_PASSWORD=$MANCELOT_MATTERMOST_POSTGRES_PASSWORD
