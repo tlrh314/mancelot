@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+
+  blog:
+    build: .
+    image: mancelot-blog
+    container_name: mancelot-blog
+    volumes:
+      - ${MANCELOT_DATA_PATH-../data/}blog:/blog
+    restart: unless-stopped
+
+networks:
+  default:
+    external:
+      name: mancelot

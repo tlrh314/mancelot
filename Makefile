@@ -42,6 +42,24 @@ nginx-log:  ## Continously monitor log of nginx
 	done
 
 
+blog:  ## Build container for blog
+	docker-compose -f blog/docker-compose.yml build
+
+blog-start:  ## Start blog
+	docker-compose -f blog/docker-compose.yml up --build -d
+
+blog-stop:  ## Stop blog
+	docker-compose -f blog/docker-compose.yml stop blog
+	docker-compose -f blog/docker-compose.yml rm -f blog 
+
+blog-restart:  ## Restart blog
+	git pull
+	make blog
+	make blog-stop
+	make blog-start
+	docker image prune -f
+
+
 django:  ## Build container for Django (backend)
 	docker build -f backend/Dockerfile -t mancelot_django backend
 
