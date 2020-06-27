@@ -89,6 +89,7 @@ echo
 # Declare each domains and generate Let's Encrypt certificate
 declare -a DOMAINS=(
     "mancelot.app"
+        "blog.mancelot.app"
         "mm.mancelot.app"
         "staging.mancelot.app"
     "mancelot.be"
