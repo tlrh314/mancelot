@@ -166,17 +166,9 @@ mattermost-restart:  ## Restart mattermost
 	docker image prune -f
 
 
-preact:  ## Build Preact (frontend)
-	@cd frontend; \
-	npm install; \
-	npm run build; \
-	cd ..
-
-
 stop: ## Stop and remove a running container, given its name.
 	docker stop $(APP_NAME); docker rm $(APP_NAME)
 
-# NEVER EXECUTE THIS COMMAND IN PRODUCTION
 quit: ## Stop and remove all running containers.
 	@if [[ $$HOSTNAME == "ChezTimo15"* || $$HOSTNAME == "SurfacePro3"  ]]; then  \
 		docker stop $$(docker ps -a -q); docker rm $$(docker ps -a -q); \
