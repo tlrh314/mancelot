@@ -64,7 +64,7 @@ blog-restart:  ## Restart blog
 
 
 django:  ## Build container for Django (backend)
-	docker-compose -f backend/docker-compose.yml pull
+	make docker-pull
 	docker build -f backend/Dockerfile -t mancelot_django backend
 
 django-start:  ## Start Django
