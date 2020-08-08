@@ -1,12 +1,17 @@
 {
-    "title": "Mancelot",
+    "title": "Mancelot backend",
     "name": "mancelot",
+    "version": "1.0",
+    "description": "Mancelot is een vernieuwende app, waarmee mannen supermakkelijk verantwoorde kleding kunnen kopen",
     "homepage": "https://mancelot.app",
     "license": "AGPL-3.0-only",
     "author": "Timo Halbesma",
     "repository": {
         "type": "git",
         "url": "https://github.com/tlrh314/mancelot.git"
+    },
+    "bugs": {
+      "url": "https://github.com/tlrh314/mancelot/issues"
     },
     "dependencies": {
         "@sentry/browser": "^5.20.1",
