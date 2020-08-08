@@ -20,6 +20,7 @@ docker-pull:  ## Pull the latest Docker images from Dockerhub
 
 
 nginx:  ## Build container for nginx
+	docker-compose -f nginx/docker-compose.yml pull
 	docker-compose -f nginx/docker-compose.yml build
 
 nginx-start:  ## Start nginx
@@ -44,6 +45,7 @@ nginx-log:  ## Continously monitor log of nginx
 
 
 blog:  ## Build container for blog
+	docker-compose -f blog/docker-compose.yml pull
 	docker-compose -f blog/docker-compose.yml build
 
 blog-start:  ## Start blog
@@ -62,6 +64,7 @@ blog-restart:  ## Restart blog
 
 
 django:  ## Build container for Django (backend)
+	docker-compose -f backend/docker-compose.yml pull
 	docker build -f backend/Dockerfile -t mancelot_django backend
 
 django-start:  ## Start Django
@@ -127,6 +130,7 @@ dev-db-update:  ## download and load sql dump
 
 staging:  ## Build container for Django/staging (backend)
 	DOCKERIMAGE=mancelot_staging
+	docker-compose -f ../staging/backend/docker-compose.yml pull
 	docker build -f ../staging/backend/Dockerfile -t mancelot_staging ../staging/backend
 
 staging-start:  ## Start Django/staging
@@ -144,6 +148,7 @@ staging-restart:  ## Restart Django
 	docker image prune -f
 
 mattermost:  ## Build container for mattermost
+	docker-compose -f mattermost/docker-compose.yml pull
 	docker-compose -f mattermost/docker-compose.yml build
 
 mattermost-start:  ## Start mattermost
