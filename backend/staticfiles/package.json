@@ -2,26 +2,26 @@
     "title": "Mancelot",
     "name": "mancelot",
     "homepage": "https://mancelot.app",
-    "license": "AGPLv3",
+    "license": "AGPL-3.0-only",
     "author": "Timo Halbesma",
     "repository": {
         "type": "git",
         "url": "https://github.com/tlrh314/mancelot.git"
     },
     "dependencies": {
-        "@sentry/browser": "^5.15.5",
+        "@sentry/browser": "^5.20.1",
         "cookieconsent": "^3.1.1",
         "jquery": "^3.5.1"
     },
     "devDependencies": {
-        "browser-sync": "^2.26.7",
+        "browser-sync": "^2.26.12",
         "gulp": "^4.0.2",
         "gulp-autoprefixer": "^7.0.0",
         "gulp-clean-css": "4.2.0",
         "gulp-header": "2.0.9",
         "gulp-plumber": "^1.2.1",
         "gulp-rename": "1.4.0",
-        "gulp-sass": "4.0.2",
+        "gulp-sass": "^4.0.2",
         "gulp-uglify": "3.0.2"
     }
 }
