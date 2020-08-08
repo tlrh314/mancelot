@@ -17,7 +17,7 @@ x-defaults: &defaults
 services:
 
   mariadb:
-    image: mariadb:10.4
+    image: mariadb:10.5
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MANCELOT_MYSQL_ROOT_PASSWORD}

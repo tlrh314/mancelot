@@ -13,8 +13,8 @@ docker-pull:  ## Pull the latest Docker images from Dockerhub
 	docker pull certbot/certbot:latest
 	docker pull redis:alpine
 	docker pull memcached
-	docker pull nginx:1.17-alpine
-	docker pull mariadb:10.4
+	docker pull nginx:1.19-alpine
+	docker pull mariadb:10.5
 	docker pull postgres:9.4-alpine
 
 
