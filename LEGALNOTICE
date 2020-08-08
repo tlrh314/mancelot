@@ -6,3 +6,15 @@ SEPARATELY LICENSED COMPONENTS AND LIBRARIES
     Name: mattermost-docker 
     Link: https://github.com/mattermost/mattermost-docker
     License: Apache-2.0
+
+    Name: jQuery
+    Link: https://github.com/jquery/jquery
+    License: MIT
+
+    Name: cookieconsent
+    Link: https://github.com/osano/cookieconsent
+    License: MIT
+
+    Name: sentry-javascript
+    Link: https://github.com/getsentry/sentry-javascript
+    License: BSD-3-Clause
