@@ -64,32 +64,7 @@ def create_or_update_stores(logger, cmd_name, client, recursive=True):
             paymentoption, created = PaymentOption.objects.get_or_create(name=pm)
             logger.debug("  {0} PaymentOption: {1}".format(
                 "Created" if created else "Have", paymentoption))
-
-            if created:
-                # Log Created to PaymentOption instance only if created
-                paymentoption.last_updated_by = client.ceceuser
-                LogEntry.objects.log_action(
-                    user_id=client.ceceuser.pk,
-                    content_type_id=paymentoption_ctpk,
-                    object_id=paymentoption.pk,
-                    object_repr=str(paymentoption),
-                    action_flag=ADDITION if created else CHANGE,
-                    change_message="Created by '{0}'".format(cmd_name),
-                )
-                paymentoption.save()
-
-            # Add the paymentoption to the brand, and log to Store instance
             store.payment_options.add(paymentoption)
-            LogEntry.objects.log_action(
-                user_id=client.ceceuser.pk,
-                content_type_id=store_ctpk,
-                object_id=store.pk,
-                object_repr=str(store),
-                action_flag=ADDITION if created else CHANGE,
-                change_message="PaymentOption '{0}' added by '{1}'".format(
-                    paymentoption.name, cmd_name
-                )
-            )
             store.save()
 
         ### Download the logo. Data format is (usually) a full url

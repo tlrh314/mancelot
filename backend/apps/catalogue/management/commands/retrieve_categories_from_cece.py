@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 
 from catalogue.utils import CeceApiClient
 from catalogue.utils import CommandWrapper
@@ -19,10 +18,6 @@ def create_or_update_categories(logger, cmd_name, client, recursive=True):
     logger.debug("{0}: GET {1}".format(fn, uri))
     data = client.get_list(logger, uri, recursive=recursive)
     logger.debug("{0}: received {1} brands".format(fn, len(data)))
-
-    # Get the ContentType pks for the LogEntry
-    category_ctpk = ContentType.objects.get_for_model(Category).pk
-    subcategory_ctpk = ContentType.objects.get_for_model(Subcategory).pk
 
     # Iterate through the Cece data
     section_map = { v: k for k, v in dict(Category.SECTIONS).items() }
@@ -44,19 +39,6 @@ def create_or_update_categories(logger, cmd_name, client, recursive=True):
             )
             raise
         cece_api_url = "{0}{1}/".format(uri, c["id"])
-        last_updated_by = client.ceceuser
-
-        # Log Created/Updated to Category instance
-        LogEntry.objects.log_action(
-            user_id=client.ceceuser.pk,
-            content_type_id=category_ctpk,
-            object_id=category.pk,
-            object_repr=str(category),
-            action_flag=ADDITION if created else CHANGE,
-            change_message="{0} by '{1}'".format(
-                "Created" if created else "Updated", cmd_name
-            )
-        )
         category.save()
 
         # Related field: external subcategory is M2M, serializes as string (name)
@@ -67,33 +49,6 @@ def create_or_update_categories(logger, cmd_name, client, recursive=True):
             )
             logger.debug("  {0} Subcategory : {1}".format(
                 "Created" if created else "Have", subcategory))
-
-            if created:
-                # Log Created/Updated to Category instance
-                subcategory.last_updated_by = client.ceceuser
-                LogEntry.objects.log_action(
-                    user_id=client.ceceuser.pk,
-                    content_type_id=category_ctpk,
-                    object_id=category.pk,
-                    object_repr=str(category),
-                    action_flag=CHANGE,
-                    change_message="Subcategory '{0}' added by '{1}'".format(
-                        subcategory.name, cmd_name
-                    )
-                )
-
-            # Log Created/Updated to Subcategory instance
-            subcategory.last_updated_by = client.ceceuser
-            LogEntry.objects.log_action(
-                user_id=client.ceceuser.pk,
-                content_type_id=subcategory_ctpk,
-                object_id=subcategory.pk,
-                object_repr=str(subcategory),
-                action_flag=ADDITION if created else CHANGE,
-                change_message="{0} by '{1}'".format(
-                    "Created" if created else "Updated", cmd_name
-                )
-            )
             subcategory.save()
 
 

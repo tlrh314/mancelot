@@ -5,7 +5,6 @@ from urllib.parse import urlparse
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 from djmoney.money import Money
 
 from catalogue.utils import (
@@ -36,19 +35,6 @@ def get_or_create_brand(logger, p, brand_ctpk, client, cmd_name):
     logger.debug("  {0} Brand: {1}".format(
         "Created" if created else "Have", brand))
 
-    if created:
-        # Log Created to Brand instance only if created
-        brand.last_updated_by = client.ceceuser
-        LogEntry.objects.log_action(
-            user_id=client.ceceuser.pk,
-            content_type_id=brand_ctpk,
-            object_id=brand.pk,
-            object_repr=str(brand),
-            action_flag=ADDITION,
-            change_message="Created by '{0}'".format(cmd_name)
-        )
-        brand.save()
-
     return brand
 
 
@@ -58,19 +44,6 @@ def get_or_create_store(logger, p, store_ctpk, client, cmd_name):
     store, created = Store.objects.get_or_create(name=p["store"])
     logger.debug("  {0} Store: {1}".format(
         "Created" if created else "Have", store))
-
-    if created:
-        # Log Created to Store instance only if created
-        store.last_updated_by = client.ceceuser
-        LogEntry.objects.log_action(
-            user_id=client.ceceuser.pk,
-            content_type_id=store_ctpk,
-            object_id=store.pk,
-            object_repr=str(store),
-            action_flag=ADDITION,
-            change_message="Created by '{0}'".format(cmd_name)
-        )
-        store.save()
 
     return store
 
@@ -84,31 +57,7 @@ def get_or_create_color(logger, p, product, product_ctpk,
     logger.debug("  {0} Color: {1}".format(
         "Created" if created else "Have", color))
 
-    if created:
-        # Log Created to Color instance only if created
-        color.last_updated_by = client.ceceuser
-        LogEntry.objects.log_action(
-            user_id=client.ceceuser.pk,
-            content_type_id=color_ctpk,
-            object_id=color.pk,
-            object_repr=str(color),
-            action_flag=ADDITION,
-            change_message="Created by '{0}'".format(cmd_name)
-        )
-        color.save()
-
-    # Add the color to the product, and log to Product instance
     product.colors.add(color)
-    LogEntry.objects.log_action(
-        user_id=client.ceceuser.pk,
-        content_type_id=product_ctpk,
-        object_id=product.pk,
-        object_repr=str(product),
-        action_flag=CHANGE,
-        change_message="Color '{0}' added by '{1}'".format(
-            color.name, cmd_name
-        )
-    )
     product.save()
 
 
@@ -129,31 +78,7 @@ def get_or_create_categories(logger, p, product, product_ctpk,
             category.get_section_display()
         ))
 
-        if created:
-            # Log Created/Updated to Category instance
-            category.last_updated_by = client.ceceuser
-            LogEntry.objects.log_action(
-                user_id=client.ceceuser.pk,
-                content_type_id=category_ctpk,
-                object_id=category.pk,
-                object_repr=str(category),
-                action_flag=ADDITION,
-                change_message="Created by '{0}'".format(cmd_name)
-            )
-            category.save()
-
-        # Add the category to the product , and log to Product instance
         product.categories.add(category)
-        LogEntry.objects.log_action(
-            user_id=client.ceceuser.pk,
-            content_type_id=product_ctpk,
-            object_id=product.pk,
-            object_repr=str(product),
-            action_flag=CHANGE,
-            change_message="Category '{0} ({1})' added by '{2}'".format(
-                category.name, category.get_section_display(), cmd_name
-            )
-        )
         product.save()
 
 
@@ -170,21 +95,6 @@ def get_or_create_subcategories(logger, p, product, product_ctpk,
            "Created" if created else "Have", parent,
            parent.get_section_display()
        ))
-
-       if created:
-           # Log Created/Updated to Category instance
-           parent.last_updated_by = client.ceceuser
-           LogEntry.objects.log_action(
-               user_id=client.ceceuser.pk,
-               content_type_id=category_ctpk,
-               object_id=parent.pk,
-               object_repr=str(parent),
-               action_flag=ADDITION,
-               change_message="Created by '{0}' for Subcategory '{1} ({2})'".format(
-                   cmd_name, sc["sub_name"], parent.get_section_display(),
-               )
-           )
-           parent.save()
        # end of parent Category
 
        # Get or create Subcategory. Match on **(parent) Category** and **name**
@@ -197,45 +107,8 @@ def get_or_create_subcategories(logger, p, product, product_ctpk,
            subcategory.category.get_section_display()
        ))
 
-       if created:
-           # Log Created/Updated to (parent) Category instance
-           subcategory.last_updated_by = client.ceceuser
-           LogEntry.objects.log_action(
-               user_id=client.ceceuser.pk,
-               content_type_id=category_ctpk,
-               object_id=parent.pk,
-               object_repr=str(parent),
-               action_flag=ADDITION,
-               change_message="Subcategory '{0}' added by '{1}'".format(
-                   subcategory.name, cmd_name
-               )
-           )
-           subcategory.save()
-           # Log Created/Updated to Subcategory instance
-           subcategory.last_updated_by = client.ceceuser
-           LogEntry.objects.log_action(
-               user_id=client.ceceuser.pk,
-               content_type_id=subcategory_ctpk,
-               object_id=subcategory.pk,
-               object_repr=str(subcategory),
-               action_flag=ADDITION,
-               change_message="Created by '{0}'".format(cmd_name)
-           )
-           subcategory.save()
-
-       # Add the subcategory to the brand, and log to Product instance
+       # Add the subcategory to the brand
        product.subcategories.add(subcategory)
-       LogEntry.objects.log_action(
-           user_id=client.ceceuser.pk,
-           content_type_id=product_ctpk,
-           object_id=product.pk,
-           object_repr=str(product),
-           action_flag=CHANGE,
-           change_message="Subcategory '{0} ({1})' added by '{2}'".format(
-               subcategory.name, subcategory.category.get_section_display(),
-               cmd_name
-           )
-       )
        product.save()
 
 
@@ -249,31 +122,9 @@ def get_or_create_material(logger, p, product, product_ctpk,
         )
         logger.debug("  {0} Material: {1}".format(
             "Created" if created else "Have", material))
-        if created:
-            # Log Created to Material instance only if created
-            material.last_updated_by = client.ceceuser
-            LogEntry.objects.log_action(
-                user_id=client.ceceuser.pk,
-                content_type_id=material_ctpk,
-                object_id=material.pk,
-                object_repr=str(material),
-                action_flag=ADDITION if created else CHANGE,
-                change_message="Created by '{0}'".format(cmd_name),
-            )
-            material.save()
 
-        # Add the material to the product, and log to Product instance
+        # Add the material to the product
         product.materials.add(material)
-        LogEntry.objects.log_action(
-            user_id=client.ceceuser.pk,
-            content_type_id=product_ctpk,
-            object_id=product.pk,
-            object_repr=str(product),
-            action_flag=CHANGE,
-            change_message="Material '{0}' added by '{1}'".format(
-                material.name, cmd_name
-            )
-        )
         product.save()
 
 
@@ -289,31 +140,7 @@ def get_or_create_size(logger, p, product, product_ctpk,
         logger.debug("  {0} Size: {1}".format(
             "Created" if created else "Have", size))
 
-        if created:
-            # Log Created to Size instance only if created
-            size.last_updated_by = client.ceceuser
-            LogEntry.objects.log_action(
-                user_id=client.ceceuser.pk,
-                content_type_id=size_ctpk,
-                object_id=size.pk,
-                object_repr=str(size),
-                action_flag=ADDITION if created else CHANGE,
-                change_message="Created by '{0}'".format(cmd_name),
-            )
-            size.save()
-
-        # Add the size to the product, and log to Product instance
         product.sizes.add(size)
-        LogEntry.objects.log_action(
-            user_id=client.ceceuser.pk,
-            content_type_id=product_ctpk,
-            object_id=product.pk,
-            object_repr=str(product),
-            action_flag=CHANGE,
-            change_message="Size '{0}' added by '{1}'".format(
-                size.name, cmd_name
-            )
-        )
         product.save()
 
 
@@ -326,16 +153,6 @@ def create_or_update_products(logger, cmd_name, client, recursive=True):
     logger.debug("{0}: GET {1} <-- recursive = {2}".format(fn, uri, recursive))
     data = client.get_list(logger, uri, recursive=recursive)
     logger.debug("{0}: received {1} products".format(fn, len(data)))
-
-    # Get the ContentType pks for the LogEntry
-    category_ctpk = ContentType.objects.get_for_model(Category).pk
-    subcategory_ctpk = ContentType.objects.get_for_model(Subcategory).pk
-    store_ctpk = ContentType.objects.get_for_model(Store).pk
-    brand_ctpk = ContentType.objects.get_for_model(Brand).pk
-    size_ctpk = ContentType.objects.get_for_model(Size).pk
-    color_ctpk = ContentType.objects.get_for_model(Color).pk
-    material_ctpk = ContentType.objects.get_for_model(Material).pk
-    product_ctpk = ContentType.objects.get_for_model(Product).pk
 
     # Iterate through the Cece data
     section_map = { v: k for k, v in dict(Category.SECTIONS).items() }
@@ -376,19 +193,6 @@ def create_or_update_products(logger, cmd_name, client, recursive=True):
             product.save()
             logger.debug("  {0} Product: {1}".format("Created" if created else "Have", product))
             # end of fields
-
-            # Log Created/Updated to CeceLabel instance
-            LogEntry.objects.log_action(
-                user_id=client.ceceuser.pk,
-                content_type_id=product_ctpk,
-                object_id=product.pk,
-                object_repr=str(product),
-                action_flag=ADDITION if created else CHANGE,
-                change_message="{0} by '{1}'".format(
-                    "Created" if created else "Updated", cmd_name
-                )
-            )
-            product.save()
 
             # Related field: external color is a string (one color per instance)
             get_or_create_color(logger, p, product, product_ctpk,

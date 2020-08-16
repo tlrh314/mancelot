@@ -3,7 +3,6 @@ from urllib.parse import urlparse
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 
 from catalogue.utils import call_download_image
 from catalogue.utils import CeceApiClient
@@ -23,9 +22,6 @@ def create_or_update_paymentoptions(logger, cmd_name, client, recursive=True):
     data = client.get_list(logger, uri, recursive=recursive)
     logger.debug("{0}: received {1} paymethods".format(fn, len(data)))
 
-    # Get the ContentType pks for the LogEntry
-    paymentoption_ctpk = ContentType.objects.get_for_model(PaymentOption).pk
-
     # Iterate through the Cece data
     for i, pm in enumerate(data):
         logger.debug("\n{0} / {1}".format(i+1, len(data) ))
@@ -39,19 +35,6 @@ def create_or_update_paymentoptions(logger, cmd_name, client, recursive=True):
         # Overwrite all fields
         cece_logo_url = pm["icon_url"]
         paymentoption.cece_api_url = "{0}{1}/".format(uri, pm["id"])
-        paymentoption.last_updated_by = client.ceceuser
-
-        # Log Created/Updated to PaymentOption instance
-        LogEntry.objects.log_action(
-            user_id=client.ceceuser.pk,
-            content_type_id=paymentoption_ctpk,
-            object_id=paymentoption.pk,
-            object_repr=str(paymentoption),
-            action_flag=ADDITION if created else CHANGE,
-            change_message="{0} by '{1}'".format(
-                "Created" if created else "Updated", cmd_name
-            )
-        )
         paymentoption.save()
 
         ### Download the logo.
