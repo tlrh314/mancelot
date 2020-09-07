@@ -33,6 +33,7 @@ nginx-stop:  ## Stop nginx
 nginx-restart:  ## Restart nginx
 	git pull
 	make nginx
+	docker run --rm -it -v$$(pwd)/data/certbot/conf:/etc/letsencrypt mancelot-nginx:latest nginx -t
 	make nginx-stop
 	make nginx-start
 	docker image prune -f
