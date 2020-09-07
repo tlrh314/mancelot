@@ -391,3 +391,21 @@ if ( is_admin() ) {
 	require get_template_directory() . '/inc/admin/class-cenote-welcome-notice.php';
 	require get_template_directory() . '/inc/admin/class-cenote-tdi-notice.php';
 }
+
+
+/**
+ * Add Google Analytics to the theme
+ */
+function ns_google_analytics() { ?>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139275191-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-139275191-2');
+    </script>
+  <?php
+  }
+add_action( 'wp_head', 'ns_google_analytics', 10 );
