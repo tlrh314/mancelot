@@ -1,0 +1,108 @@
+@font-face {
+    font-family: "themegrill-icons";
+    src: url("./themegrill-icons.eot?86374cfcb9e8f90667faf2540f3044dd?#iefix") format("embedded-opentype"),
+url("../fonts/themegrill-icons.woff2?86374cfcb9e8f90667faf2540f3044dd") format("woff2"),
+url("../fonts/themegrill-icons.woff?86374cfcb9e8f90667faf2540f3044dd") format("woff"),
+url("../fonts/themegrill-icons.ttf?86374cfcb9e8f90667faf2540f3044dd") format("truetype"),
+url("../fonts/themegrill-icons.svg?86374cfcb9e8f90667faf2540f3044dd#themegrill-icons") format("svg");
+}
+
+i {
+    line-height: 1;
+}
+
+i[class^="tg-icon-"]:before, i[class*=" tg-icon-"]:before {
+    font-family: themegrill-icons !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.tg-icon-arrow-down:before {
+    content: "\f101";
+}
+.tg-icon-arrow-left:before {
+    content: "\f102";
+}
+.tg-icon-arrow-right:before {
+    content: "\f103";
+}
+.tg-icon-arrow-up:before {
+    content: "\f104";
+}
+.tg-icon-bar:before {
+    content: "\f105";
+}
+.tg-icon-behance:before {
+    content: "\f106";
+}
+.tg-icon-blogger:before {
+    content: "\f107";
+}
+.tg-icon-close:before {
+    content: "\f108";
+}
+.tg-icon-codepen:before {
+    content: "\f109";
+}
+.tg-icon-delicious:before {
+    content: "\f10a";
+}
+.tg-icon-deviantart:before {
+    content: "\f10b";
+}
+.tg-icon-dribbble:before {
+    content: "\f10c";
+}
+.tg-icon-facebook:before {
+    content: "\f10d";
+}
+.tg-icon-google-plus:before {
+    content: "\f10e";
+}
+.tg-icon-instagram:before {
+    content: "\f10f";
+}
+.tg-icon-linkedin:before {
+    content: "\f110";
+}
+.tg-icon-medium:before {
+    content: "\f111";
+}
+.tg-icon-pinterest:before {
+    content: "\f112";
+}
+.tg-icon-quora:before {
+    content: "\f113";
+}
+.tg-icon-quote-left:before {
+    content: "\f114";
+}
+.tg-icon-quote-right:before {
+    content: "\f115";
+}
+.tg-icon-reply:before {
+    content: "\f116";
+}
+.tg-icon-search:before {
+    content: "\f117";
+}
+.tg-icon-tumblr:before {
+    content: "\f118";
+}
+.tg-icon-twitter:before {
+    content: "\f119";
+}
+.tg-icon-vimeo:before {
+    content: "\f11a";
+}
+.tg-icon-yelp:before {
+    content: "\f11b";
+}
+.tg-icon-youtube:before {
+    content: "\f11c";
+}

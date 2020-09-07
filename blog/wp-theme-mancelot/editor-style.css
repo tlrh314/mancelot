@@ -1,0 +1,253 @@
+/*
+Theme Name: Cenote
+Description: Used to style the TinyMCE editor.
+*/
+/**
+ * Table of Contents:
+ *
+ * 1.0 - Normalize
+ * 2.0 - Body
+ * 3.0 - Typography
+ * 4.0 - Elements
+ * 5.0 - Alignment
+ * 6.0 - Caption
+ * 7.0 - Galleries
+ * 8.0 - Media Elements
+ */
+/*=============================================
+=            Body Typography            =
+=============================================*/
+body {
+	font-family: "Roboto", helvetica, arial, sans-serif;
+	font-size: 16px;
+	color: #363b40;
+}
+
+p {
+	margin: 0 0 10px;
+	line-height: 1.8;
+}
+
+blockquote {
+	text-align: center;
+	background: #fff9f5;
+	padding: 20px 40px;
+	margin: 0;
+	position: relative;
+}
+
+blockquote::before, blockquote::after {
+	position: absolute;
+	content: "\f114";
+	font-family: themegrill-icons;
+	display: block;
+	top: 10px;
+	left: 20px;
+}
+
+blockquote::after {
+	content: "\f115";
+	top: auto;
+	left: auto;
+	right: 20px;
+	bottom: 10px;
+}
+
+blockquote cite {
+	position: relative;
+	display: inline-block;
+	padding: 0 20px;
+	font-size: 14px;
+	margin-top: 20px;
+}
+
+blockquote cite::before {
+	content: "";
+	background-color: #363b40;
+	width: 10px;
+	height: 1px;
+	display: block;
+	position: absolute;
+	top: 10px;
+	left: 0;
+}
+
+code {
+	background-color: #f1f3f5;
+	padding: 0.125em 0.25em;
+}
+
+pre {
+	background-color: #f8f9fa;
+	padding: 20px;
+}
+
+.entry-content {
+	line-height: 1.8;
+}
+
+.entry-content p {
+	line-height: inherit;
+}
+
+/*=============================================
+=            Heading Typography            =
+=============================================*/
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Catamaran", helvetica, arial, sans-serif;
+	color: #16181a;
+	font-weight: 700;
+	line-height: 1.4;
+}
+
+h1 {
+	font-size: 2.5rem;
+}
+
+h2 {
+	font-size: 2.25rem;
+}
+
+h3 {
+	font-size: 1.75rem;
+}
+
+h4 {
+	font-size: 1.5rem;
+}
+
+h5 {
+	font-size: 1.313rem;
+}
+
+h6 {
+	font-size: 1.125rem;
+}
+
+/*=============================================
+=            Lists            =
+=============================================*/
+ul,
+ol {
+	margin: 0 0 1.6rem 1.6rem;
+	padding-left: 0;
+}
+
+ul {
+	list-style: square;
+}
+
+ol {
+	list-style: decimal;
+}
+
+li > ul,
+li > ol {
+	margin-bottom: 0;
+	margin-left: 1.6rem;
+}
+
+dt {
+	font-weight: 700;
+}
+
+dd {
+	margin: 0 1.6rem 1.6rem;
+}
+
+/*=============================================
+=            Captions            =
+=============================================*/
+.wp-caption {
+	margin-bottom: 1.5em;
+	max-width: 100%;
+}
+
+.wp-caption img[class*="wp-image-"] {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.wp-caption .wp-caption-text {
+	margin: 0.8075em 0;
+}
+
+.wp-caption-text {
+	text-align: center;
+}
+
+/*=============================================
+=            Gallery            =
+=============================================*/
+.gallery {
+	margin-bottom: 1.5em;
+}
+
+.gallery-item {
+	display: inline-block;
+	text-align: center;
+	vertical-align: top;
+	width: 100%;
+}
+
+.gallery-columns-2 .gallery-item {
+	max-width: 50%;
+}
+
+.gallery-columns-3 .gallery-item {
+	max-width: 33.33%;
+}
+
+.gallery-columns-4 .gallery-item {
+	max-width: 25%;
+}
+
+.gallery-columns-5 .gallery-item {
+	max-width: 20%;
+}
+
+.gallery-columns-6 .gallery-item {
+	max-width: 16.66%;
+}
+
+.gallery-columns-7 .gallery-item {
+	max-width: 14.28%;
+}
+
+.gallery-columns-8 .gallery-item {
+	max-width: 12.5%;
+}
+
+.gallery-columns-9 .gallery-item {
+	max-width: 11.11%;
+}
+
+.gallery-caption {
+	display: block;
+}
+
+ul.wp-block-gallery {
+	padding: 0;
+}
+
+.wp-block-gallery ul.blocks-gallery-grid img,
+ul.wp-block-gallery img {
+	margin-bottom: 0;
+}
+
+/* Gutenberg Blocks Layout.
+--------------------------------------------------------------*/
+.wp-block-gallery.alignleft, .wp-block-gallery.alignright, .wp-block-gallery.aligncenter,
+.wp-block-social-links.alignleft,
+.wp-block-social-links.alignright,
+.wp-block-social-links.aligncenter {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+}
