@@ -165,14 +165,3 @@ mattermost-restart:  ## Restart mattermost
 	make mattermost-stop
 	make mattermost-start
 	docker image prune -f
-
-
-stop: ## Stop and remove a running container, given its name.
-	docker stop $(APP_NAME); docker rm $(APP_NAME)
-
-quit: ## Stop and remove all running containers.
-	@if [[ $$HOSTNAME == "ChezTimo15"* || $$HOSTNAME == "SurfacePro3"  ]]; then  \
-		docker stop $$(docker ps -a -q); docker rm $$(docker ps -a -q); \
-	else  \
-		echo "For safety not implemented for hostname on $$HOSTNAME"; \
-	fi
