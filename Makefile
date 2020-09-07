@@ -165,3 +165,7 @@ mattermost-restart:  ## Restart mattermost
 	make mattermost-stop
 	make mattermost-start
 	docker image prune -f
+
+
+rsync-wp-theme:  ## Rsync the Mancelot theme
+	rsync -auHxv --progress mancelot:~/production/data/blog/wp-content/themes/cenote/ blog/wp-theme-mancelot/
