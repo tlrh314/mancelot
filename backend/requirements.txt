@@ -1,4 +1,4 @@
-celery==5.0.0
+celery==4.4.1
 coverage==5.3
 Django==2.2.16
 django-celery-beat==2.0.0
