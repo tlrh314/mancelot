@@ -12,43 +12,43 @@
 - The endpoints for the `accounts` and `catalogue` apps are registered and hyperlinked 
 in the `BrowsableAPI` root.  Details can intuitively be explored there. NB, all
 `catalogue` resources are `GET` only and require an authenticated user.
-  - `GET` [https://www.mancelot.app/api/v1/](https://www.mancelot.app/api/v1/)
+  - `GET` [https://api.mancelot.app/api/v1/](https://api.mancelot.app/api/v1/)
 
 
 - `accounts.models.UserModel` endpoints. Note that `<pk>=me` returns `request.user`
-  - `GET` [https://www.mancelot.app/api/v1/users](https://www.mancelot.app/api/v1/users), permissions = `IsAdmin`
-  - `POST` [https://www.mancelot.app/api/v1/users](https://www.mancelot.app/api/v1/users), permissions = `AllowAny`
-  - `GET` [https://www.mancelot.app/api/v1/users/\<pk>](https://www.mancelot.app/api/v1/users/me), permissions = `IsAdminOrSelf`
-  - `PUT` [https://www.mancelot.app/api/v1/users/\<pk>](https://www.mancelot.app/api/v1/users/me), permissions = `IsAdminOrSelf`
-  - `PATCH` [https://www.mancelot.app/api/v1/users/\<pk>](https://www.mancelot.app/api/v1/users/me), permissions = `IsAdminOrSelf`
-  - `DELETE` [https://www.mancelot.app/api/v1/users/\<pk>](https://www.mancelot.app/api/v1/users/me), permissions = `IsAdmin`
+  - `GET` [https://api.mancelot.app/api/v1/users](https://api.mancelot.app/api/v1/users), permissions = `IsAdmin`
+  - `POST` [https://api.mancelot.app/api/v1/users](https://api.mancelot.app/api/v1/users), permissions = `AllowAny`
+  - `GET` [https://api.mancelot.app/api/v1/users/\<pk>](https://api.mancelot.app/api/v1/users/me), permissions = `IsAdminOrSelf`
+  - `PUT` [https://api.mancelot.app/api/v1/users/\<pk>](https://api.mancelot.app/api/v1/users/me), permissions = `IsAdminOrSelf`
+  - `PATCH` [https://api.mancelot.app/api/v1/users/\<pk>](https://api.mancelot.app/api/v1/users/me), permissions = `IsAdminOrSelf`
+  - `DELETE` [https://api.mancelot.app/api/v1/users/\<pk>](https://api.mancelot.app/api/v1/users/me), permissions = `IsAdmin`
 
-  - `GET` [https://www.mancelot.app/api/v1/users/\<pk>/favorites](https://www.mancelot.app/api/v1/users/me/favorites), permissions = `IsAdminUserOrSelf`
-  - `PATCH` [https://www.mancelot.app/api/v1/users/\<pk>/favorites](https://www.mancelot.app/api/v1/users/me/favorites), permissions = `IsAdminUserOrSelf`
-  - `DELETE` [https://www.mancelot.app/api/v1/users/\<pk>/favorites](https://www.mancelot.app/api/v1/users/me/favorites), permissions = `IsAdminUserOrSelf`
+  - `GET` [https://api.mancelot.app/api/v1/users/\<pk>/favorites](https://api.mancelot.app/api/v1/users/me/favorites), permissions = `IsAdminUserOrSelf`
+  - `PATCH` [https://api.mancelot.app/api/v1/users/\<pk>/favorites](https://api.mancelot.app/api/v1/users/me/favorites), permissions = `IsAdminUserOrSelf`
+  - `DELETE` [https://api.mancelot.app/api/v1/users/\<pk>/favorites](https://api.mancelot.app/api/v1/users/me/favorites), permissions = `IsAdminUserOrSelf`
 
 
 #### Additional auth resources that are not listed in the `BrowsableAPI` root
 
 - Obtain a [JSON Web Token](https://github.com/davesque/django-rest-framework-simplejwt)
   for usage of the Mancelot API
-  - `POST` [https://www.mancelot.app/api/v1/auth/jwtoken/](https://www.mancelot.app/api/v1/auth/jwtoken/)
+  - `POST` [https://api.mancelot.app/api/v1/auth/jwtoken/](https://api.mancelot.app/api/v1/auth/jwtoken/)
       - Use the `access` token obtained in the response **in each consecutive** request
       by using the request header `Authorization: Bearer token`
       - See `settings/base.py` for the value of `SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"]`
       for the lifetime of the access token.
-  - `POST` [https://www.mancelot.app/api/v1/auth/jwtoken/refresh/](https://www.mancelot.app/api/v1/auth/jwtoken/refresh/)
+  - `POST` [https://api.mancelot.app/api/v1/auth/jwtoken/refresh/](https://api.mancelot.app/api/v1/auth/jwtoken/refresh/)
       - See `settings/base.py` for the value of `SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"]`
       for the lifetime of the refresh token.
-  - `POST` [https://www.mancelot.app/api/v1/auth/jwtoken/verify/](https://www.mancelot.app/api/v1/auth/jwtoken/verify/)
+  - `POST` [https://api.mancelot.app/api/v1/auth/jwtoken/verify/](https://api.mancelot.app/api/v1/auth/jwtoken/verify/)
 
 - Authentication using Django's built-in session backend (e.g. for the BrowsableAPI)
-  - [https://www.mancelot.app/api/v1/auth/login/](https://www.mancelot.app/api/v1/auth/login/)
-  - [https://www.mancelot.app/api/v1/auth/logout/](https://www.mancelot.app/api/v1/auth/logout/)
+  - [https://api.mancelot.app/api/v1/auth/login/](https://api.mancelot.app/api/v1/auth/login/)
+  - [https://api.mancelot.app/api/v1/auth/logout/](https://api.mancelot.app/api/v1/auth/logout/)
 
 
 ## **Django admin**
-- [https://www.mancelot.app/admin/](https://www.mancelot.app/admin/)
+- [https://api.mancelot.app/admin/](https://api.mancelot.app/admin/)
 
 ## **Installation for development, e.g. using a virtualenv, optie 1**
 - Create virtualenvironment: `virtualenv venv`
