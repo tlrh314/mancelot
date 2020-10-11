@@ -68,7 +68,7 @@ in the `BrowsableAPI` root.  Details can intuitively be explored there. NB, all
 
 ## **Running with Docker**
 ### Optie 2a
-- Build the image: `docker build -t mancelot_django .`
+- Build the image /w [BuildKit](https://stackoverflow.com/a/58021389): `DOCKER_BUILDKIT=1 docker build -t mancelot_django .`
 
 - Run the built-in Django development server: `docker run --rm -it -v "$(pwd)":/mancelot -p 8000:1337 --name runserver mancelot_django bash -c "python manage.py runserver 0.0.0.0:1337"`
 - In a new terminal, one can attach to the `runserver` container in an interactive session: `docker exec -it runserver bash`

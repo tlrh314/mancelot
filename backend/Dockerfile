@@ -1,3 +1,4 @@
+# syntax = docker/dockerfile:experimental
 FROM python:3.8-slim-buster
 ENV PYTHONUNBUFFERED 1
 
@@ -5,7 +6,8 @@ LABEL maintainer="Timo Halbesma <timo@mancelot.nl>"
 
 # Install Debian system packages
 WORKDIR /mancelot
-RUN set -ex \
+RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
+RUN --mount=type=cache,mode=0755,target=/var/cache/apt --mount=type=cache,mode=0755,target=/var/lib/apt set -ex \
     && apt-get update \
 \
     # Install Build/Runtime dependencies ...
@@ -38,10 +40,10 @@ RUN set -ex \
 
 # Install python packages for Django
 COPY requirements.txt /mancelot/requirements.txt
-RUN set -ex && \
+RUN --mount=type=cache,mode=0755,target=/root/.cache/pip set -ex && \
     pip install --upgrade pip \
-    && pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r /mancelot/requirements.txt \
+    && pip install --upgrade pip \
+    && pip install -r /mancelot/requirements.txt \
 \
     # Because pygraphviz has to be installed with additional flags
     && pip install --install-option="--include-path=/usr/local/include/" \
@@ -51,7 +53,6 @@ RUN set -ex && \
 # But production (when we run from image without linking the repo in) does use
 # the files copied in!
 COPY . /mancelot
-COPY templates/flower/base.html /usr/local/lib/python3.7/site-packages/flower/templates/base.html
 COPY tlrh/ /mancelot
 RUN chown -R mancelot:mancelot /mancelot \
     && rm -rf tlrh
