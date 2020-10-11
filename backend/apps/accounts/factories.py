@@ -11,7 +11,7 @@ from catalogue.factories import ProductFactory
 faker = Factory.create("nl_NL")
 
 
-class UserModelFactory(factory.DjangoModelFactory):
+class UserModelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = UserModel
         django_get_or_create = ("email",)

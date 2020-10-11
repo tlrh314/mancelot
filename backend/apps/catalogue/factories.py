@@ -37,7 +37,7 @@ SIZES = [ "3XS", "XXS", "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL"] + \
 logger = logging.getLogger(__name__)
 
 
-class CeceLabelFactory(factory.DjangoModelFactory):
+class CeceLabelFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = CeceLabel
         django_get_or_create = ("name",)
@@ -46,7 +46,7 @@ class CeceLabelFactory(factory.DjangoModelFactory):
     info = factory.LazyAttribute(lambda _: faker.text())
 
 
-class CertificateFactory(factory.DjangoModelFactory):
+class CertificateFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Certificate
         django_get_or_create = ("name",)
@@ -55,7 +55,7 @@ class CertificateFactory(factory.DjangoModelFactory):
     info = factory.LazyAttribute(lambda _: faker.text())
 
 
-class CategoryFactory(factory.DjangoModelFactory):
+class CategoryFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Category
         django_get_or_create = ("name",)
@@ -81,7 +81,7 @@ class CategoryFactory(factory.DjangoModelFactory):
             )
 
 
-class SubcategoryFactory(factory.DjangoModelFactory):
+class SubcategoryFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Subcategory
         django_get_or_create = ("name",)
@@ -100,7 +100,7 @@ class SubcategoryFactory(factory.DjangoModelFactory):
     category = factory.SubFactory(CategoryFactory, subcategories__skip=True)
 
 
-class PaymentOptionFactory(factory.DjangoModelFactory):
+class PaymentOptionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = PaymentOption
         django_get_or_create = ("name",)
@@ -109,7 +109,7 @@ class PaymentOptionFactory(factory.DjangoModelFactory):
     logo = "/static/img/test/test_logo.png"
 
 
-class StoreFactory(factory.DjangoModelFactory):
+class StoreFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Store
         django_get_or_create = ("name",)
@@ -150,7 +150,7 @@ class StoreFactory(factory.DjangoModelFactory):
             self.payment_options.add(all_payment_options_randomly_ordered[j])
 
 
-class BrandFactory(factory.DjangoModelFactory):
+class BrandFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Brand
         django_get_or_create = ("name",)
@@ -204,7 +204,7 @@ class BrandFactory(factory.DjangoModelFactory):
             self.certificates.add(all_certificates_randomly_ordered[j])
 
 
-class SizeFactory(factory.DjangoModelFactory):
+class SizeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Size
         django_get_or_create = ("name",)
@@ -213,7 +213,7 @@ class SizeFactory(factory.DjangoModelFactory):
         "TestSize " + SIZES[faker.random_int(min=0, max=len(SIZES)-1)]
     )
 
-class ColorFactory(factory.DjangoModelFactory):
+class ColorFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Color
         django_get_or_create = ("name",)
@@ -223,7 +223,7 @@ class ColorFactory(factory.DjangoModelFactory):
     )
 
 
-class MaterialFactory(factory.DjangoModelFactory):
+class MaterialFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Material
         django_get_or_create = ("name",)
@@ -231,7 +231,7 @@ class MaterialFactory(factory.DjangoModelFactory):
     name = factory.LazyAttribute(lambda _: "TestMaterial " + faker.word())
 
 
-class ProductFactory(factory.DjangoModelFactory):
+class ProductFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Product
         django_get_or_create = ("name",)
@@ -414,7 +414,7 @@ class ProductFactory(factory.DjangoModelFactory):
             self.colors.add(all_colors_randomly_ordered[j])
 
 
-class FavoriteProductFactory(factory.DjangoModelFactory):
+class FavoriteProductFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = FavoriteProduct
 
