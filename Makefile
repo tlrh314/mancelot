@@ -66,7 +66,7 @@ blog-restart:  ## Restart blog
 
 django:  ## Build container for Django (backend)
 	make docker-pull
-	docker build -f backend/Dockerfile -t mancelot_django backend
+	DOCKER_BUILDKIT=1 docker build -f backend/Dockerfile -t mancelot_django backend
 
 django-start:  ## Start Django
 	if [ -f backend/celerybeat.pid ]; then rm -f backend/celerybeat.pid; fi;
