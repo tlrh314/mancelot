@@ -409,3 +409,11 @@ function ns_google_analytics() { ?>
   <?php
   }
 add_action( 'wp_head', 'ns_google_analytics', 10 );
+
+/**
+ * 20210131 TLRH
+ * https://wordpress.org/support/article/configuring-automatic-background-updates/
+ */
+add_filter( 'auto_update_core', '__return_true' );
+add_filter( 'auto_update_plugin', '__return_true' );
+add_filter( 'auto_update_theme', '__return_true' );
