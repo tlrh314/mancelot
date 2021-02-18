@@ -10,7 +10,7 @@ RUN apk add --no-cache \
       libc6-compat \
       libffi-dev \
       linux-headers \
-      python-dev \
+      python3-dev \
       py-pip \
       py-cryptography \
       pv \
