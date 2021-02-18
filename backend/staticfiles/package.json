@@ -11,21 +11,22 @@
         "url": "https://github.com/tlrh314/mancelot.git"
     },
     "bugs": {
-      "url": "https://github.com/tlrh314/mancelot/issues"
+        "url": "https://github.com/tlrh314/mancelot/issues"
     },
     "dependencies": {
-        "@sentry/browser": "^5.20.1",
+        "@sentry/browser": "^6.1.0",
         "cookieconsent": "^3.1.1",
-        "jquery": "^3.5.1"
+        "jquery": "^3.5.1",
+        "npm-check-updates": "^11.1.4"
     },
     "devDependencies": {
-        "browser-sync": "^2.26.12",
+        "browser-sync": "^2.26.14",
         "gulp": "^4.0.2",
-        "gulp-autoprefixer": "^7.0.0",
-        "gulp-clean-css": "4.2.0",
+        "gulp-autoprefixer": "^7.0.1",
+        "gulp-clean-css": "4.3.0",
         "gulp-header": "2.0.9",
         "gulp-plumber": "^1.2.1",
-        "gulp-rename": "1.4.0",
+        "gulp-rename": "2.0.0",
         "gulp-sass": "^4.1.0",
         "gulp-uglify": "3.0.2"
     }
