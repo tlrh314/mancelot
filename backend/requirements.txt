@@ -30,7 +30,7 @@ jsonfield==3.1.0
 Pillow
 mollie-api-python==2.4.1
 mysqlclient==2.0.1
-pyyaml==5.3.1
+pyyaml==5.4
 redis==3.5.3
 requests-mock==1.8.0
 uritemplate==3.0.1
