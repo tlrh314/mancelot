@@ -43,7 +43,7 @@ services:
     depends_on:
       - "redis"
       - "celery_beat"
-    entrypoint: "celery -E -A settings worker -c 2 -l info"
+    entrypoint: "celery -A settings worker -E -c 2 -l info"
 
   # Celery beat is a scheduler; It kicks off tasks at regular intervals, that
   # are then executed by available worker nodes in the cluster.
