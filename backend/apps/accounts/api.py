@@ -103,7 +103,7 @@ class UserModelViewSet(ModelViewSet):
                     product=product, user=user, size=size
                 ).first()
                 if fav:
-                    if quantity is 0:
+                    if quantity == 0:
                         fav.delete()
                         return Response({"status": "Favorite deleted (b/c quantity is 0)"},
                             status=status.HTTP_200_OK)

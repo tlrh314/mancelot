@@ -5,7 +5,6 @@ from django.core.mail import EmailMultiAlternatives
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
-from django.utils.encoding import python_2_unicode_compatible
 
 from djmoney.models.fields import MoneyField
 from django_countries.fields import CountryField
@@ -13,7 +12,6 @@ from django_countries.fields import CountryField
 from accounts.managers import AccountManager
 
 
-@python_2_unicode_compatible
 class UserModel(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_("email"), max_length=254, unique=True)
     full_name = models.CharField(_("full name"), max_length=150, null=True,
