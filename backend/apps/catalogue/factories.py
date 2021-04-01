@@ -26,12 +26,15 @@ faker = Factory.create("nl_NL")
 COLORS = list()
 while len(COLORS) < 60:
     c = faker.color_name()
-    if c not in COLORS: COLORS.append(c)
+    if c not in COLORS:
+        COLORS.append(c)
 
-SIZES = [ "3XS", "XXS", "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL"] + \
-    ["UK {0}".format(i) for i in range(4, 30, 2)] + \
-    ["FR {0}".format(i) for i in range(32, 58, 2)] + \
-    ["EU {0}".format(i) for i in range(40, 52, 2)]
+SIZES = (
+    ["3XS", "XXS", "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL"]
+    + ["UK {0}".format(i) for i in range(4, 30, 2)]
+    + ["FR {0}".format(i) for i in range(32, 58, 2)]
+    + ["EU {0}".format(i) for i in range(40, 52, 2)]
+)
 
 
 logger = logging.getLogger(__name__)
@@ -75,9 +78,10 @@ class CategoryFactory(factory.django.DjangoModelFactory):
             return
 
         for i in range(faker.random_int(min=0, max=10)):
-            self.subcategories.add(Subcategory.objects.create(
-                name="{0}: Sub {1}".format(self.name, i),
-                category=self)
+            self.subcategories.add(
+                Subcategory.objects.create(
+                    name="{0}: Sub {1}".format(self.name, i), category=self
+                )
             )
 
 
@@ -115,8 +119,8 @@ class StoreFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ("name",)
 
     name = factory.LazyAttribute(lambda _: "TestStore " + faker.company())
-    info = factory.LazyAttribute(lambda _:
-        faker.text(max_nb_chars=faker.random_int(min=42, max=1337))
+    info = factory.LazyAttribute(
+        lambda _: faker.text(max_nb_chars=faker.random_int(min=42, max=1337))
     )
     url = factory.LazyAttribute(lambda _: faker.url())
     logo = "/static/img/test/test_logo.png"
@@ -144,7 +148,9 @@ class StoreFactory(factory.django.DjangoModelFactory):
         if PaymentOption.objects.count() < 15:
             PaymentOptionFactory.create_batch(15 - PaymentOption.objects.count())
 
-        number_of_payment_options_to_add = faker.random_int(min=0, max=PaymentOption.objects.count()-1)
+        number_of_payment_options_to_add = faker.random_int(
+            min=0, max=PaymentOption.objects.count() - 1
+        )
         all_payment_options_randomly_ordered = PaymentOption.objects.order_by("?")
         for j in range(number_of_payment_options_to_add):
             self.payment_options.add(all_payment_options_randomly_ordered[j])
@@ -156,8 +162,8 @@ class BrandFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ("name",)
 
     name = factory.LazyAttribute(lambda _: "TestBrand " + faker.company())
-    info = factory.LazyAttribute(lambda _:
-        faker.text(max_nb_chars=faker.random_int(min=42, max=1337))
+    info = factory.LazyAttribute(
+        lambda _: faker.text(max_nb_chars=faker.random_int(min=42, max=1337))
     )
     url = factory.LazyAttribute(lambda _: faker.url())
     logo = "/static/img/test/test_logo.png"
@@ -177,7 +183,9 @@ class BrandFactory(factory.django.DjangoModelFactory):
         if CeceLabel.objects.count() < 5:
             CeceLabelFactory.create_batch(5 - CeceLabel.objects.count())
 
-        number_of_labels_to_add = faker.random_int(min=0, max=CeceLabel.objects.count()-1)
+        number_of_labels_to_add = faker.random_int(
+            min=0, max=CeceLabel.objects.count() - 1
+        )
         all_labels_randomly_ordered = CeceLabel.objects.order_by("?")
         for j in range(number_of_labels_to_add):
             self.labels.add(all_labels_randomly_ordered[j])
@@ -198,7 +206,8 @@ class BrandFactory(factory.django.DjangoModelFactory):
             CertificateFactory.create_batch(20 - Certificate.objects.count())
 
         number_of_certificates_to_add = faker.random_int(
-            min=0, max=int(0.25*Certificate.objects.count()))
+            min=0, max=int(0.25 * Certificate.objects.count())
+        )
         all_certificates_randomly_ordered = Certificate.objects.order_by("?")
         for j in range(number_of_certificates_to_add):
             self.certificates.add(all_certificates_randomly_ordered[j])
@@ -209,17 +218,18 @@ class SizeFactory(factory.django.DjangoModelFactory):
         model = Size
         django_get_or_create = ("name",)
 
-    name = factory.LazyAttribute(lambda _:
-        "TestSize " + SIZES[faker.random_int(min=0, max=len(SIZES)-1)]
+    name = factory.LazyAttribute(
+        lambda _: "TestSize " + SIZES[faker.random_int(min=0, max=len(SIZES) - 1)]
     )
+
 
 class ColorFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Color
         django_get_or_create = ("name",)
 
-    name = factory.LazyAttribute(lambda _:
-        "TestColor " + COLORS[faker.random_int(min=0, max=len(COLORS)-1)]
+    name = factory.LazyAttribute(
+        lambda _: "TestColor " + COLORS[faker.random_int(min=0, max=len(COLORS) - 1)]
     )
 
 
@@ -237,19 +247,18 @@ class ProductFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ("name",)
 
     name = factory.LazyAttribute(lambda _: "TestProduct " + faker.name())
-    info = factory.LazyAttribute(lambda _:
-        faker.text(max_nb_chars=faker.random_int(min=42, max=1337))
+    info = factory.LazyAttribute(
+        lambda _: faker.text(max_nb_chars=faker.random_int(min=42, max=1337))
     )
-    extra_info = factory.LazyAttribute(lambda _:
-        faker.text(max_nb_chars=faker.random_int(min=42, max=1337))
+    extra_info = factory.LazyAttribute(
+        lambda _: faker.text(max_nb_chars=faker.random_int(min=42, max=1337))
     )
     url = factory.LazyAttribute(lambda _: faker.url())
 
     cece_id = factory.LazyAttribute(lambda _: faker.uuid4()[0:8])
 
-    price = factory.LazyAttribute(lambda _:
-        faker.random_int(min=250, max=15000)/100
-    )
+    price = factory.LazyAttribute(lambda _: faker.random_int(min=250, max=15000) / 100)
+
     @factory.post_generation
     def from_price(self, create, extracted, **kwargs):
         if not create or kwargs.get("skip"):
@@ -261,13 +270,14 @@ class ProductFactory(factory.django.DjangoModelFactory):
 
         # assume uniform, 20% should be on sale. Sale price 120-250% of regular price
         if faker.random_int(min=0, max=100) < 20:
-            self.from_price = faker.random_int(min=120, max=250)/100 * self.price
+            self.from_price = faker.random_int(min=120, max=250) / 100 * self.price
 
-    main_image = factory.LazyAttribute(lambda _:
-        "{0}/img/test/cat{1}.jpg".format(
+    main_image = factory.LazyAttribute(
+        lambda _: "{0}/img/test/cat{1}.jpg".format(
             settings.STATIC_ROOT, faker.random_int(min=1, max=30)
         )
     )
+
     @factory.post_generation
     def thumbnail(self, create, extracted, **kwargs):
         if not create or kwargs.get("skip"):
@@ -294,7 +304,8 @@ class ProductFactory(factory.django.DjangoModelFactory):
             img = "{0}/img/test/cat{1}.jpg".format(
                 settings.STATIC_ROOT, faker.random_int(min=1, max=30)
             )
-            if img not in self.extra_images: self.extra_images.append(img)
+            if img not in self.extra_images:
+                self.extra_images.append(img)
 
     # Create Brand instances if there are less than fourty brands available
     # NB, this code might also execute on import. Not sure if that's desired
@@ -332,7 +343,9 @@ class ProductFactory(factory.django.DjangoModelFactory):
         if Category.objects.count() < 25:
             CategoryFactory.create_batch(25 - Category.objects.count())
 
-        number_of_categories_to_add = faker.random_int(min=0, max=Category.objects.count()-1)
+        number_of_categories_to_add = faker.random_int(
+            min=0, max=Category.objects.count() - 1
+        )
         all_categories_randomly_ordered = Category.objects.order_by("?")
         for j in range(number_of_categories_to_add):
             self.categories.add(all_categories_randomly_ordered[j])
@@ -351,7 +364,9 @@ class ProductFactory(factory.django.DjangoModelFactory):
         if Subcategory.objects.count() < 25:
             SubcategoryFactory.create_batch(25 - Subcategory.objects.count())
 
-        number_of_categories_to_add = faker.random_int(min=0, max=Subcategory.objects.count()-1)
+        number_of_categories_to_add = faker.random_int(
+            min=0, max=Subcategory.objects.count() - 1
+        )
         all_categories_randomly_ordered = Subcategory.objects.order_by("?")
         for j in range(number_of_categories_to_add):
             self.subcategories.add(all_categories_randomly_ordered[j])
@@ -370,7 +385,9 @@ class ProductFactory(factory.django.DjangoModelFactory):
         if Material.objects.count() < 25:
             MaterialFactory.create_batch(25 - Material.objects.count())
 
-        number_of_materials_to_add = faker.random_int(min=0, max=Material.objects.count()-1)
+        number_of_materials_to_add = faker.random_int(
+            min=0, max=Material.objects.count() - 1
+        )
         all_materials_randomly_ordered = Material.objects.order_by("?")
         for j in range(number_of_materials_to_add):
             self.materials.add(all_materials_randomly_ordered[j])
@@ -389,7 +406,7 @@ class ProductFactory(factory.django.DjangoModelFactory):
         if Size.objects.count() < 25:
             SizeFactory.create_batch(25 - Size.objects.count())
 
-        number_of_sizes_to_add = faker.random_int(min=1, max=Size.objects.count()-1)
+        number_of_sizes_to_add = faker.random_int(min=1, max=Size.objects.count() - 1)
         all_sizes_randomly_ordered = Size.objects.order_by("?")
         for j in range(number_of_sizes_to_add):
             self.sizes.add(all_sizes_randomly_ordered[j])
@@ -408,7 +425,7 @@ class ProductFactory(factory.django.DjangoModelFactory):
         if Color.objects.count() < 25:
             ColorFactory.create_batch(25 - Color.objects.count())
 
-        number_of_colors_to_add = faker.random_int(min=1, max=Color.objects.count()-1)
+        number_of_colors_to_add = faker.random_int(min=1, max=Color.objects.count() - 1)
         all_colors_randomly_ordered = Color.objects.order_by("?")
         for j in range(number_of_colors_to_add):
             self.colors.add(all_colors_randomly_ordered[j])
@@ -419,7 +436,9 @@ class FavoriteProductFactory(factory.django.DjangoModelFactory):
         model = FavoriteProduct
 
     product = factory.LazyAttribute(lambda _: Product.objects.order_by("?").first())
-    user = factory.LazyAttribute(lambda _: get_user_model().objects.order_by("?").first())
+    user = factory.LazyAttribute(
+        lambda _: get_user_model().objects.order_by("?").first()
+    )
     quantity = factory.LazyAttribute(lambda _: faker.random_int(min=0, max=25))
 
     @factory.post_generation

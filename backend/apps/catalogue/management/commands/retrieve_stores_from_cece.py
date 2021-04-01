@@ -30,7 +30,7 @@ def create_or_update_stores(logger, cmd_name, client, recursive=True):
 
     # Iterate through the Cece data
     for i, s in enumerate(data):
-        logger.debug("\n{0} / {1}".format(i+1, len(data) ))
+        logger.debug("\n{0} / {1}".format(i + 1, len(data)))
 
         # Get or create Store. Match on **name** only!
         store, created = Store.objects.get_or_create(
@@ -54,7 +54,7 @@ def create_or_update_stores(logger, cmd_name, client, recursive=True):
             action_flag=ADDITION if created else CHANGE,
             change_message="{0} by '{1}'".format(
                 "Created" if created else "Updated", cmd_name
-            )
+            ),
         )
         store.save()
 
@@ -62,8 +62,11 @@ def create_or_update_stores(logger, cmd_name, client, recursive=True):
         for pm in s["pay_methods"]:
             # Get or created PaymentOption. Match on **name** only!
             paymentoption, created = PaymentOption.objects.get_or_create(name=pm)
-            logger.debug("  {0} PaymentOption: {1}".format(
-                "Created" if created else "Have", paymentoption))
+            logger.debug(
+                "  {0} PaymentOption: {1}".format(
+                    "Created" if created else "Have", paymentoption
+                )
+            )
             store.payment_options.add(paymentoption)
             store.save()
 
@@ -72,8 +75,15 @@ def create_or_update_stores(logger, cmd_name, client, recursive=True):
         logger.debug("  Fetch '{0}' from Cece".format(cece_logo_url))
         fname = os.path.basename(urlparse(cece_logo_url).path)
         save_to = "{0}/img/logos/stores/{1}".format(settings.STATIC_ROOT, fname)
-        call_download_image(logger, cece_logo_url, save_to,
-            store, "logo", store_ctpk, client.ceceuser.pk, cmd_name
+        call_download_image(
+            logger,
+            cece_logo_url,
+            save_to,
+            store,
+            "logo",
+            store_ctpk,
+            client.ceceuser.pk,
+            cmd_name,
         )
         ### End of logo download
 
@@ -85,8 +95,7 @@ class Command(CommandWrapper):
         client = CeceApiClient()
         self.cmd_name = __file__.split("/")[-1].replace(".py", "")
         self.method = create_or_update_stores
-        self.margs = [ self.cmd_name, client ]
-        self.mkwargs = { "recursive": not settings.DEBUG }
+        self.margs = [self.cmd_name, client]
+        self.mkwargs = {"recursive": not settings.DEBUG}
 
         super().handle(*args, **options)
-

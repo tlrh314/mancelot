@@ -11,7 +11,7 @@ from catalogue.api import (
     SizeViewSet,
     ColorViewSet,
     MaterialViewSet,
-    ProductViewSet
+    ProductViewSet,
 )
 
 

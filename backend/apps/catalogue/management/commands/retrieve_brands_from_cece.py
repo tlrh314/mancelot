@@ -22,14 +22,15 @@ def create_or_update_brands(logger, cmd_name, client, recursive=True):
 
     # Iterate through the Cece data
     for i, b in enumerate(data):
-        logger.debug("\n{0} / {1}".format(i+1, len(data) ))
+        logger.debug("\n{0} / {1}".format(i + 1, len(data)))
 
         # Get or create Brand. Match on **name** only!
         brand, created = Brand.objects.get_or_create(
             name=b["brand_name"],
         )
-        logger.debug("{0} Brand: {1}".format(
-            "Created" if created else "Updated", brand))
+        logger.debug(
+            "{0} Brand: {1}".format("Created" if created else "Updated", brand)
+        )
 
         # Overwrite all fields
         brand.info = b["about_brand"]
@@ -41,8 +42,9 @@ def create_or_update_brands(logger, cmd_name, client, recursive=True):
         for l in b["labels"]:
             # Get or create CeceLabel. Match on **name** only!
             label, created = CeceLabel.objects.get_or_create(name=l["label_name"])
-            logger.debug("  {0} CeceLabel: {1}".format(
-                "Created" if created else "Have", label))
+            logger.debug(
+                "  {0} CeceLabel: {1}".format("Created" if created else "Have", label)
+            )
             brand.labels.add(label)
             brand.save()
 
@@ -50,8 +52,11 @@ def create_or_update_brands(logger, cmd_name, client, recursive=True):
         for c in b["certificate"]:
             # Get or create Certificate. Match on **name** only!
             certificate, created = Certificate.objects.get_or_create(name=c)
-            logger.debug("  {0} Certificate: {1}".format(
-                "Created" if created else "Have", certificate))
+            logger.debug(
+                "  {0} Certificate: {1}".format(
+                    "Created" if created else "Have", certificate
+                )
+            )
             brand.certificates.add(certificate)
             brand.save()
 
@@ -63,7 +68,7 @@ class Command(CommandWrapper):
         client = CeceApiClient()
         self.cmd_name = __file__.split("/")[-1].replace(".py", "")
         self.method = create_or_update_brands
-        self.margs = [ self.cmd_name, client ]
-        self.mkwargs = { "recursive": not settings.DEBUG }
+        self.margs = [self.cmd_name, client]
+        self.mkwargs = {"recursive": not settings.DEBUG}
 
         super().handle(*args, **options)

@@ -11,7 +11,7 @@ from catalogue.models import (
     Size,
     Color,
     Material,
-    Product
+    Product,
 )
 
 
@@ -61,7 +61,13 @@ class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
         fields = (
-            "id", "name", "slug", "info", "url", "logo", "payment_options",
+            "id",
+            "name",
+            "slug",
+            "info",
+            "url",
+            "logo",
+            "payment_options",
         )
 
 
@@ -71,10 +77,7 @@ class BrandSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Brand
-        fields = (
-            "id", "name", "slug", "info", "url", "logo",
-            "labels", "certificates"
-        )
+        fields = ("id", "name", "slug", "info", "url", "logo", "labels", "certificates")
 
 
 class SizeSerializer(serializers.ModelSerializer):
@@ -102,7 +105,13 @@ class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = (
-            "id", "name", "main_image", "chosen_image", "thumbnail", "sizes", "colors",
+            "id",
+            "name",
+            "main_image",
+            "chosen_image",
+            "thumbnail",
+            "sizes",
+            "colors",
         )
 
 
@@ -121,7 +130,13 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = (
-            "id", "name", "info", "main_image", "chosen_image",
-            "brand", "labels",
-            "sizes", "colors",
+            "id",
+            "name",
+            "info",
+            "main_image",
+            "chosen_image",
+            "brand",
+            "labels",
+            "sizes",
+            "colors",
         )

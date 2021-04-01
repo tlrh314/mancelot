@@ -20,13 +20,15 @@ def create_or_update_certificates(logger, cmd_name, client, recursive=True):
 
     # Iterate through the Cece data
     for i, c in enumerate(data):
-        logger.debug("\n{0} / {1}".format(i+1, len(data) ))
+        logger.debug("\n{0} / {1}".format(i + 1, len(data)))
 
         # Get or create Certificate. Match on **name** only!
         certificate, created = Certificate.objects.get_or_create(
             name=c["name"],
         )
-        logger.debug("{0} Certificate: {1}".format("Created" if created else "Have", certificate))
+        logger.debug(
+            "{0} Certificate: {1}".format("Created" if created else "Have", certificate)
+        )
 
         # Overwrite all fields
         certificate.info = c["about"]
@@ -35,13 +37,15 @@ def create_or_update_certificates(logger, cmd_name, client, recursive=True):
 
 
 class Command(CommandWrapper):
-    help = "\033[91mUpdate Certificates with Cece data, overwriting all fields!\033[0m\n"
+    help = (
+        "\033[91mUpdate Certificates with Cece data, overwriting all fields!\033[0m\n"
+    )
 
     def handle(self, *args, **options):
         client = CeceApiClient()
         self.cmd_name = __file__.split("/")[-1].replace(".py", "")
         self.method = create_or_update_certificates
-        self.margs = [ self.cmd_name, client ]
-        self.mkwargs = { "recursive": not settings.DEBUG }
+        self.margs = [self.cmd_name, client]
+        self.mkwargs = {"recursive": not settings.DEBUG}
 
         super().handle(*args, **options)

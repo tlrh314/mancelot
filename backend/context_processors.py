@@ -5,11 +5,15 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 def set_meta_tags(request):
     page_title = "Mancelot: App voor Duurzame Mannenkleding"
     page_image = static("img/todo.png")
-    page_description = "Mancelot: App voor Duurzame Kleding voor Heren en Fair Trade Herenmode"
-    page_keywords = "Mancelot, duurzame kleding, app, duurzaam," + \
-        " duurzame, mannenmode, Roman Markovski, Lorentz Stout," + \
-		" fair trade, duurzame mannenkleding, kleding app, duurzame herenkleding," + \
-        " Verantwoord, verantwoorde kleding"
+    page_description = (
+        "Mancelot: App voor Duurzame Kleding voor Heren en Fair Trade Herenmode"
+    )
+    page_keywords = (
+        "Mancelot, duurzame kleding, app, duurzaam,"
+        + " duurzame, mannenmode, Roman Markovski, Lorentz Stout,"
+        + " fair trade, duurzame mannenkleding, kleding app, duurzame herenkleding,"
+        + " Verantwoord, verantwoorde kleding"
+    )
     og_image = page_image
     og_title = page_title
     twitter_card = "summary_large_image"

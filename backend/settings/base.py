@@ -1,13 +1,12 @@
 import os
 import sys
+
 import environ
 from django.utils.translation import ugettext_lazy as _
 
 ### We use django-environ to read secrets from .env file
 env = environ.Env()
-env.read_env(
-    str((environ.Path(__file__) - 1).path(".env"))
-)
+env.read_env(str((environ.Path(__file__) - 1).path(".env")))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,9 +23,7 @@ DATABASES = {
     "default": env.db("DATABASE_URL"),
 }
 
-CACHES = {
-    "default": env.cache()
-}
+CACHES = {"default": env.cache()}
 
 ALLOWED_HOSTS = ["*"]
 
@@ -35,7 +32,6 @@ INSTALLED_APPS = [
     # FileBrowser must be loaded before Django admin
     "tinymce",
     "filebrowser",
-
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -43,7 +39,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
-
     "django_celery_beat",
     "django_celery_results",
     "django_countries",
@@ -54,7 +49,6 @@ INSTALLED_APPS = [
     "silk",
     "djmoney",
     "djmoney.contrib.exchange",
-
     "accounts",
     "catalogue",
 ]
@@ -119,7 +113,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Cookie settings
-CSRF_COOKIE_HTTPONLY = False  # to allow the front-end to retrieve CSRF token from the Cookie
+CSRF_COOKIE_HTTPONLY = (
+    False  # to allow the front-end to retrieve CSRF token from the Cookie
+)
 CSRF_COOKIE_SAMESITE = "Strict"  # TODO: exactly what will the front-end be doing?
 CSRF_COOKIE_SECURE = True
 
@@ -145,12 +141,10 @@ USE_L10N = True
 
 USE_TZ = True
 
-LOCALE_PATHS = (
-    (os.path.join(BASE_DIR, u"locale/")),
-)
+LOCALE_PATHS = ((os.path.join(BASE_DIR, u"locale/")),)
 
 CURRENCIES = ("EUR", "GBP", "USD")
-CURRENCY_CHOICES = [("EUR", "EUR €"),("GBP", "GBP £"), ("USD", "USD $") ]
+CURRENCY_CHOICES = [("EUR", "EUR €"), ("GBP", "GBP £"), ("USD", "USD $")]
 BASE_CURRENCY = "EUR"
 DEFAULT_CURRENCY = "EUR"
 CURRENCY_DECIMAL_PLACES = 4
@@ -205,9 +199,7 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.DjangoModelPermissions"
-    ],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.DjangoModelPermissions"],
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],
@@ -225,23 +217,22 @@ REST_FRAMEWORK = {
 }
 ### Django REST Simple JWT
 from datetime import timedelta
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": True,
-
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
     "VERIFYING_KEY": None,
-
     "AUTH_HEADER_TYPES": ("Bearer",),
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
-
-    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),  # or SlidingToken
+    "AUTH_TOKEN_CLASSES": (
+        "rest_framework_simplejwt.tokens.AccessToken",
+    ),  # or SlidingToken
     "TOKEN_TYPE_CLAIM": "token_type",
-
     "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
     "SLIDING_TOKEN_LIFETIME": timedelta(days=1),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=30),
@@ -280,7 +271,7 @@ CORS_ALLOW_HEADERS = [  # Default, but explicitly added to settings
 
 # Silky for profiling / monitoring the api response times
 SILKY_AUTHENTICATION = True
-SILKY_AUTHORISATION = True   # default is_staff=True; overwrite below
+SILKY_AUTHORISATION = True  # default is_staff=True; overwrite below
 SILKY_PERMISSIONS = lambda user: user.is_superuser
 SILKY_PYTHON_PROFILER = False
 SILKY_PYTHON_PROFILER_BINARY = False
@@ -296,10 +287,11 @@ SILKY_META = True  # to check the effect Silk itself has on response time
 SENTRY_DSN_API = env("SENTRY_DSN_API", default="")
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+
 sentry_sdk.init(
     dsn=SENTRY_DSN_API,
     integrations=[DjangoIntegration()],
-    environment=env("SENTRY_ENVIRONMENT")
+    environment=env("SENTRY_ENVIRONMENT"),
 )
 
 CECE_API_USER = env("CECE_API_USER", default="secret")
@@ -317,10 +309,10 @@ FILEBROWSER_DIRECTORY = ""
 FILEBROWSER_DEFAULT_PERMISSIONS = 0o644
 FILEBROWSER_OVERWRITE_EXISTING = True
 FILEBROWSER_EXTENSIONS = {
-    "Image": [".jpg", ".jpeg",".gif",".png",".tif",".tiff"],
-    "Document": [".pdf", ".doc",".rtf",".txt",".xls",".csv"],
-    "Video": [".mov",".wmv",".mpeg",".mpg",".avi",".rm"],
-    "Audio": [".mp3",".mp4",".wav",".aiff",".midi",".m4p"]
+    "Image": [".jpg", ".jpeg", ".gif", ".png", ".tif", ".tiff"],
+    "Document": [".pdf", ".doc", ".rtf", ".txt", ".xls", ".csv"],
+    "Video": [".mov", ".wmv", ".mpeg", ".mpg", ".avi", ".rm"],
+    "Audio": [".mp3", ".mp4", ".wav", ".aiff", ".midi", ".m4p"],
 }
 FILEBROWSER_ADMIN_VERSIONS = ["big", "thumbnail", "small", "medium", "large"]
 
@@ -328,26 +320,26 @@ FILEBROWSER_ADMIN_VERSIONS = ["big", "thumbnail", "small", "medium", "large"]
 ### TinyMCE as WYSIWYG editor in the FileBrowser
 # https://www.tinymce.com/docs/demo/full-featured/
 TINYMCE_DEFAULT_CONFIG = {
-  "selector": "textarea",
-  "height": 500,
-  "theme": "modern",
-  "plugins": [
-    "advlist autolink lists link image charmap print preview hr anchor pagebreak",
-    "searchreplace wordcount visualblocks visualchars code fullscreen",
-    "insertdatetime media nonbreaking save table contextmenu directionality",
-    "emoticons template paste textcolor colorpicker textpattern imagetools codesample toc"
-  ],
-  "toolbar1": "undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
-  "toolbar2": "print preview image | forecolor backcolor emoticons | codesample",
-  "image_advtab": True,
-  "templates": [
-    { "title": "Test template 1", "content": "Test 1" },
-    { "title": "Test template 2", "content": "Test 2" }
-  ],
-  "content_css": [
-    "//www.tinymce.com/css/codepen.min.css",
-    # "/static/css/main.css",
-  ]
+    "selector": "textarea",
+    "height": 500,
+    "theme": "modern",
+    "plugins": [
+        "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+        "searchreplace wordcount visualblocks visualchars code fullscreen",
+        "insertdatetime media nonbreaking save table contextmenu directionality",
+        "emoticons template paste textcolor colorpicker textpattern imagetools codesample toc",
+    ],
+    "toolbar1": "undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+    "toolbar2": "print preview image | forecolor backcolor emoticons | codesample",
+    "image_advtab": True,
+    "templates": [
+        {"title": "Test template 1", "content": "Test 1"},
+        {"title": "Test template 2", "content": "Test 2"},
+    ],
+    "content_css": [
+        "//www.tinymce.com/css/codepen.min.css",
+        # "/static/css/main.css",
+    ],
 }
 # TINYMCE_SPELLCHECKER = True
 TINYMCE_COMPRESSOR = True
@@ -363,11 +355,12 @@ TINYMCE_MINIMAL_CONFIG = {
         "link paste autolink code",
     ],
     "toolbar1": "undo redo | bold italic | bullist numlist outdent indent | link code",
-    "toolbar2": ""
+    "toolbar2": "",
 }
 
 
 import logging
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -394,7 +387,7 @@ LOGGING = {
         "file": {
             "level": "INFO",
             "class": "logging.FileHandler",
-            "filename": "/mancelot/log/request.log",
+            "filename": "log/request.log",
         },
         "mail_admins": {
             "level": "ERROR",
@@ -422,7 +415,7 @@ LOGGING = {
             "level": "DEBUG",
             "propagate": False,
         },
-    }
+    },
 }
 
 if DEBUG or True:

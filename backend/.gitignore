@@ -180,6 +180,7 @@ tags
 ### Mancelot
 .env
 staticfiles/node_modules
+static
 
 
 ### Auto-generated items in $HOME

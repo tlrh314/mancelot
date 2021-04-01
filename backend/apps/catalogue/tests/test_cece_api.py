@@ -18,7 +18,7 @@ from catalogue.models import (
     Size,
     Color,
     Material,
-    Product
+    Product,
 )
 
 
@@ -31,16 +31,18 @@ class CeceRemoteAPIBaseTestCase(object):
         self.ceceuser.set_password(settings.CECE_API_PASS)
         self.ceceuser.save()
         response = requests.post(
-            "{0}v1/token/".format(settings.CECE_API_URI), {
-                "email": self.ceceuser.email, "password": settings.CECE_API_PASS,
-            }
+            "{0}v1/token/".format(settings.CECE_API_URI),
+            {
+                "email": self.ceceuser.email,
+                "password": settings.CECE_API_PASS,
+            },
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response_to_json(response)
         self.headers = {
             "Authorization": "Bearer {0}".format(data["access"]),
             "Accept": "application/json",
-            "user-agent": "Mancelot Bot v1.3.3.7"
+            "user-agent": "Mancelot Bot v1.3.3.7",
         }
 
     def tearDown(self, *args, **kwargs):
@@ -73,7 +75,9 @@ class CeceRemoteAPIPayMethodTestCase(CeceRemoteAPIBaseTestCase, APITestCase):
 
         self.resource_uri = settings.CECE_API_URI + "mancelot/catalog/paymethod/"
         self.expected_fields = [
-            "id", "name", "icon_url",
+            "id",
+            "name",
+            "icon_url",
         ]
 
     def test_create_instance_with_cece_data(self):
@@ -97,9 +101,7 @@ class CeceRemoteAPILabelTestCase(CeceRemoteAPIBaseTestCase, APITestCase):
         super().setUp(*args, **kwargs)
 
         self.resource_uri = settings.CECE_API_URI + "mancelot/catalog/label/"
-        self.expected_fields = [
-            "id", "abbreviation", "label_name", "description"
-        ]
+        self.expected_fields = ["id", "abbreviation", "label_name", "description"]
 
     def test_create_instance_with_cece_data(self):
         response = requests.get(self.resource_uri, headers=self.headers)
@@ -123,7 +125,11 @@ class CeceRemoteAPICertificateTestCase(CeceRemoteAPIBaseTestCase, APITestCase):
 
         self.resource_uri = settings.CECE_API_URI + "mancelot/catalog/certificate/"
         self.expected_fields = [
-            "id", "name", "short_description", "about", "static_url"
+            "id",
+            "name",
+            "short_description",
+            "about",
+            "static_url",
         ]
 
     def test_create_instance_with_cece_data(self):
@@ -148,7 +154,11 @@ class CeceRemoteAPICategoryTestCase(CeceRemoteAPIBaseTestCase, APITestCase):
 
         self.resource_uri = settings.CECE_API_URI + "mancelot/catalog/category/"
         self.expected_fields = [
-            "id", "category_name", "category_ID", "type", "subcategory"
+            "id",
+            "category_name",
+            "category_ID",
+            "type",
+            "subcategory",
         ]
 
     def test_create_instance_with_cece_data(self):
@@ -157,11 +167,13 @@ class CeceRemoteAPICategoryTestCase(CeceRemoteAPIBaseTestCase, APITestCase):
         data = response_to_json(response)
         self.assertGreater(data["count"], 0)
 
-        type_section_map = { v: k for k, v in dict(Category.SECTIONS).items() }
+        type_section_map = {v: k for k, v in dict(Category.SECTIONS).items()}
         external_obj = data["results"][0]
         obj = Category.objects.create(
             name=external_obj["category_name"],
-            section=type_section_map.get(external_obj["type"], -1),  # defaults to db error
+            section=type_section_map.get(
+                external_obj["type"], -1
+            ),  # defaults to db error
             cece_api_url="{0}{1}/".format(self.resource_uri, external_obj["id"]),
             last_updated_by=self.ceceuser,
         )
@@ -170,7 +182,8 @@ class CeceRemoteAPICategoryTestCase(CeceRemoteAPIBaseTestCase, APITestCase):
         # Related field: subcategory is FK
         for external_subcategory in external_obj["subcategory"]:
             sub_obj, created = Subcategory.objects.get_or_create(
-                category=obj, name=external_subcategory["sub_name"],
+                category=obj,
+                name=external_subcategory["sub_name"],
             )
             if created:
                 sub_obj.last_updated_by = self.ceceuser
@@ -184,7 +197,12 @@ class CeceRemoteAPIStoreTestCase(CeceRemoteAPIBaseTestCase, APITestCase):
 
         self.resource_uri = settings.CECE_API_URI + "mancelot/catalog/store/"
         self.expected_fields = [
-            "id", "store_name", "about", "store_url", "logo", "pay_methods",
+            "id",
+            "store_name",
+            "about",
+            "store_url",
+            "logo",
+            "pay_methods",
         ]
 
     def test_create_instance_with_cece_data(self):
@@ -220,7 +238,12 @@ class CeceRemoteAPIBrandTestCase(CeceRemoteAPIBaseTestCase, APITestCase):
 
         self.resource_uri = settings.CECE_API_URI + "mancelot/catalog/brand/"
         self.expected_fields = [
-            "id", "brand_name", "about_brand", "labels", "certificate", "about_brand",
+            "id",
+            "brand_name",
+            "about_brand",
+            "labels",
+            "certificate",
+            "about_brand",
         ]
 
     def test_create_instance_with_cece_data(self):
@@ -264,12 +287,24 @@ class CeceRemoteAPIProductTestCase(CeceRemoteAPIBaseTestCase, APITestCase):
 
         self.resource_uri = settings.CECE_API_URI + "mancelot/catalog/product/"
         self.expected_fields = [
-            "id", "title", "text", "extra_text", "link",
-            "productID", "price", "old_price",
-            "primary_image", "extra_images",
-            "color", "sizes", "size", "material",
-            "category", "subcategory",
-            "brand", "store",
+            "id",
+            "title",
+            "text",
+            "extra_text",
+            "link",
+            "productID",
+            "price",
+            "old_price",
+            "primary_image",
+            "extra_images",
+            "color",
+            "sizes",
+            "size",
+            "material",
+            "category",
+            "subcategory",
+            "brand",
+            "store",
         ]
 
     def test_create_instance_with_cece_data(self):
@@ -279,48 +314,52 @@ class CeceRemoteAPIProductTestCase(CeceRemoteAPIBaseTestCase, APITestCase):
         self.assertGreater(data["count"], 0)
 
         from djmoney.money import Money
+
         external_obj = data["results"][0]
 
         # Related fields: external brand and store are FK, serialized
         #     as string (brand_name, store_name)
         brand, created = Brand.objects.get_or_create(name=external_obj["brand"])
         if created:
-            brand.last_updated_by = self.ceceuser; brand.save()
+            brand.last_updated_by = self.ceceuser
+            brand.save()
         store, created = Store.objects.get_or_create(name=external_obj["store"])
         if created:
-            store.last_updated_by = self.ceceuser; store.save()
+            store.last_updated_by = self.ceceuser
+            store.save()
         # Related field: external color is a string (one color per instance)
         color, created = Color.objects.get_or_create(name=external_obj["color"])
         if created:
-            color.last_updated_by = self.ceceuser; color.save()
+            color.last_updated_by = self.ceceuser
+            color.save()
 
         obj = Product.objects.create(
             name=external_obj["title"],
             info=external_obj["text"],
             extra_info=external_obj["extra_text"],
             url=external_obj["link"],
-
             cece_id=external_obj["productID"],
             price=Money(external_obj["price"], "EUR"),
-            from_price=Money(external_obj["old_price"], "EUR") if external_obj["old_price"] else None,
-
+            from_price=Money(external_obj["old_price"], "EUR")
+            if external_obj["old_price"]
+            else None,
             main_image=external_obj["primary_image"],
             extra_images=external_obj["extra_images"],
-
             brand=brand,
             store=store,
-
             cece_api_url="{0}{1}/".format(self.resource_uri, external_obj["id"]),
             last_updated_by=self.ceceuser,
         )
         self.assertEqual(Product.objects.filter(pk=obj.pk).exists(), True)
 
         # Related fields: external category (M2M) and subcategory (FK to category)
-        section_map = { v: k for k, v in dict(Category.SECTIONS).items() }
+        section_map = {v: k for k, v in dict(Category.SECTIONS).items()}
         for external_category in external_obj["category"]:
             category, created = Category.objects.get_or_create(
                 name=external_category,  # serializes as string (category_name)
-                section=section_map["Men"],  # NB, this assumes Cece API exclusively offers data in Men section!!!
+                section=section_map[
+                    "Men"
+                ],  # NB, this assumes Cece API exclusively offers data in Men section!!!
             )
             if created:
                 category.last_updated_by = self.ceceuser
@@ -356,7 +395,9 @@ class CeceRemoteAPIProductTestCase(CeceRemoteAPIBaseTestCase, APITestCase):
             obj.materials.add(material)
             obj.save()
 
-        for external_size in external_obj["size"]:  # NB external has 'size' singular, but is M2M!
+        for external_size in external_obj[
+            "size"
+        ]:  # NB external has 'size' singular, but is M2M!
             size, created = Size.objects.get_or_create(
                 name=external_size,  # serialized as string (name)
             )

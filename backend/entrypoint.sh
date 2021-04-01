@@ -22,7 +22,7 @@ wait_for_mariadb() {
     echo ".. the database is now ready to accept connections (waited for $counter seconds) :-)\n"
 }
 
-# TODO: databases should also be up-and-running when using 'run --rm' cmd 
+# TODO: databases should also be up-and-running when using 'run --rm' cmd
 if [ "$1" = 'uwsgi' ]; then
     echo "\nI'm waiting for the database to accept connections.."
     wait_for_mariadb
@@ -35,7 +35,7 @@ fi
 # 1. Each container migrates its default database.
 echo "\nGenerating migrations, then migrating my default database"
 python manage.py migrate
-python manage.py compilemessages
+python manage.py compilemessages -x venv
 python manage.py collectstatic --noinput -i node_modules -i gulpfile.js -i package.json -i package-lock.json
 
 # To kill 404

@@ -33,4 +33,3 @@ class CatalogueUtilsTestCase(TestCase):
     def test_optimize_image(self):
         for img in glob.glob("{0}/img/test/*".format(settings.STATIC_ROOT)):
             fname, extension = os.path.splitext(img)  # extension contains a leading dot
-

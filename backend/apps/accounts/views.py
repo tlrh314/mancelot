@@ -15,7 +15,9 @@ def index(request):
         email = request.POST.get("email")
         subject = "Aanmelding Mancelot"
         from_email = "info@mancelot.app"
-        text_content = "Welkom bij Mancelot! We laten van ons horen zodra de app online is."
+        text_content = (
+            "Welkom bij Mancelot! We laten van ons horen zodra de app online is."
+        )
         html_content = render_to_string("accounts/signup.html")
         msg = EmailMultiAlternatives(subject, text_content, from_email, [email])
         msg.attach_alternative(html_content, "text/html")
@@ -28,5 +30,6 @@ def index(request):
 
 def tmp_signup_email(request):  # TODO: remove
     from django.contrib.auth import get_user_model
+
     timo = get_user_model().objects.filter(email="timo@halbesma.com").first()
     return render(request, "accounts/signup.html", {"user": timo})

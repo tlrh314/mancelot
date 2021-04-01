@@ -41,4 +41,3 @@ from catalogue.models import Certificate
 #     def test_body_in_entry(self):
 #         response = self.client.get(self.entry.get_absolute_url())
 #         self.assertContains(response, self.entry.body)
-

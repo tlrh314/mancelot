@@ -2,6 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 import sys
+
 from celery import Celery
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)

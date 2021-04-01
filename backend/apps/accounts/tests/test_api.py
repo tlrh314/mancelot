@@ -53,21 +53,19 @@ class UserModelViewSetTest(APITestCase):
         self.admin.set_password("secret1234")
         self.admin.save()
         response = self.client.post(
-            reverse("accounts:token_obtain_pair"), {
-                "email": self.admin.email, "password": "secret1234"
-            }
+            reverse("accounts:token_obtain_pair"),
+            {"email": self.admin.email, "password": "secret1234"},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.admintoken= "Bearer {0}".format(response.data["access"])
+        self.admintoken = "Bearer {0}".format(response.data["access"])
 
         # Obtain JSON Web Token for a regular user
         self.user = UserModelFactory(favorites__skip=True)
         self.user.set_password("secret1234")
         self.user.save()
         response = self.client.post(
-            reverse("accounts:token_obtain_pair"), {
-                "email": self.user.email, "password": "secret1234"
-            }
+            reverse("accounts:token_obtain_pair"),
+            {"email": self.user.email, "password": "secret1234"},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.usertoken = "Bearer {0}".format(response.data["access"])
@@ -102,27 +100,27 @@ class UserModelViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         response = self.client.head(self.detail_uri_me)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
     def test_head_user_is_authenticated(self):
-        response = self.client.head(self.list_uri,
-            HTTP_AUTHORIZATION=self.usertoken)
+        response = self.client.head(self.list_uri, HTTP_AUTHORIZATION=self.usertoken)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # usertoken is for self.user != self.testuser_to_change, so 403!
-        response = self.client.head(self.detail_uri,
-            HTTP_AUTHORIZATION=self.usertoken)
+        response = self.client.head(self.detail_uri, HTTP_AUTHORIZATION=self.usertoken)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         # And check for me
-        response = self.client.head(self.detail_uri_me,
-            HTTP_AUTHORIZATION=self.usertoken)
+        response = self.client.head(
+            self.detail_uri_me, HTTP_AUTHORIZATION=self.usertoken
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_head_user_is_superuser(self):
-        response = self.client.head(self.list_uri,
-            HTTP_AUTHORIZATION=self.admintoken)
+        response = self.client.head(self.list_uri, HTTP_AUTHORIZATION=self.admintoken)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.head(self.detail_uri,
-            HTTP_AUTHORIZATION=self.admintoken)
+        response = self.client.head(self.detail_uri, HTTP_AUTHORIZATION=self.admintoken)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.head(self.detail_uri_me,
-            HTTP_AUTHORIZATION=self.admintoken)
+        response = self.client.head(
+            self.detail_uri_me, HTTP_AUTHORIZATION=self.admintoken
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_options_user_is_anonymous(self):
@@ -132,26 +130,32 @@ class UserModelViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.options(self.detail_uri_me)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_options_user_is_authenticated(self):
-        response = self.client.options(self.list_uri,
-            HTTP_AUTHORIZATION=self.usertoken)
+        response = self.client.options(self.list_uri, HTTP_AUTHORIZATION=self.usertoken)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.options(self.detail_uri,
-            HTTP_AUTHORIZATION=self.usertoken)
+        response = self.client.options(
+            self.detail_uri, HTTP_AUTHORIZATION=self.usertoken
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # And check for me
-        response = self.client.options(self.detail_uri_me,
-            HTTP_AUTHORIZATION=self.usertoken)
+        response = self.client.options(
+            self.detail_uri_me, HTTP_AUTHORIZATION=self.usertoken
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_options_user_is_superuser(self):
-        response = self.client.options(self.list_uri,
-            HTTP_AUTHORIZATION=self.admintoken)
+        response = self.client.options(
+            self.list_uri, HTTP_AUTHORIZATION=self.admintoken
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.options(self.detail_uri,
-            HTTP_AUTHORIZATION=self.usertoken)
+        response = self.client.options(
+            self.detail_uri, HTTP_AUTHORIZATION=self.usertoken
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.options(self.detail_uri_me,
-            HTTP_AUTHORIZATION=self.usertoken)
+        response = self.client.options(
+            self.detail_uri_me, HTTP_AUTHORIZATION=self.usertoken
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_user_is_anonymous(self):
@@ -161,27 +165,27 @@ class UserModelViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         response = self.client.get(self.detail_uri_me)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
     def test_get_user_is_authenticated(self):
-        response = self.client.get(self.list_uri,
-            HTTP_AUTHORIZATION=self.usertoken)
+        response = self.client.get(self.list_uri, HTTP_AUTHORIZATION=self.usertoken)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         # usertoken is for self.user != self.testuser_to_change, so 403!
-        response = self.client.get(self.detail_uri,
-            HTTP_AUTHORIZATION=self.usertoken)
+        response = self.client.get(self.detail_uri, HTTP_AUTHORIZATION=self.usertoken)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         # And check for me
-        response = self.client.get(self.detail_uri_me,
-            HTTP_AUTHORIZATION=self.usertoken)
+        response = self.client.get(
+            self.detail_uri_me, HTTP_AUTHORIZATION=self.usertoken
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_get_user_is_superuser(self):
-        response = self.client.get(self.list_uri,
-            HTTP_AUTHORIZATION=self.admintoken)
+        response = self.client.get(self.list_uri, HTTP_AUTHORIZATION=self.admintoken)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.get(self.detail_uri,
-            HTTP_AUTHORIZATION=self.admintoken)
+        response = self.client.get(self.detail_uri, HTTP_AUTHORIZATION=self.admintoken)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.get(self.detail_uri_me,
-            HTTP_AUTHORIZATION=self.admintoken)
+        response = self.client.get(
+            self.detail_uri_me, HTTP_AUTHORIZATION=self.admintoken
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def check_assertions_for_post(self):
@@ -192,9 +196,11 @@ class UserModelViewSetTest(APITestCase):
                 # id is None in post_data b/c factory create does not save, so instance has no id yet
                 continue
             if k == "password":  # b/c hashed
-                self.assertNotEqual(getattr(user, k), v); continue
+                self.assertNotEqual(getattr(user, k), v)
+                continue
             self.assertEqual(getattr(user, k), v)
         user.delete()
+
     def test_post_user_is_anonymous_201(self):
         self.assertIsNone(  # user should not exist yet
             UserModel.objects.filter(email=self.post_data["email"]).first()
@@ -202,125 +208,175 @@ class UserModelViewSetTest(APITestCase):
         response = self.client.post(self.list_uri, data=self.post_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.check_assertions_for_post()
+
     def test_post_user_is_anonymous_no_email_given_400(self):
         post_data = copy.copy(self.post_data)
         post_data.pop("email")
         response = self.client.post(self.list_uri, data=post_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(json.loads(response.content)["email"][0],
-            "This field is required.")
+        self.assertEqual(
+            json.loads(response.content)["email"][0], "This field is required."
+        )
+
     def test_post_user_is_anonymous_no_password_given_400(self):
         post_data = copy.copy(self.post_data)
         post_data.pop("password")
         response = self.client.post(self.list_uri, data=post_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(json.loads(response.content)["password"][0],
-            "This field is required.")
+        self.assertEqual(
+            json.loads(response.content)["password"][0], "This field is required."
+        )
+
     def test_post_user_is_anonymous_too_short_password_given_400(self):
         post_data = copy.copy(self.post_data)
         post_data["password"] = "short"
         response = self.client.post(self.list_uri, data=post_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(json.loads(response.content)["password"][0],
-            "Ensure this field has at least 8 characters.")
+        self.assertEqual(
+            json.loads(response.content)["password"][0],
+            "Ensure this field has at least 8 characters.",
+        )
+
     def test_post_user_is_authenticated(self):
         self.assertIsNone(
             UserModel.objects.filter(email=self.post_data["email"]).first()
         )
-        response = self.client.post(self.list_uri, data=self.post_data,
+        response = self.client.post(
+            self.list_uri,
+            data=self.post_data,
             HTTP_AUTHORIZATION=self.usertoken,
-            headers={"X-CSRFToken": self.csrftoken})
+            headers={"X-CSRFToken": self.csrftoken},
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.check_assertions_for_post()
+
     def test_post_user_is_superuser(self):
         self.assertIsNone(
             UserModel.objects.filter(email=self.post_data["email"]).first()
         )
-        response = self.client.post(self.list_uri, data=self.post_data,
+        response = self.client.post(
+            self.list_uri,
+            data=self.post_data,
             HTTP_AUTHORIZATION=self.admintoken,
-            headers={"X-CSRFToken": self.csrftoken}
-            )
+            headers={"X-CSRFToken": self.csrftoken},
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.check_assertions_for_post()
 
     def test_put_user_is_anonymous(self):
-        response = self.client.put(self.detail_uri, self.put_data,
-            headers={"X-CSRFToken": self.csrftoken})
+        response = self.client.put(
+            self.detail_uri, self.put_data, headers={"X-CSRFToken": self.csrftoken}
+        )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
     def test_put_user_is_authenticated(self):
-        response = self.client.put(self.detail_uri, self.put_data,
+        response = self.client.put(
+            self.detail_uri,
+            self.put_data,
             HTTP_AUTHORIZATION=self.usertoken,
-            headers={"X-CSRFToken": self.csrftoken})
+            headers={"X-CSRFToken": self.csrftoken},
+        )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         # And check for me
         put_data = copy.copy(self.put_data)
         put_data["email"] = self.user.email
-        response = self.client.put(self.detail_uri_me, put_data,
+        response = self.client.put(
+            self.detail_uri_me,
+            put_data,
             HTTP_AUTHORIZATION=self.usertoken,
-            headers={"X-CSRFToken": self.csrftoken})
+            headers={"X-CSRFToken": self.csrftoken},
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_put_user_is_superuser(self):
         # First check that fields in testuser_to_change != fields in put_data
         for k, v in self.put_data.items():
-            if k == "password" or k == "country" or v is None: continue
+            if k == "password" or k == "country" or v is None:
+                continue
             if k == "email":
                 self.assertEqual(getattr(self.testuser_to_change, k), v)
                 continue
             self.assertNotEqual(getattr(self.testuser_to_change, k), v)
-        response = self.client.put(self.detail_uri, self.put_data,
+        response = self.client.put(
+            self.detail_uri,
+            self.put_data,
             HTTP_AUTHORIZATION=self.admintoken,
-            headers={"X-CSRFToken": self.csrftoken})
+            headers={"X-CSRFToken": self.csrftoken},
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Now check that fields in testuser_to_change are equal to fields in put_data
         testuser_to_change = UserModel.objects.get(email=self.testuser_to_change.email)
         for k, v in self.put_data.items():
-            if k == "id":  continue  # b/c id is None in put_data
-            if k == "password" or k == "country": continue
+            if k == "id":
+                continue  # b/c id is None in put_data
+            if k == "password" or k == "country":
+                continue
             self.assertEqual(getattr(testuser_to_change, k), v)
 
     def test_patch_user_is_anonymous(self):
-        response = self.client.patch(self.detail_uri, self.patch_data,
-            headers={"X-CSRFToken": self.csrftoken})
+        response = self.client.patch(
+            self.detail_uri, self.patch_data, headers={"X-CSRFToken": self.csrftoken}
+        )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
     def test_patch_user_is_authenticated(self):
-        response = self.client.patch(self.detail_uri, self.patch_data,
+        response = self.client.patch(
+            self.detail_uri,
+            self.patch_data,
             HTTP_AUTHORIZATION=self.usertoken,
-            headers={"X-CSRFToken": self.csrftoken})
+            headers={"X-CSRFToken": self.csrftoken},
+        )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         # And check for me
         patch_data = copy.copy(self.patch_data)
-        response = self.client.patch(self.detail_uri_me, patch_data,
+        response = self.client.patch(
+            self.detail_uri_me,
+            patch_data,
             HTTP_AUTHORIZATION=self.usertoken,
-            headers={"X-CSRFToken": self.csrftoken})
+            headers={"X-CSRFToken": self.csrftoken},
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         user = UserModel.objects.get(email=self.user.email)
         self.assertEqual(user.zip_code, patch_data["zip_code"])
+
     def test_patch_user_is_superuser(self):
-        response = self.client.patch(self.detail_uri, self.patch_data,
+        response = self.client.patch(
+            self.detail_uri,
+            self.patch_data,
             HTTP_AUTHORIZATION=self.admintoken,
-            headers={"X-CSRFToken": self.csrftoken})
+            headers={"X-CSRFToken": self.csrftoken},
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         testuser_to_change = UserModel.objects.get(email=self.testuser_to_change.email)
         self.assertEqual(testuser_to_change.zip_code, self.patch_data["zip_code"])
 
     def test_delete_user_is_anonymous(self):
-        response = self.client.delete(self.detail_uri,
-            headers={"X-CSRFToken": self.csrftoken})
+        response = self.client.delete(
+            self.detail_uri, headers={"X-CSRFToken": self.csrftoken}
+        )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
     def test_delete_user_is_authenticated(self):
-        response = self.client.delete(self.detail_uri,
+        response = self.client.delete(
+            self.detail_uri,
             HTTP_AUTHORIZATION=self.usertoken,
-            headers={"X-CSRFToken": self.csrftoken})
+            headers={"X-CSRFToken": self.csrftoken},
+        )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         # And check for me --> we do not allow users to delete themselves
-        response = self.client.delete(self.detail_uri_me,
+        response = self.client.delete(
+            self.detail_uri_me,
             HTTP_AUTHORIZATION=self.usertoken,
-            headers={"X-CSRFToken": self.csrftoken})
+            headers={"X-CSRFToken": self.csrftoken},
+        )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_delete_user_is_superuser(self):
-        response = self.client.delete(self.detail_uri,
+        response = self.client.delete(
+            self.detail_uri,
             HTTP_AUTHORIZATION=self.admintoken,
-            headers={"X-CSRFToken": self.csrftoken})
+            headers={"X-CSRFToken": self.csrftoken},
+        )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertIsNone(
             UserModel.objects.filter(email=self.testuser_to_change.email).first()
@@ -329,26 +385,35 @@ class UserModelViewSetTest(APITestCase):
     def test_get_favorites(self):
         for product in Product.objects.order_by("?")[0:5]:
             fav = FavoriteProductFactory(
-                product=product, user=self.user, size=product.sizes.order_by("?").first()
-
+                product=product,
+                user=self.user,
+                size=product.sizes.order_by("?").first(),
             )
         self.assertEqual(self.user.favorites.count(), 5)
-        response = self.client.get(reverse("usermodel-favorites", args=["me"]),
-            HTTP_AUTHORIZATION=self.usertoken
+        response = self.client.get(
+            reverse("usermodel-favorites", args=["me"]),
+            HTTP_AUTHORIZATION=self.usertoken,
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.user.favorites.count(), 5)
-        self.assertEqual(response.data, UserFavoriteProductListSerializer(self.user.favorites.all(), many=True).data)
+        self.assertEqual(
+            response.data,
+            UserFavoriteProductListSerializer(
+                self.user.favorites.all(), many=True
+            ).data,
+        )
 
     def test_post_favorites(self):
-        response = self.client.post(reverse("usermodel-favorites", args=["me"]),
-            HTTP_AUTHORIZATION=self.usertoken
+        response = self.client.post(
+            reverse("usermodel-favorites", args=["me"]),
+            HTTP_AUTHORIZATION=self.usertoken,
         )
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_put_favorites(self):
-        response = self.client.put(reverse("usermodel-favorites", args=["me"]),
-            HTTP_AUTHORIZATION=self.usertoken
+        response = self.client.put(
+            reverse("usermodel-favorites", args=["me"]),
+            HTTP_AUTHORIZATION=self.usertoken,
         )
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
@@ -360,7 +425,7 @@ class UserModelViewSetTest(APITestCase):
             response = self.client.patch(
                 reverse("usermodel-favorites", args=["me"]),
                 {"product_id": product.id, "quantity": 3},
-                HTTP_AUTHORIZATION=self.usertoken
+                HTTP_AUTHORIZATION=self.usertoken,
             )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.assertEqual(response.data["status"], "Favorite added")
@@ -370,7 +435,7 @@ class UserModelViewSetTest(APITestCase):
             response = self.client.patch(
                 reverse("usermodel-favorites", args=["me"]),
                 {"product_id": product.id, "size_id": size.id, "quantity": 3},
-                HTTP_AUTHORIZATION=self.usertoken
+                HTTP_AUTHORIZATION=self.usertoken,
             )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.assertEqual(response.data["status"], "Favorite added")
@@ -380,15 +445,17 @@ class UserModelViewSetTest(APITestCase):
             response = self.client.patch(
                 reverse("usermodel-favorites", args=["me"]),
                 {"product_id": -1, "quantity": 3},
-                HTTP_AUTHORIZATION=self.usertoken
+                HTTP_AUTHORIZATION=self.usertoken,
             )
             self.assertEqual(response.data["status"], "Product does not exist")
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        with self.subTest("Product does not exist post-MancelotAlpha0-9: size_id given"):
+        with self.subTest(
+            "Product does not exist post-MancelotAlpha0-9: size_id given"
+        ):
             response = self.client.patch(
                 reverse("usermodel-favorites", args=["me"]),
                 {"product_id": -1, "size_id": size.id, "quantity": 3},
-                HTTP_AUTHORIZATION=self.usertoken
+                HTTP_AUTHORIZATION=self.usertoken,
             )
             self.assertEqual(response.data["status"], "Product does not exist")
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -397,7 +464,7 @@ class UserModelViewSetTest(APITestCase):
                 reverse("usermodel-favorites", args=["me"]),
                 # TODO: add size_id once it is required
                 {"product": -1, "quantity": 3},
-                HTTP_AUTHORIZATION=self.usertoken
+                HTTP_AUTHORIZATION=self.usertoken,
             )
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         with self.subTest("Incorrect Type in Field MancelotAlpha0-9"):
@@ -405,7 +472,7 @@ class UserModelViewSetTest(APITestCase):
                 reverse("usermodel-favorites", args=["me"]),
                 # TODO: add size_id  once it is required
                 {"product": "sjenkie", "quantity": 3},
-                HTTP_AUTHORIZATION=self.usertoken
+                HTTP_AUTHORIZATION=self.usertoken,
             )
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -420,7 +487,7 @@ class UserModelViewSetTest(APITestCase):
             response = self.client.delete(
                 reverse("usermodel-favorites", args=["me"]),
                 {"product_id": product.id},
-                HTTP_AUTHORIZATION=self.usertoken
+                HTTP_AUTHORIZATION=self.usertoken,
             )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.assertEqual(response.data["status"], "Favorite deleted")
@@ -429,20 +496,20 @@ class UserModelViewSetTest(APITestCase):
             response = self.client.delete(
                 reverse("usermodel-favorites", args=["me"]),
                 {"product_id": -1},
-                HTTP_AUTHORIZATION=self.usertoken
+                HTTP_AUTHORIZATION=self.usertoken,
             )
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         with self.subTest("Incorrect Field"):
             response = self.client.delete(
                 reverse("usermodel-favorites", args=["me"]),
                 {"product": -1},
-                HTTP_AUTHORIZATION=self.usertoken
+                HTTP_AUTHORIZATION=self.usertoken,
             )
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         with self.subTest("Incorrect Type in Field"):
             response = self.client.delete(
                 reverse("usermodel-favorites", args=["me"]),
                 {"product": "sjenkie"},
-                HTTP_AUTHORIZATION=self.usertoken
+                HTTP_AUTHORIZATION=self.usertoken,
             )
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

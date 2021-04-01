@@ -15,7 +15,9 @@ if __name__ == "__main__":
 
     if "test" in sys.argv:
         import logging
+
         from django.conf import settings
+
         logging.disable(logging.CRITICAL)
         settings.DEBUG = False
         settings.TEMPLATE_DEBUG = False
@@ -40,8 +42,9 @@ if __name__ == "__main__":
         # call_command("migrate")
     if "test" in sys.argv and "--time" in sys.argv:
         sys.argv.remove("--time")
-        from django import test
         import time
+
+        from django import test
 
         def setUp(self):
             self.startTime = time.time()
@@ -49,8 +52,7 @@ if __name__ == "__main__":
         def tearDown(self):
             total = time.time() - self.startTime
             if total > 0.5 or True:
-                print("\n\t\033[91m[{0}] took {1:.3f}s\033[0m".format(
-                    self.id(), total))
+                print("\n\t\033[91m[{0}] took {1:.3f}s\033[0m".format(self.id(), total))
 
         test.TestCase.setUp = setUp
         test.TestCase.tearDown = tearDown

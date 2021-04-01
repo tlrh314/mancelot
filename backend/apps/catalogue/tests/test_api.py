@@ -5,7 +5,7 @@ from rest_framework.test import (
     APISimpleTestCase,
     APITransactionTestCase,
     APILiveServerTestCase,
-    APIRequestFactory
+    APIRequestFactory,
 )
 
 from catalogue.models import (
@@ -19,7 +19,7 @@ from catalogue.models import (
     Size,
     Color,
     Material,
-    Product
+    Product,
 )
 from catalogue.factories import (
     CeceLabelFactory,
@@ -32,7 +32,7 @@ from catalogue.factories import (
     SizeFactory,
     ColorFactory,
     MaterialFactory,
-    ProductFactory
+    ProductFactory,
 )
 from accounts.factories import (
     UserModelFactory,
@@ -49,21 +49,19 @@ class CatalogueAPIBaseTestCase(object):
         self.admin.set_password("secret")
         self.admin.save()
         response = self.client.post(
-            reverse("accounts:token_obtain_pair"), {
-                "email": self.admin.email, "password": "secret"
-            }
+            reverse("accounts:token_obtain_pair"),
+            {"email": self.admin.email, "password": "secret"},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.admintoken= "Bearer {0}".format(response.data["access"])
+        self.admintoken = "Bearer {0}".format(response.data["access"])
 
         # Obtain JSON Web Token for a regular user
         self.user = UserModelFactory(favorites__skip=True)
         self.user.set_password("secret")
         self.user.save()
         response = self.client.post(
-            reverse("accounts:token_obtain_pair"), {
-                "email": self.user.email, "password": "secret"
-            }
+            reverse("accounts:token_obtain_pair"),
+            {"email": self.user.email, "password": "secret"},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.usertoken = "Bearer {0}".format(response.data["access"])
@@ -133,11 +131,11 @@ class CatalogueAPIBaseTestCase(object):
         self.verify_options_data(response)
         self.assertEqual(response.data["name"], self.resource_name_list)  # Sanity check
 
-        response = self.client.options(
-            reverse(self.detail_uri, args=[self.detail_pk])
-        )
+        response = self.client.options(reverse(self.detail_uri, args=[self.detail_pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["name"], self.resource_name_detail)  # Sanity check
+        self.assertEqual(
+            response.data["name"], self.resource_name_detail
+        )  # Sanity check
         self.verify_options_data(response)
 
     def test_options_user_is_authenticated_200(self):
@@ -171,10 +169,15 @@ class CatalogueAPIBaseTestCase(object):
         self.assertEqual(list(data_api.keys()), self.serializer_fields)
         for field in self.serializer_fields:
             # TODO: handle FK and M2M
-            print("\n{0}\napi -> {1}: {2}\norm -> {3}: {4}".format(
-                field, data_api[field], type(data_api[field]),
-                getattr(data_orm, field), type(getattr(data_orm, field))
-            ))
+            print(
+                "\n{0}\napi -> {1}: {2}\norm -> {3}: {4}".format(
+                    field,
+                    data_api[field],
+                    type(data_api[field]),
+                    getattr(data_orm, field),
+                    type(getattr(data_orm, field)),
+                )
+            )
             self.assertEqual(data_api[field], getattr(data_orm, field))
 
     def verify_get_list_response_data(self, response):
@@ -392,7 +395,6 @@ class CertificateViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
         if Certificate.objects.count() < 20:
             CertificateFactory.create_batch(20 - Certificate.objects.count())
 
-
     def setUp(self):
         # Set the admin + user tokens
         super().setUp()
@@ -414,8 +416,9 @@ class CategoryViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
     def setUpTestData(cls):
         # TODO: fixtures
         if Category.objects.count() < 20:
-            CategoryFactory.create_batch(20 - Category.objects.count(),
-                subcategories__skip=True)
+            CategoryFactory.create_batch(
+                20 - Category.objects.count(), subcategories__skip=True
+            )
 
     def setUp(self):
         # Set the admin + user tokens
@@ -497,7 +500,13 @@ class StoreViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
         self.data_orm = Store.objects.order_by("name").first()
         self.data_orm_detail = Store.objects.get(pk=self.detail_pk)  # last()
         self.serializer_fields = [
-            "id", "name", "slug", "info", "url", "logo", "payment_options",
+            "id",
+            "name",
+            "slug",
+            "info",
+            "url",
+            "logo",
+            "payment_options",
         ]
         self.resource_name_list = "Store List"
         self.resource_name_detail = "Store Instance"
@@ -521,8 +530,14 @@ class BrandViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
         self.data_orm = Brand.objects.order_by("name").first()
         self.data_orm_detail = Brand.objects.get(pk=self.detail_pk)  # last()
         self.serializer_fields = [
-            "id", "name", "slug", "info", "url", "logo",
-            "labels", "certificates"
+            "id",
+            "name",
+            "slug",
+            "info",
+            "url",
+            "logo",
+            "labels",
+            "certificates",
         ]
         self.resource_name_list = "Brand List"
         self.resource_name_detail = "Brand Instance"
@@ -616,11 +631,26 @@ class ProductViewSetTest(CatalogueAPIBaseTestCase, APITestCase):
         self.data_orm = Product.objects.order_by("name").first()
         self.data_orm_detail = Product.objects.get(pk=self.detail_pk)  # last()
         self.serializer_fields = [
-            "id", "name", "slug", "info", "extra_info", "url", "cece_id",
-            "price", "price_currency", "from_price", "from_price_currency",
-            "main_image", "extra_images", "brand", "store",
-            "categories", "subcategories", "materials",
-            "sizes", "colors",
+            "id",
+            "name",
+            "slug",
+            "info",
+            "extra_info",
+            "url",
+            "cece_id",
+            "price",
+            "price_currency",
+            "from_price",
+            "from_price_currency",
+            "main_image",
+            "extra_images",
+            "brand",
+            "store",
+            "categories",
+            "subcategories",
+            "materials",
+            "sizes",
+            "colors",
         ]
         self.resource_name_list = "Product List"
         self.resource_name_detail = "Product Instance"

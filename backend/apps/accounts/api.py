@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.exceptions import NotAuthenticated
+
 # from mollie.api.client import Client as MollieClient
 
 from catalogue.models import (
@@ -35,7 +36,11 @@ class UserModelViewSet(ModelViewSet):
         permission_classes = []
         if self.action == "create":
             permission_classes = [AllowAny]
-        elif self.action == "retrieve" or self.action == "update" or self.action == "partial_update":
+        elif (
+            self.action == "retrieve"
+            or self.action == "update"
+            or self.action == "partial_update"
+        ):
             permission_classes = [IsAdminUserOrSelf]
         elif self.action == "list" or self.action == "destroy":
             permission_classes = [IsAdminUser]
@@ -67,9 +72,11 @@ class UserModelViewSet(ModelViewSet):
         user = self.get_object()
 
         if self.request.method == "GET":
-            return Response(UserFavoriteProductListSerializer([
-                fav for fav in user.favorites.all()
-            ], many=True).data)
+            return Response(
+                UserFavoriteProductListSerializer(
+                    [fav for fav in user.favorites.all()], many=True
+                ).data
+            )
 
         if self.request.method == "PATCH":
             serializer = UserFavoritePatchSerializer(data=request.data)
@@ -78,25 +85,32 @@ class UserModelViewSet(ModelViewSet):
                 try:
                     product = Product.objects.get(id=product_id)
                 except Product.DoesNotExist:
-                    return Response({"status": "Product does not exist"},
-                        status=status.HTTP_400_BAD_REQUEST)
+                    return Response(
+                        {"status": "Product does not exist"},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
 
                 # TODO: Optional for MancelotAlpha0-9, but mandatory in later versions
                 size_id = serializer.data.get("size_id", None)
                 try:
                     size = Size.objects.get(id=size_id)
                 except Size.DoesNotExist:
-                    return Response({"status": "Size does not exist"},
-                        status=status.HTTP_400_BAD_REQUEST)
+                    return Response(
+                        {"status": "Size does not exist"},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
 
                 # Check that the desired Size is available for the particular
                 # Product instance. Note, however, that this could change any
                 # time the data are updated from Cece API...
                 if size not in product.sizes.all():
-                    status_str = "Size not available for this Product. Choose id from: {0}"
+                    status_str = (
+                        "Size not available for this Product. Choose id from: {0}"
+                    )
                     status_str = status_str.format([p.id for p in product.sizes.all()])
-                    return Response({"status": status_str},
-                        status=status.HTTP_400_BAD_REQUEST)
+                    return Response(
+                        {"status": status_str}, status=status.HTTP_400_BAD_REQUEST
+                    )
 
                 quantity = serializer.data["quantity"]
                 fav = FavoriteProduct.objects.filter(
@@ -105,23 +119,32 @@ class UserModelViewSet(ModelViewSet):
                 if fav:
                     if quantity == 0:
                         fav.delete()
-                        return Response({"status": "Favorite deleted (b/c quantity is 0)"},
-                            status=status.HTTP_200_OK)
+                        return Response(
+                            {"status": "Favorite deleted (b/c quantity is 0)"},
+                            status=status.HTTP_200_OK,
+                        )
                     else:
                         was = fav.quantity
                         fav.quantity = quantity
                         fav.save()
-                        return Response({"status": "Favorite quantity updated from {0} to {1}".format(
-                            was, quantity)}, status=status.HTTP_200_OK)
+                        return Response(
+                            {
+                                "status": "Favorite quantity updated from {0} to {1}".format(
+                                    was, quantity
+                                )
+                            },
+                            status=status.HTTP_200_OK,
+                        )
                 else:
                     fav = FavoriteProduct.objects.create(
                         product=product, user=user, quantity=quantity
                     )
                     user.favorites.add(fav)
-                    return Response({"status": "Favorite added"}, status=status.HTTP_200_OK)
+                    return Response(
+                        {"status": "Favorite added"}, status=status.HTTP_200_OK
+                    )
             else:
-                return Response(serializer.errors,
-                    status=status.HTTP_400_BAD_REQUEST)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         if self.request.method == "DELETE":
             serializer = UserFavoriteDeleteSerializer(data=request.data)
@@ -130,30 +153,38 @@ class UserModelViewSet(ModelViewSet):
                 try:
                     product = Product.objects.get(id=product_id)
                 except Product.DoesNotExist:
-                    return Response({"status": "Product does not exist"},
-                        status=status.HTTP_400_BAD_REQUEST)
+                    return Response(
+                        {"status": "Product does not exist"},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
 
                 # TODO: Optional for MancelotAlpha0-9, but mandatory in later versions
                 size_id = serializer.data.get("size_id", None)
                 try:
                     size = Size.objects.get(id=size_id)
                 except Size.DoesNotExist:
-                    return Response({"status": "Size does not exist"},
-                        status=status.HTTP_400_BAD_REQUEST)
+                    return Response(
+                        {"status": "Size does not exist"},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
 
                 fav = FavoriteProduct.objects.filter(
-                    product=product, user=user, size=size,
+                    product=product,
+                    user=user,
+                    size=size,
                 ).first()
                 if fav:
                     fav.delete()
-                    return Response({"status": "Favorite deleted"},
-                        status=status.HTTP_200_OK)
+                    return Response(
+                        {"status": "Favorite deleted"}, status=status.HTTP_200_OK
+                    )
                 else:
-                    return Response({"status": "Favorite does not exist"},
-                        status=status.HTTP_400_BAD_REQUEST)
+                    return Response(
+                        {"status": "Favorite does not exist"},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
             else:
-                return Response(serializer.errors,
-                    status=status.HTTP_400_BAD_REQUEST)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         # Fallback, but if method not in methods on action, then 405 already returned
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)

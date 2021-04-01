@@ -9,23 +9,33 @@ from catalogue.serializers import ProductListSerializer
 
 class UserModelSerializer(CountryFieldMixin, serializers.ModelSerializer):
     email = serializers.EmailField(
-        validators=[validators.UniqueValidator(
-            queryset=UserModel.objects.all().values_list("email", flat=True)
-        )]
+        validators=[
+            validators.UniqueValidator(
+                queryset=UserModel.objects.all().values_list("email", flat=True)
+            )
+        ]
     )
     password = serializers.CharField(
         min_length=8,
         write_only=True,
         required=False,
-        style={"input_type": "password", "placeholder": "Password"}
+        style={"input_type": "password", "placeholder": "Password"},
     )
 
     class Meta:
         model = UserModel
         fields = (
-            "id", "email", "full_name", "password",
-            "address", "zip_code", "country",
-            "balance", "monthly_top_up", "payment_preference", "iban",
+            "id",
+            "email",
+            "full_name",
+            "password",
+            "address",
+            "zip_code",
+            "country",
+            "balance",
+            "monthly_top_up",
+            "payment_preference",
+            "iban",
         )
         read_only_fields = ("balance",)
 
@@ -33,10 +43,16 @@ class UserModelSerializer(CountryFieldMixin, serializers.ModelSerializer):
         try:
             password = validated_data.pop("password")
         except KeyError:
-            raise serializers.ValidationError({"password": ["This field is required.",]})
+            raise serializers.ValidationError(
+                {
+                    "password": [
+                        "This field is required.",
+                    ]
+                }
+            )
         user = super(UserModelSerializer, self).create(validated_data)
         user.set_password(password)
-        user.is_active=True
+        user.is_active = True
         user.save()
         user.send_welcome_email()
         return user

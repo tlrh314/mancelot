@@ -54,7 +54,7 @@ blog-start:  ## Start blog
 
 blog-stop:  ## Stop blog
 	docker-compose -f blog/docker-compose.yml stop blog
-	docker-compose -f blog/docker-compose.yml rm -f blog 
+	docker-compose -f blog/docker-compose.yml rm -f blog
 
 blog-restart:  ## Restart blog
 	git pull

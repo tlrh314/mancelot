@@ -3,7 +3,7 @@ SEPARATELY LICENSED COMPONENTS AND LIBRARIES
     The following components/libraries are distributed in this package,
     and subject to their respective licenses.
 
-    Name: mattermost-docker 
+    Name: mattermost-docker
     Link: https://github.com/mattermost/mattermost-docker
     License: Apache-2.0
 

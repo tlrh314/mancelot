@@ -2,7 +2,7 @@ make_graph() {
     if [ -f dbschema.dot ]; then
         rm -f dbschema.dot
     fi
-    
+
     # NB graph_models is one of the additions from django-extensions
     python manage.py graph_models -a -X ContentType,Group,Permission,Site,Session,AbstractBaseSession,LogEntry,FileBrowser,PermissionsMixin,AbstractBaseUser,UserModel,PrivacyPolicy,ContactInfo,TaskResult,PeriodicTask,IntervalSchedule,PeriodicTasks,ClockedSchedule,CrontabSchedule,SolarSchedule,ExchangeBackend,Rate -x last_updated_by -g > dbschema.dot
 

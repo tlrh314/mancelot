@@ -3,10 +3,7 @@ from django.utils import translation
 from django.core.exceptions import ValidationError
 
 from accounts.models import UserModel
-from accounts.factories import (
-    AdminFactory,
-    UserModelFactory
-)
+from accounts.factories import AdminFactory, UserModelFactory
 
 
 class UserModelTest(TestCase):
@@ -19,21 +16,32 @@ class UserModelTest(TestCase):
     def test_field_names(self):
         translation.activate("en")
         self.assertEqual(UserModel._meta.get_field("email").verbose_name, "email")
-        self.assertEqual(UserModel._meta.get_field("full_name").verbose_name, "full name")
+        self.assertEqual(
+            UserModel._meta.get_field("full_name").verbose_name, "full name"
+        )
         self.assertEqual(UserModel._meta.get_field("address").verbose_name, "address")
         self.assertEqual(UserModel._meta.get_field("zip_code").verbose_name, "zip code")
         self.assertEqual(UserModel._meta.get_field("city").verbose_name, "city")
         self.assertEqual(UserModel._meta.get_field("country").verbose_name, "country")
 
-        self.assertEqual(UserModel._meta.get_field("favorites").verbose_name, "favorites")
+        self.assertEqual(
+            UserModel._meta.get_field("favorites").verbose_name, "favorites"
+        )
 
         self.assertEqual(UserModel._meta.get_field("balance").verbose_name, "balance")
-        self.assertEqual(UserModel._meta.get_field("monthly_top_up").verbose_name, "monthly top up")
-        self.assertEqual(UserModel._meta.get_field("payment_preference").verbose_name, "payment preference")
+        self.assertEqual(
+            UserModel._meta.get_field("monthly_top_up").verbose_name, "monthly top up"
+        )
+        self.assertEqual(
+            UserModel._meta.get_field("payment_preference").verbose_name,
+            "payment preference",
+        )
 
         self.assertEqual(UserModel._meta.get_field("is_active").verbose_name, "active")
         self.assertEqual(UserModel._meta.get_field("is_staff").verbose_name, "staff")
-        self.assertEqual(UserModel._meta.get_field("is_superuser").verbose_name, "superuser")
+        self.assertEqual(
+            UserModel._meta.get_field("is_superuser").verbose_name, "superuser"
+        )
         # TODO: translation.activate("nl"), then run checks for translated field names
 
     def test_save_method_of_new_usermodel_instance(self):
@@ -86,7 +94,8 @@ class UserModelTest(TestCase):
         # TODO: this may actually raise an IntegrityError (i.e. already commiting to database. BAD)
         # Possibly have to check the clean method?
         self.assertRaises(ValidationError, user2.save())
-        user1.delete(); user2.delete()
+        user1.delete()
+        user2.delete()
 
     def test_verbose_name_singular(self):
         self.assertEqual(str(UserModel._meta.verbose_name), "User")
@@ -102,7 +111,7 @@ class UserModelTest(TestCase):
             full_name="Timo Halbesma",
             address="Straatnaam 42",
             zip_code="1337 XD",
-            country="NL"
+            country="NL",
         )
         self.assertEqual(user.email, "timo@mancelot.app")
         self.assertEqual(user.full_name, "Timo Halbesma")

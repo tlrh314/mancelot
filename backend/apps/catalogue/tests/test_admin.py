@@ -25,7 +25,7 @@ from catalogue.factories import (
     SizeFactory,
     ColorFactory,
     MaterialFactory,
-    ProductFactory
+    ProductFactory,
 )
 from accounts.factories import (
     UserModelFactory,
@@ -80,7 +80,7 @@ class CatalogueAdminBaseTestCase(object):
         uri = reverse(self.admin_changelist_uri)
         response = self.client.get(uri)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/admin/login/?next="+uri)
+        self.assertEqual(response.url, "/admin/login/?next=" + uri)
 
     def test_get_admin_add_is_superuser_200(self):
         self.client.login(email=self.admin.email, password="secret")
@@ -96,7 +96,7 @@ class CatalogueAdminBaseTestCase(object):
         uri = reverse(self.admin_add_uri)
         response = self.client.get(uri)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/admin/login/?next="+uri)
+        self.assertEqual(response.url, "/admin/login/?next=" + uri)
 
     def test_get_admin_change_is_superuser_200(self):
         self.client.login(email=self.admin.email, password="secret")
@@ -109,7 +109,7 @@ class CatalogueAdminBaseTestCase(object):
         uri = reverse(self.admin_change_uri, args=[self.admin_instance_pk])
         response = self.client.get(uri)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/admin/login/?next="+uri)
+        self.assertEqual(response.url, "/admin/login/?next=" + uri)
 
     def test_get_admin_delete_is_superuser_200(self):
         self.client.login(email=self.admin.email, password="secret")
@@ -125,7 +125,7 @@ class CatalogueAdminBaseTestCase(object):
         uri = reverse(self.admin_delete_uri, args=[self.admin_instance_pk])
         response = self.client.get(uri)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/admin/login/?next="+uri)
+        self.assertEqual(response.url, "/admin/login/?next=" + uri)
 
     def test_get_admin_history_is_superuser_200(self):
         self.client.login(email=self.admin.email, password="secret")
@@ -138,7 +138,7 @@ class CatalogueAdminBaseTestCase(object):
         uri = reverse(self.admin_history_uri, args=[self.admin_instance_pk])
         response = self.client.get(uri)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/admin/login/?next="+uri)
+        self.assertEqual(response.url, "/admin/login/?next=" + uri)
 
     def test_admin_detail_view_can_be_saved(self):
         pass
@@ -207,13 +207,14 @@ class SubcategoryAdminInline(TestCase):
 
 
 class CategoryAdminTest(CatalogueAdminBaseTestCase, TestCase):
-
     @classmethod
     def setUpTestData(cls):
         if Category.objects.count() < 20:
-            CategoryFactory.create_batch(20 - Category.objects.count(),
+            CategoryFactory.create_batch(
+                20 - Category.objects.count(),
                 # subcategories__skip=True
             )
+
     def setUp(self):
         # Set the admin + session
         super().setUp()

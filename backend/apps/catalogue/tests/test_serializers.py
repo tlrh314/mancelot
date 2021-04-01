@@ -11,7 +11,7 @@ from catalogue.serializers import (
     SizeSerializer,
     ColorSerializer,
     MaterialSerializer,
-    ProductSerializer
+    ProductSerializer,
 )
 
 
@@ -21,6 +21,7 @@ class CeceLabelSerializerTest(TestCase):
 
 class CertificateSerializer(TestCase):
     pass
+
 
 class CategorySerializerTest(TestCase):
     pass

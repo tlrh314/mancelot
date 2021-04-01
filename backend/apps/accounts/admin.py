@@ -27,59 +27,118 @@ class FavoriteProductAdminInlineForUserModelAdmin(admin.StackedInline):
 @admin.register(UserModel)
 class UserModelAdmin(UserAdmin):
     list_display = (
-        "email", "full_name", "get_favorites_count",
-        "is_active", "is_staff", "is_superuser",
-        "date_created", "last_login",
+        "email",
+        "full_name",
+        "get_favorites_count",
+        "is_active",
+        "is_staff",
+        "is_superuser",
+        "date_created",
+        "last_login",
     )
-    list_filter = ("is_active", "is_staff", "is_superuser",)
+    list_filter = (
+        "is_active",
+        "is_staff",
+        "is_superuser",
+    )
     search_fields = ("email", "full_name")
     ordering = ("-date_created",)
-    readonly_fields = ("last_login", "date_created", "last_updated_by",)
-    filter_horizontal = ("groups", "user_permissions",)
+    readonly_fields = (
+        "last_login",
+        "date_created",
+        "last_updated_by",
+    )
+    filter_horizontal = (
+        "groups",
+        "user_permissions",
+    )
     actions = ("send_password_reset",)
     inlines = (FavoriteProductAdminInlineForUserModelAdmin,)
 
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        (_("Personal information"), {"fields": (
-            "full_name", "address", "zip_code", "city", "country",)
-        }),
-        (_("Permissions"), {"fields": ("is_active", "is_staff", "is_superuser",
-            "groups", "user_permissions")}),
-        (_("Subscription"), {"fields": ("balance", "monthly_top_up", "payment_preference", "iban",)}),
-        (_("Meta"), {
-            "classes": ("collapse",),
-            "fields": ("last_login", "date_created", "last_updated_by")
-        }),
+        (
+            _("Personal information"),
+            {
+                "fields": (
+                    "full_name",
+                    "address",
+                    "zip_code",
+                    "city",
+                    "country",
+                )
+            },
+        ),
+        (
+            _("Permissions"),
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                )
+            },
+        ),
+        (
+            _("Subscription"),
+            {
+                "fields": (
+                    "balance",
+                    "monthly_top_up",
+                    "payment_preference",
+                    "iban",
+                )
+            },
+        ),
+        (
+            _("Meta"),
+            {
+                "classes": ("collapse",),
+                "fields": ("last_login", "date_created", "last_updated_by"),
+            },
+        ),
     )
     add_fieldsets = (
-        (None, {
-            "classes": ("wide",),
-            "fields": ("email", "full_name", "password1", "password2")}
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("email", "full_name", "password1", "password2"),
+            },
         ),
     )
 
     def send_password_reset(self, request, queryset):
         for user in queryset:
             try:
-                validate_email( user.email )
+                validate_email(user.email)
                 form = PasswordResetForm(data={"email": user.email})
                 form.is_valid()
 
-                form.save(email_template_name="accounts/password_forced_reset_email.html",
-                          extra_email_context={ "full_name": user.full_name })
+                form.save(
+                    email_template_name="accounts/password_forced_reset_email.html",
+                    extra_email_context={"full_name": user.full_name},
+                )
                 self.message_user(request, _("Succesfully sent password reset email."))
             except ValidationError:
-                self.message_user(request, _("User does not have a valid email address"), level="error")
+                self.message_user(
+                    request,
+                    _("User does not have a valid email address"),
+                    level="error",
+                )
+
     send_password_reset.short_description = _("Send password reset link")
 
     def get_queryset(self, request):
-        return super().get_queryset(request).annotate(
-            favorites_count=Count("favorites")
+        return (
+            super().get_queryset(request).annotate(favorites_count=Count("favorites"))
         )
 
     def get_favorites_count(self, obj):
         return obj.favorites_count
+
     get_favorites_count.short_description = _("<3")
     get_favorites_count.admin_order_field = "favorites_count"
 
@@ -89,7 +148,9 @@ class UserModelAdmin(UserAdmin):
 
     def history_view(self, request, object_id, extra_context=None):
         """ Hack the history view such that it renders html """
-        s = super(UserModelAdmin, self).history_view(request, object_id, extra_context=None)
+        s = super(UserModelAdmin, self).history_view(
+            request, object_id, extra_context=None
+        )
         action_list = s.context_data["action_list"]
         for log_entry in action_list:
             try:
@@ -97,5 +158,6 @@ class UserModelAdmin(UserAdmin):
             except KeyError:
                 pass
         return s
+
 
 admin.site.unregister(Group)

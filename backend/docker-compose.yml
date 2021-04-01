@@ -44,7 +44,7 @@ services:
       - "redis"
       - "celery_beat"
     entrypoint: "celery -E -A settings worker -c 2 -l info"
- 
+
   # Celery beat is a scheduler; It kicks off tasks at regular intervals, that
   # are then executed by available worker nodes in the cluster.
   celery_beat:
@@ -52,7 +52,7 @@ services:
     entrypoint: "celery -A settings beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
     healthcheck:
       disable: true
- 
+
   # Flower to monitor Celery
   celery_flower:
     <<: *defaults

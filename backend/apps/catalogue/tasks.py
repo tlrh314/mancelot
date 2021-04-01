@@ -17,7 +17,7 @@ from catalogue.models import (
     Brand,
     Size,
     Material,
-    Product
+    Product,
 )
 
 logger = get_task_logger(__name__)
@@ -26,65 +26,70 @@ logger = get_task_logger(__name__)
 @app.task
 def retrieve_data_from_cece():
     for script in [
-            # inserts/updates the 'info' field (which retrieve_brands_from_cece does not!)
-            "retrieve_labels_from_cece",
-            "retrieve_certificates_from_cece",
-
-            # also adds Subcategory instances to Category instances
-            "retrieve_categories_from_cece",
-
-            # inserts/updates the 'icon_url' field (which retrieve_stores_from_cece does not!)
-            "retrieve_paymethods_from_cece",
-
-            # also adds PaymentOptions ('name' only) to Store instances
-            "retrieve_stores_from_cece",
-
-            # also adds CeceLabels / Certificates ('name' only) to Brand instances
-            "retrieve_brands_from_cece",
-
-            # also adds Size/Color/Material ('name' only) to Product instances
-            "retrieve_products_from_cece",
+        # inserts/updates the 'info' field (which retrieve_brands_from_cece does not!)
+        "retrieve_labels_from_cece",
+        "retrieve_certificates_from_cece",
+        # also adds Subcategory instances to Category instances
+        "retrieve_categories_from_cece",
+        # inserts/updates the 'icon_url' field (which retrieve_stores_from_cece does not!)
+        "retrieve_paymethods_from_cece",
+        # also adds PaymentOptions ('name' only) to Store instances
+        "retrieve_stores_from_cece",
+        # also adds CeceLabels / Certificates ('name' only) to Brand instances
+        "retrieve_brands_from_cece",
+        # also adds Size/Color/Material ('name' only) to Product instances
+        "retrieve_products_from_cece",
     ]:
-        call_command( script, "--is_task" )
+        call_command(script, "--is_task")
+
 
 @app.task
 def retrieve_labels_from_cece():
     # inserts/updates the 'info' field (which retrieve_brands_from_cece does not!)
-    call_command( "retrieve_labels_from_cece", "--is_task" )
+    call_command("retrieve_labels_from_cece", "--is_task")
+
 
 @app.task
 def retrieve_certificates_from_cece():
     # inserts/updates the 'info' field (which retrieve_brands_from_cece does not!)
-    call_command( "retrieve_certificates_from_cece", "--is_task" )
+    call_command("retrieve_certificates_from_cece", "--is_task")
+
 
 @app.task
 def retrieve_categories_from_cece():
     # also adds Subcategory instances to Category instances
-    call_command( "retrieve_categories_from_cece", "--is_task" )
+    call_command("retrieve_categories_from_cece", "--is_task")
+
 
 @app.task
 def retrieve_paymethods_from_cece():
-    call_command( "retrieve_paymethods_from_cece", "--is_task" )
+    call_command("retrieve_paymethods_from_cece", "--is_task")
+
 
 @app.task
 def retrieve_stores_from_cece():
-    call_command( "retrieve_stores_from_cece", "--is_task" )
+    call_command("retrieve_stores_from_cece", "--is_task")
+
 
 @app.task
 def retrieve_brands_from_cece():
-    call_command( "retrieve_brands_from_cece", "--is_task" )
+    call_command("retrieve_brands_from_cece", "--is_task")
+
 
 @app.task
 def retrieve_products_from_cece():
-    call_command( "retrieve_products_from_cece", "--is_task" )
+    call_command("retrieve_products_from_cece", "--is_task")
+
 
 @app.task
 def generate_thumbnails():
-    call_command( "generate_thumbnails", "--is_task" )
+    call_command("generate_thumbnails", "--is_task")
+
 
 @app.task
 def optimize_images():
-    call_command( "optimize_images", "--is_task" )
+    call_command("optimize_images", "--is_task")
+
 
 @app.task
 def update_exchange_rates(backend=settings.EXCHANGE_BACKEND, **kwargs):

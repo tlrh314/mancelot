@@ -45,13 +45,15 @@ class UserModelFactory(factory.django.DjangoModelFactory):
         if Product.objects.count() < 25:
             ProductFactory.create_batch(25 - Product.objects.count())
 
-        number_of_favorites_to_add = faker.random_int(min=0, max=Product.objects.count()-1)
+        number_of_favorites_to_add = faker.random_int(
+            min=0, max=Product.objects.count() - 1
+        )
         all_products_randomly_ordered = Product.objects.order_by("?")
         for j in range(number_of_favorites_to_add):
             fav = FavoriteProduct(
                 product=all_products_randomly_ordered[j],
                 user=self,
-                quantity=faker.random_int(min=1, max=10)
+                quantity=faker.random_int(min=1, max=10),
             )
             fav.save()
             self.favorites.add(fav)

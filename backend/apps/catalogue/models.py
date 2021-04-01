@@ -26,8 +26,11 @@ class CeceLabel(models.Model):
     cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
-    last_updated_by = models.ForeignKey("accounts.UserModel",
-        on_delete=models.SET_NULL, blank=True, null=True,
+    last_updated_by = models.ForeignKey(
+        "accounts.UserModel",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
         related_name="has_changed_cecelabel",
         verbose_name=_("last updated by"),
     )
@@ -55,8 +58,11 @@ class Certificate(models.Model):
     cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
-    last_updated_by = models.ForeignKey("accounts.UserModel",
-        on_delete=models.SET_NULL, blank=True, null=True,
+    last_updated_by = models.ForeignKey(
+        "accounts.UserModel",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
         related_name="has_changed_certificate",
         verbose_name=_("last updated by"),
     )
@@ -79,17 +85,15 @@ class Certificate(models.Model):
 
 class Category(models.Model):
     SECTIONS = (
-       (0, _("Men")),
-       (1, _("Women")),
-       (2, _("Kids")),
+        (0, _("Men")),
+        (1, _("Women")),
+        (2, _("Kids")),
     )
 
     id = models.AutoField(primary_key=True, db_index=True)
     name = models.CharField(_("name"), db_index=True, max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
-    section = models.PositiveSmallIntegerField(
-        "section", choices=SECTIONS, default=0
-    )
+    section = models.PositiveSmallIntegerField("section", choices=SECTIONS, default=0)
 
     # Bool to show/hide instance in the api QuerySet
     active = models.BooleanField(_("active"), default=True, choices=BOOL_CHOICES)
@@ -98,8 +102,11 @@ class Category(models.Model):
     cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
-    last_updated_by = models.ForeignKey("accounts.UserModel",
-        on_delete=models.SET_NULL, blank=True, null=True,
+    last_updated_by = models.ForeignKey(
+        "accounts.UserModel",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
         related_name="has_changed_category",
         verbose_name=_("last updated by"),
     )
@@ -125,7 +132,8 @@ class Subcategory(models.Model):
     id = models.AutoField(primary_key=True, db_index=True)
     name = models.CharField(_("name"), db_index=True, max_length=200)
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
-    category = models.ForeignKey(Category,
+    category = models.ForeignKey(
+        Category,
         on_delete=models.CASCADE,
         related_name="subcategories",
         verbose_name=_("category"),
@@ -138,8 +146,11 @@ class Subcategory(models.Model):
     cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
-    last_updated_by = models.ForeignKey("accounts.UserModel",
-        on_delete=models.SET_NULL, null=True, blank=True,
+    last_updated_by = models.ForeignKey(
+        "accounts.UserModel",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name="has_changed_subcategory",
         verbose_name=_("last updated by"),
     )
@@ -150,7 +161,9 @@ class Subcategory(models.Model):
 
     def save(self, *args, **kwargs):
         section_name = Category.SECTIONS[self.category.section][1]
-        self.slug = slugify("{0}-{1}-{2}".format(section_name, self.category, self.name))
+        self.slug = slugify(
+            "{0}-{1}-{2}".format(section_name, self.category, self.name)
+        )
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -164,8 +177,11 @@ class Subcategory(models.Model):
 class PaymentOption(models.Model):
     id = models.AutoField(primary_key=True, db_index=True)
     name = models.CharField(_("name"), db_index=True, max_length=200)
-    logo = FileBrowseField(_("logo"), default="/static/img/test/test_logo.png",
-        max_length=200, directory="{0}/img/logos/payment".format(settings.STATIC_ROOT),
+    logo = FileBrowseField(
+        _("logo"),
+        default="/static/img/test/test_logo.png",
+        max_length=200,
+        directory="{0}/img/logos/payment".format(settings.STATIC_ROOT),
         extensions=[".jpg", ".jpeg", ".gif", ".png"],
     )
 
@@ -173,8 +189,11 @@ class PaymentOption(models.Model):
     cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
-    last_updated_by = models.ForeignKey("accounts.UserModel",
-        on_delete=models.SET_NULL, null=True, blank=True,
+    last_updated_by = models.ForeignKey(
+        "accounts.UserModel",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name="has_changed_paymentoption",
         verbose_name=_("last updated by"),
     )
@@ -197,12 +216,16 @@ class Store(models.Model):
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
     url = models.URLField(_("url"))
-    logo =  FileBrowseField(_("logo"), default="/static/img/test/test_logo.png",
-        max_length=200, directory="{0}img/logos/stores".format(settings.STATIC_ROOT),
+    logo = FileBrowseField(
+        _("logo"),
+        default="/static/img/test/test_logo.png",
+        max_length=200,
+        directory="{0}img/logos/stores".format(settings.STATIC_ROOT),
         extensions=[".jpg", ".jpeg", ".gif", ".png"],
     )
     payment_options = models.ManyToManyField(
-        PaymentOption, related_name="stores",
+        PaymentOption,
+        related_name="stores",
         verbose_name=_("payment options"),
     )
 
@@ -219,8 +242,11 @@ class Store(models.Model):
     cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
-    last_updated_by = models.ForeignKey("accounts.UserModel",
-        on_delete=models.SET_NULL, null=True, blank=True,
+    last_updated_by = models.ForeignKey(
+        "accounts.UserModel",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name="has_changed_store",
         verbose_name=_("last updated by"),
     )
@@ -247,18 +273,25 @@ class Brand(models.Model):
     slug = models.SlugField(_("slug"), blank=True, max_length=255, unique=True)
     info = HTMLField(_("info"), null=True, blank=True)
     url = models.URLField(_("url"), null=True, blank=True)
-    logo =  FileBrowseField(_("logo"), default="/static/img/test/test_logo.png",
-        max_length=200, directory="{0}/img/logos/brands".format(settings.STATIC_ROOT),
+    logo = FileBrowseField(
+        _("logo"),
+        default="/static/img/test/test_logo.png",
+        max_length=200,
+        directory="{0}/img/logos/brands".format(settings.STATIC_ROOT),
         extensions=[".jpg", ".jpeg", ".gif", ".png"],
     )
 
     # Sustainability information, gleaned from Cece API
-    labels = models.ManyToManyField(CeceLabel,
-        blank=True, related_name="brands",
+    labels = models.ManyToManyField(
+        CeceLabel,
+        blank=True,
+        related_name="brands",
         verbose_name=_("labels"),
     )
-    certificates = models.ManyToManyField(Certificate,
-        blank=True, related_name="brands",
+    certificates = models.ManyToManyField(
+        Certificate,
+        blank=True,
+        related_name="brands",
         verbose_name=_("certificates"),
     )
 
@@ -269,8 +302,11 @@ class Brand(models.Model):
     cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
-    last_updated_by = models.ForeignKey("accounts.UserModel",
-        on_delete=models.SET_NULL, null=True, blank=True,
+    last_updated_by = models.ForeignKey(
+        "accounts.UserModel",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name="has_changed_brand",
         verbose_name=_("last updated by"),
     )
@@ -299,8 +335,11 @@ class Size(models.Model):
     cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
-    last_updated_by = models.ForeignKey("accounts.UserModel",
-        on_delete=models.SET_NULL, null=True, blank=True,
+    last_updated_by = models.ForeignKey(
+        "accounts.UserModel",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name="has_changed_size",
         verbose_name=_("last updated by"),
     )
@@ -321,8 +360,11 @@ class Color(models.Model):
     cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
-    last_updated_by = models.ForeignKey("accounts.UserModel",
-        on_delete=models.SET_NULL, null=True, blank=True,
+    last_updated_by = models.ForeignKey(
+        "accounts.UserModel",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name="has_changed_color",
         verbose_name=_("last updated by"),
     )
@@ -344,8 +386,11 @@ class Material(models.Model):
     cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
-    last_updated_by = models.ForeignKey("accounts.UserModel",
-        on_delete=models.SET_NULL, null=True, blank=True,
+    last_updated_by = models.ForeignKey(
+        "accounts.UserModel",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name="has_changed_material",
         verbose_name=_("last updated by"),
     )
@@ -366,53 +411,62 @@ class Product(models.Model):
     extra_info = HTMLField(_("extra info"), null=True, blank=True)
     url = models.URLField(_("url"), max_length=255)
 
-    cece_id = models.CharField(_("cece product id"), null=True, blank=True, max_length=100)
+    cece_id = models.CharField(
+        _("cece product id"), null=True, blank=True, max_length=100
+    )
 
-    price = MoneyField(_("price"), max_digits=19, decimal_places=4, default_currency="EUR")
-    from_price = MoneyField(_("from price"), max_digits=19, default_currency="EUR",
-        decimal_places=4, null=True, blank=True,
-        help_text=_("Product on sale if 'from price' is given.")
+    price = MoneyField(
+        _("price"), max_digits=19, decimal_places=4, default_currency="EUR"
+    )
+    from_price = MoneyField(
+        _("from price"),
+        max_digits=19,
+        default_currency="EUR",
+        decimal_places=4,
+        null=True,
+        blank=True,
+        help_text=_("Product on sale if 'from price' is given."),
     )
 
     main_image = models.URLField(_("main image"), max_length=450)
-    chosen_image = models.URLField(_("chosen  image"), null=True, blank=True, max_length=450)
+    chosen_image = models.URLField(
+        _("chosen  image"), null=True, blank=True, max_length=450
+    )
     thumbnail = models.URLField(_("thumbnail"), max_length=450, null=True, blank=True)
     extra_images = JSONField(_("extra images"), blank=True)
 
-    brand = models.ForeignKey(Brand,
+    brand = models.ForeignKey(
+        Brand,
         related_name="products",
         on_delete=models.CASCADE,
         verbose_name=_("brand"),
     )
-    store = models.ForeignKey(Store,
+    store = models.ForeignKey(
+        Store,
         related_name="products",
         on_delete=models.CASCADE,
         verbose_name=_("store"),
     )
     # TODO: handle deletion of the last Category from Product (delete Product?)
-    categories = models.ManyToManyField(Category,
+    categories = models.ManyToManyField(
+        Category,
         verbose_name=_("categories"),
         related_name="products",
     )
-    subcategories = models.ManyToManyField(Subcategory,
+    subcategories = models.ManyToManyField(
+        Subcategory,
         verbose_name=_("subcategories"),
         related_name="products",
         blank=True,
     )
-    materials = models.ManyToManyField(Material,
-        verbose_name=_("materials"),
-        related_name="products",
-        blank=True
+    materials = models.ManyToManyField(
+        Material, verbose_name=_("materials"), related_name="products", blank=True
     )
-    sizes = models.ManyToManyField(Size,
-        verbose_name=_("sizes"),
-        related_name="products",
-        blank=True
+    sizes = models.ManyToManyField(
+        Size, verbose_name=_("sizes"), related_name="products", blank=True
     )
-    colors = models.ManyToManyField(Color,
-        verbose_name=_("colors"),
-        related_name="products",
-        blank=True
+    colors = models.ManyToManyField(
+        Color, verbose_name=_("colors"), related_name="products", blank=True
     )
 
     # Bool to show/hide instance in the api QuerySet
@@ -422,8 +476,11 @@ class Product(models.Model):
     cece_api_url = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
-    last_updated_by = models.ForeignKey("accounts.UserModel",
-        on_delete=models.SET_NULL, blank=True, null=True,
+    last_updated_by = models.ForeignKey(
+        "accounts.UserModel",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
         related_name="has_changed_product",
         verbose_name=_("last updated by"),
     )
@@ -433,9 +490,7 @@ class Product(models.Model):
         verbose_name_plural = _("Products")
 
     def save(self, *args, **kwargs):
-        self.slug = slugify("{0}-{1}-{2}".format(
-            self.brand, self.name, self.cece_id
-        ))
+        self.slug = slugify("{0}-{1}-{2}".format(self.brand, self.name, self.cece_id))
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -447,10 +502,11 @@ class Product(models.Model):
 
 
 class FavoriteProduct(models.Model):
-    product = models.ForeignKey(Product,
+    product = models.ForeignKey(
+        Product,
         verbose_name=_("product"),
         related_name="favorites",
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
     user = models.ForeignKey(
         get_user_model(),
@@ -458,7 +514,8 @@ class FavoriteProduct(models.Model):
         related_name="favorites",
         on_delete=models.CASCADE,
     )
-    size = models.ForeignKey(Size,
+    size = models.ForeignKey(
+        Size,
         verbose_name=_("size"),
         related_name="favorites",
         on_delete=models.SET_NULL,
@@ -468,8 +525,11 @@ class FavoriteProduct(models.Model):
 
     date_created = models.DateTimeField(_("date created"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
-    last_updated_by = models.ForeignKey("accounts.UserModel",
-        on_delete=models.SET_NULL, null=True, blank=True,
+    last_updated_by = models.ForeignKey(
+        "accounts.UserModel",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name="has_changed_favorite",
         verbose_name=_("last updated by"),
     )

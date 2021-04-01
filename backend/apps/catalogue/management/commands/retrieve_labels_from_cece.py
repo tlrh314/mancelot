@@ -20,13 +20,15 @@ def create_or_update_labels(logger, cmd_name, client, recursive=True):
 
     # Iterate through the Cece data
     for i, l in enumerate(data):
-        logger.debug("\n{0} / {1}".format(i+1, len(data) ))
+        logger.debug("\n{0} / {1}".format(i + 1, len(data)))
 
         # Get or create CeceLabel. Match on **name** only!
         label, created = CeceLabel.objects.get_or_create(
             name=l["label_name"],
         )
-        logger.debug("{0} CeceLabel: {1}".format("Created" if created else "Have", label))
+        logger.debug(
+            "{0} CeceLabel: {1}".format("Created" if created else "Have", label)
+        )
 
         # Overwrite all fields
         label.info = l["description"]
@@ -41,8 +43,7 @@ class Command(CommandWrapper):
         client = CeceApiClient()
         self.cmd_name = __file__.split("/")[-1].replace(".py", "")
         self.method = create_or_update_labels
-        self.margs = [ self.cmd_name, client ]
-        self.mkwargs = { "recursive": not settings.DEBUG }
+        self.margs = [self.cmd_name, client]
+        self.mkwargs = {"recursive": not settings.DEBUG}
 
         super().handle(*args, **options)
-

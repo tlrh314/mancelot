@@ -15,7 +15,7 @@ from catalogue.models import (
     Size,
     Color,
     Material,
-    Product
+    Product,
 )
 from catalogue.factories import (
     CeceLabelFactory,
@@ -28,7 +28,7 @@ from catalogue.factories import (
     SizeFactory,
     ColorFactory,
     MaterialFactory,
-    ProductFactory
+    ProductFactory,
 )
 
 
@@ -52,9 +52,15 @@ class CeceLabelTest(TestCase):
         self.assertEqual(CeceLabel._meta.get_field("slug").verbose_name, "slug")
         self.assertEqual(CeceLabel._meta.get_field("info").verbose_name, "info")
 
-        self.assertEqual(CeceLabel._meta.get_field("date_created").verbose_name, "date created")
-        self.assertEqual(CeceLabel._meta.get_field("date_updated").verbose_name, "date updated")
-        self.assertEqual(CeceLabel._meta.get_field("last_updated_by").verbose_name, "last updated by")
+        self.assertEqual(
+            CeceLabel._meta.get_field("date_created").verbose_name, "date created"
+        )
+        self.assertEqual(
+            CeceLabel._meta.get_field("date_updated").verbose_name, "date updated"
+        )
+        self.assertEqual(
+            CeceLabel._meta.get_field("last_updated_by").verbose_name, "last updated by"
+        )
         # TODO: translation.activate("nl"), then run checks for translated field names
 
     def test_required_name_not_given_fails(self):
@@ -92,9 +98,16 @@ class CertificateTest(TestCase):
         self.assertEqual(Certificate._meta.get_field("info").verbose_name, "info")
         # TODO: self.assertEqual(Certificate._meta.get_field("url").verbose_name, "url")
 
-        self.assertEqual(Certificate._meta.get_field("date_created").verbose_name, "date created")
-        self.assertEqual(Certificate._meta.get_field("date_updated").verbose_name, "date updated")
-        self.assertEqual(Certificate._meta.get_field("last_updated_by").verbose_name, "last updated by")
+        self.assertEqual(
+            Certificate._meta.get_field("date_created").verbose_name, "date created"
+        )
+        self.assertEqual(
+            Certificate._meta.get_field("date_updated").verbose_name, "date updated"
+        )
+        self.assertEqual(
+            Certificate._meta.get_field("last_updated_by").verbose_name,
+            "last updated by",
+        )
         # TODO: translation.activate("nl"), then run checks for translated field names
 
     def test_required_name_not_given_fails(self):
@@ -131,9 +144,15 @@ class CategoryTest(TestCase):
         self.assertEqual(Category._meta.get_field("slug").verbose_name, "slug")
         self.assertEqual(Category._meta.get_field("section").verbose_name, "section")
 
-        self.assertEqual(Category._meta.get_field("date_created").verbose_name, "date created")
-        self.assertEqual(Category._meta.get_field("date_updated").verbose_name, "date updated")
-        self.assertEqual(Category._meta.get_field("last_updated_by").verbose_name, "last updated by")
+        self.assertEqual(
+            Category._meta.get_field("date_created").verbose_name, "date created"
+        )
+        self.assertEqual(
+            Category._meta.get_field("date_updated").verbose_name, "date updated"
+        )
+        self.assertEqual(
+            Category._meta.get_field("last_updated_by").verbose_name, "last updated by"
+        )
         # TODO: translation.activate("nl"), then run checks for translated field names
 
     def test_required_name_not_given_fails(self):
@@ -174,7 +193,9 @@ class CategoryTest(TestCase):
         self.assertEqual(subcategory1.category, category)
         self.assertEqual(subcategory2.category, category)
         # Delete manually on purpose. Below we test CASCADE
-        subcategory2.delete(); subcategory1.delet(); category.delete()
+        subcategory2.delete()
+        subcategory1.delet()
+        category.delete()
 
     def test_delete_cascades_down_to_foreign_key_subcategory_deletion(self):
         ncat_pre = Category.objects.count()
@@ -209,11 +230,20 @@ class SubcategoryTest(TestCase):
         translation.activate("en")
         self.assertEqual(Subcategory._meta.get_field("name").verbose_name, "name")
         self.assertEqual(Subcategory._meta.get_field("slug").verbose_name, "slug")
-        self.assertEqual(Subcategory._meta.get_field("category").verbose_name, "category")
+        self.assertEqual(
+            Subcategory._meta.get_field("category").verbose_name, "category"
+        )
 
-        self.assertEqual(Subcategory._meta.get_field("date_created").verbose_name, "date created")
-        self.assertEqual(Subcategory._meta.get_field("date_updated").verbose_name, "date updated")
-        self.assertEqual(Subcategory._meta.get_field("last_updated_by").verbose_name, "last updated by")
+        self.assertEqual(
+            Subcategory._meta.get_field("date_created").verbose_name, "date created"
+        )
+        self.assertEqual(
+            Subcategory._meta.get_field("date_updated").verbose_name, "date updated"
+        )
+        self.assertEqual(
+            Subcategory._meta.get_field("last_updated_by").verbose_name,
+            "last updated by",
+        )
         # TODO: translation.activate("nl"), then run checks for translated field names
 
     def test_required_name_not_given_fails(self):
@@ -224,7 +254,8 @@ class SubcategoryTest(TestCase):
         obj = SubcategoryFactory(name=name)  # which creates category too
         self.assertEqual(obj.slug, slugify(name))
         category = obj.category
-        obj.delete(); category.delete()  # because SET_NULL
+        obj.delete()
+        category.delete()  # because SET_NULL
 
     def test_absolute_url(self):
         return
@@ -251,9 +282,16 @@ class PaymentOptionTest(TestCase):
         self.assertEqual(PaymentOption._meta.get_field("slug").verbose_name, "slug")
         self.assertEqual(PaymentOption._meta.get_field("logo").verbose_name, "logo")
 
-        self.assertEqual(PaymentOption._meta.get_field("date_created").verbose_name, "date created")
-        self.assertEqual(PaymentOption._meta.get_field("date_updated").verbose_name, "date updated")
-        self.assertEqual(PaymentOption._meta.get_field("last_updated_by").verbose_name, "last updated by")
+        self.assertEqual(
+            PaymentOption._meta.get_field("date_created").verbose_name, "date created"
+        )
+        self.assertEqual(
+            PaymentOption._meta.get_field("date_updated").verbose_name, "date updated"
+        )
+        self.assertEqual(
+            PaymentOption._meta.get_field("last_updated_by").verbose_name,
+            "last updated by",
+        )
         # TODO: translation.activate("nl"), then run checks for translated field names
 
     def test_required_name_not_given_fails(self):
@@ -297,15 +335,23 @@ class StoreTest(TestCase):
         self.assertEqual(Store._meta.get_field("info").verbose_name, "info")
         self.assertEqual(Store._meta.get_field("url").verbose_name, "url")
         self.assertEqual(Store._meta.get_field("logo").verbose_name, "logo")
-        self.assertEqual(Store._meta.get_field("payment_options").verbose_name, "payment options")
+        self.assertEqual(
+            Store._meta.get_field("payment_options").verbose_name, "payment options"
+        )
         self.assertEqual(Store._meta.get_field("address").verbose_name, "address")
         self.assertEqual(Store._meta.get_field("zip_code").verbose_name, "zip code")
         self.assertEqual(Store._meta.get_field("city").verbose_name, "city")
         self.assertEqual(Store._meta.get_field("country").verbose_name, "country")
 
-        self.assertEqual(Store._meta.get_field("date_created").verbose_name, "date created")
-        self.assertEqual(Store._meta.get_field("date_updated").verbose_name, "date updated")
-        self.assertEqual(Store._meta.get_field("last_updated_by").verbose_name, "last updated by")
+        self.assertEqual(
+            Store._meta.get_field("date_created").verbose_name, "date created"
+        )
+        self.assertEqual(
+            Store._meta.get_field("date_updated").verbose_name, "date updated"
+        )
+        self.assertEqual(
+            Store._meta.get_field("last_updated_by").verbose_name, "last updated by"
+        )
         # TODO: translation.activate("nl"), then run checks for translated field names
 
     def test_required_name_not_given_fails(self):
@@ -353,11 +399,19 @@ class BrandTest(TestCase):
         self.assertEqual(Brand._meta.get_field("url").verbose_name, "url")
         self.assertEqual(Brand._meta.get_field("logo").verbose_name, "logo")
         self.assertEqual(Brand._meta.get_field("labels").verbose_name, "labels")
-        self.assertEqual(Brand._meta.get_field("certificates").verbose_name, "certificates")
+        self.assertEqual(
+            Brand._meta.get_field("certificates").verbose_name, "certificates"
+        )
 
-        self.assertEqual(Brand._meta.get_field("date_created").verbose_name, "date created")
-        self.assertEqual(Brand._meta.get_field("date_updated").verbose_name, "date updated")
-        self.assertEqual(Brand._meta.get_field("last_updated_by").verbose_name, "last updated by")
+        self.assertEqual(
+            Brand._meta.get_field("date_created").verbose_name, "date created"
+        )
+        self.assertEqual(
+            Brand._meta.get_field("date_updated").verbose_name, "date updated"
+        )
+        self.assertEqual(
+            Brand._meta.get_field("last_updated_by").verbose_name, "last updated by"
+        )
         # TODO: translation.activate("nl"), then run checks for translated field names
 
     def test_required_name_not_given_fails(self):
@@ -399,9 +453,15 @@ class SizeTest(TestCase):
         self.assertEqual(Size._meta.get_field("name").verbose_name, "name")
         self.assertEqual(Size._meta.get_field("slug").verbose_name, "slug")
 
-        self.assertEqual(Size._meta.get_field("date_created").verbose_name, "date created")
-        self.assertEqual(Size._meta.get_field("date_updated").verbose_name, "date updated")
-        self.assertEqual(Size._meta.get_field("last_updated_by").verbose_name, "last updated by")
+        self.assertEqual(
+            Size._meta.get_field("date_created").verbose_name, "date created"
+        )
+        self.assertEqual(
+            Size._meta.get_field("date_updated").verbose_name, "date updated"
+        )
+        self.assertEqual(
+            Size._meta.get_field("last_updated_by").verbose_name, "last updated by"
+        )
         # TODO: translation.activate("nl"), then run checks for translated field names
 
     def test_required_name_not_given_fails(self):
@@ -434,9 +494,15 @@ class ColorTest(TestCase):
         self.assertEqual(Color._meta.get_field("name").verbose_name, "name")
         self.assertEqual(Color._meta.get_field("slug").verbose_name, "slug")
 
-        self.assertEqual(Color._meta.get_field("date_created").verbose_name, "date created")
-        self.assertEqual(Color._meta.get_field("date_updated").verbose_name, "date updated")
-        self.assertEqual(Color._meta.get_field("last_updated_by").verbose_name, "last updated by")
+        self.assertEqual(
+            Color._meta.get_field("date_created").verbose_name, "date created"
+        )
+        self.assertEqual(
+            Color._meta.get_field("date_updated").verbose_name, "date updated"
+        )
+        self.assertEqual(
+            Color._meta.get_field("last_updated_by").verbose_name, "last updated by"
+        )
         # TODO: translation.activate("nl"), then run checks for translated field names
 
     def test_required_name_not_given_fails(self):
@@ -470,9 +536,15 @@ class MaterialTest(TestCase):
         self.assertEqual(Material._meta.get_field("slug").verbose_name, "slug")
         self.assertEqual(Material._meta.get_field("info").verbose_name, "info")
 
-        self.assertEqual(Material._meta.get_field("date_created").verbose_name, "date created")
-        self.assertEqual(Material._meta.get_field("date_updated").verbose_name, "date updated")
-        self.assertEqual(Material._meta.get_field("last_updated_by").verbose_name, "last updated by")
+        self.assertEqual(
+            Material._meta.get_field("date_created").verbose_name, "date created"
+        )
+        self.assertEqual(
+            Material._meta.get_field("date_updated").verbose_name, "date updated"
+        )
+        self.assertEqual(
+            Material._meta.get_field("last_updated_by").verbose_name, "last updated by"
+        )
         # TODO: translation.activate("nl"), then run checks for translated field names
 
     def test_required_name_not_given_fails(self):
@@ -510,22 +582,40 @@ class ProductTest(TestCase):
         self.assertEqual(Product._meta.get_field("slug").verbose_name, "slug")
         self.assertEqual(Product._meta.get_field("info").verbose_name, "info")
         self.assertEqual(Product._meta.get_field("url").verbose_name, "url")
-        self.assertEqual(Product._meta.get_field("cece_id").verbose_name, "cece product id")
+        self.assertEqual(
+            Product._meta.get_field("cece_id").verbose_name, "cece product id"
+        )
         self.assertEqual(Product._meta.get_field("price").verbose_name, "price")
-        self.assertEqual(Product._meta.get_field("from_price").verbose_name, "from price")
-        self.assertEqual(Product._meta.get_field("main_image").verbose_name, "main image")
-        self.assertEqual(Product._meta.get_field("extra_images").verbose_name, "extra images")
+        self.assertEqual(
+            Product._meta.get_field("from_price").verbose_name, "from price"
+        )
+        self.assertEqual(
+            Product._meta.get_field("main_image").verbose_name, "main image"
+        )
+        self.assertEqual(
+            Product._meta.get_field("extra_images").verbose_name, "extra images"
+        )
         self.assertEqual(Product._meta.get_field("brand").verbose_name, "brand")
         self.assertEqual(Product._meta.get_field("store").verbose_name, "store")
-        self.assertEqual(Product._meta.get_field("categories").verbose_name, "categories")
-        self.assertEqual(Product._meta.get_field("subcategories").verbose_name, "subcategories")
+        self.assertEqual(
+            Product._meta.get_field("categories").verbose_name, "categories"
+        )
+        self.assertEqual(
+            Product._meta.get_field("subcategories").verbose_name, "subcategories"
+        )
         self.assertEqual(Product._meta.get_field("materials").verbose_name, "materials")
         self.assertEqual(Product._meta.get_field("sizes").verbose_name, "sizes")
         self.assertEqual(Product._meta.get_field("colors").verbose_name, "colors")
 
-        self.assertEqual(Product._meta.get_field("date_created").verbose_name, "date created")
-        self.assertEqual(Product._meta.get_field("date_updated").verbose_name, "date updated")
-        self.assertEqual(Product._meta.get_field("last_updated_by").verbose_name, "last updated by")
+        self.assertEqual(
+            Product._meta.get_field("date_created").verbose_name, "date created"
+        )
+        self.assertEqual(
+            Product._meta.get_field("date_updated").verbose_name, "date updated"
+        )
+        self.assertEqual(
+            Product._meta.get_field("last_updated_by").verbose_name, "last updated by"
+        )
         # TODO: translation.activate("nl"), then run checks for translated field names
 
     def test_slug_creation_on_save(self):

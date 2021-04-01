@@ -1,6 +1,6 @@
 ## **Dependencies**
-- Python 3.8.6
-- Django 2.2.16. LTS /w end of mainstream support: Dec 2, 2019; end of extended support: April 2022
+- Python 3.9.2
+- Django 3.1.7
 - See and install `requirements.txt` for full dependencies
 
 ## **Database schema**
@@ -9,7 +9,7 @@
 ## **Resources**
 
 
-- The endpoints for the `accounts` and `catalogue` apps are registered and hyperlinked 
+- The endpoints for the `accounts` and `catalogue` apps are registered and hyperlinked
 in the `BrowsableAPI` root.  Details can intuitively be explored there. NB, all
 `catalogue` resources are `GET` only and require an authenticated user.
   - `GET` [https://api.mancelot.app/api/v1/](https://api.mancelot.app/api/v1/)
@@ -61,7 +61,7 @@ in the `BrowsableAPI` root.  Details can intuitively be explored there. NB, all
 - `python manage.py check`
 - `python manage.py migrate`
 - `python manage.py createsuperuser`
-- When using `SITE_ID = 1` in the settings module one must make sure that the 
+- When using `SITE_ID = 1` in the settings module one must make sure that the
   Site with id=1 exists. So first we delete all existing sites, then create
   one for localhost.
 - `python manage.py shell -c 'from django.contrib.sites.models import Site; Site.objects.all().delete(); Site.objects.create(id=1, name="localhost:8000", domain="localhost:8000")'`
@@ -72,7 +72,7 @@ in the `BrowsableAPI` root.  Details can intuitively be explored there. NB, all
 
 - Run the built-in Django development server: `docker run --rm -it -v "$(pwd)":/mancelot -p 8000:1337 --name runserver mancelot_django bash -c "python manage.py runserver 0.0.0.0:1337"`
 - In a new terminal, one can attach to the `runserver` container in an interactive session: `docker exec -it runserver bash`
-- Website runs on http://localhost:8000 
+- Website runs on http://localhost:8000
 
 ### Optie 2b
 - Or to run with nginx + uwsgi
@@ -82,7 +82,7 @@ in the `BrowsableAPI` root.  Details can intuitively be explored there. NB, all
 - Website runs on https://localhost (NB, must accept self-signed certificate)
 
 ### Add the initial data to the database
-- TODO: `python manage.py loaddata fixtures/filename.json` 
+- TODO: `python manage.py loaddata fixtures/filename.json`
 - For example: `python manage.py shell -c "from catalogue.factories import *; ProductFactory.create_batch(100)"`
 
 
@@ -90,7 +90,7 @@ in the `BrowsableAPI` root.  Details can intuitively be explored there. NB, all
 - Create translations dictionaries: `python manage.py makemessages --locale en --locale nl`
   - when used, please **update the translation dictionaries** in `locale/*/*/*.po`, then add/commit/push to repository
 - Compile translations dictionaries; `python manage.py compilemessages` (also lives in `entrypoint.sh`)
-- Create migrations: `python manage.py makemigrations` 
+- Create migrations: `python manage.py makemigrations`
   - when used, please add/commit/push to repository
 - Run migrations: `python manage.py migrate` (also lives in `entrypoint.sh`)
 - Collect static: `python manage.py collectstatic --noinput` (also lives in `entrypoint.sh`)
@@ -112,4 +112,3 @@ token=$(curl -s -k -X POST -H 'Content-Type: application/json' -d '{"email": "ti
 favorites=$(curl -s -H "Authorization: Bearer ${token}" -k -X GET https://localhost/api/v1/users/me/favorites)
 echo $favorites | jq
 ```
-
