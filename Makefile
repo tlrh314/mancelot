@@ -9,14 +9,14 @@ help: ## This help.
 
 
 docker-pull:  ## Pull the latest Docker images from Dockerhub
-	docker pull python:3.8-slim-buster
+	docker pull python:3.9-slim-buster
 	docker pull certbot/certbot:latest
 	docker pull redis:alpine
 	docker pull memcached
 	docker pull nginx:1.19-alpine
 	docker pull mariadb:10.5
 	docker pull postgres:9.4-alpine
-	docker pull php:7.4-fpm
+	docker pull php:8.0-fpm
 
 
 nginx:  ## Build container for nginx
